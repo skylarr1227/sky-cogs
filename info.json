@@ -1,0 +1,12 @@
+
+{
+    "author": ["Skylarr"],
+    "install_msg": "Sky's quote it Module has been installed",
+    "name": "Sky's quoting module for skybot ",
+    "disabled": false,
+    "short": "Quote stuff and people",
+    "description": "cog adapted by Sky with muchomuchomucho <33333",
+    "tags": [quotes, quote],
+    "requirements": [],
+    "hidden": false
+}

@@ -1,0 +1,11 @@
+{
+    "author": ["Skylarr"],
+    "install_msg": "This cog was made by Sky, thanks for installing you fuckbag.",
+    "name": "invitegen cog",
+    "disabled": false,
+    "short": "Sky's invite generator cog",
+    "description": "cogs made by Sky",
+    "tags": [],
+    "requirements": [],
+    "hidden": false
+}

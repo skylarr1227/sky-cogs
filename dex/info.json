@@ -1,0 +1,11 @@
+{
+    "author": ["Skylarr"],
+    "install_msg": "Expandable Pokedex cog",
+    "name": "sky's pokeapi cog",
+    "disabled": false,
+    "short": "Sky's dex cog",
+    "description": "cogs made by Sky",
+    "tags": [],
+    "requirements": [],
+    "hidden": false
+}

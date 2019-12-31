@@ -1,0 +1,11 @@
+{
+    "author": ["Skylarr"],
+    "install_msg": "This cog was made by skylarr#6666, thanks for installing it.",
+    "name": "skyembed cog",
+    "disabled": false,
+    "short": "Sky's 1st cog",
+    "description": "cogs made by Skylarr#6666",
+    "tags": [],
+    "requirements": [],
+    "hidden": false
+}

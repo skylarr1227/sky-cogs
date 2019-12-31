@@ -1,6 +1,6 @@
-from .quoteit import QuoteIT, PersonalQuotes
+from .quoteit import *
 
 
 def setup(bot):
-    cog = Quoteit(bot)
+    cog = quoteit(bot)
     bot.add_cog(cog)

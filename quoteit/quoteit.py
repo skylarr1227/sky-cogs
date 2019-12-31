@@ -335,9 +335,9 @@ class quoteit(commands.Cog):
 	
 
 
-class PersonalQuotes(commands.Cog):
-	def __init__(self, bot):
-		self.bot = bot
+#class PersonalQuotes(commands.Cog):
+#	def __init__(self, bot):
+#		self.bot = bot
 
 	@commands.command(aliases = ['padd'])
 	async def personaladd(self, ctx, trigger, *, response = None):

@@ -3,7 +3,7 @@
 import sqlite3
 import asyncio
 
-conn = sqlite3.connect('configs/QuoteBot.db')
+conn = sqlite3.connect('/root/.local/share/Red-DiscordBot/cogs/CogManager/cogs/quoteit/configs/QuoteBot.db')
 c = conn.cursor()
 c.execute("CREATE TABLE IF NOT EXISTS ServerConfig (Guild INTEGER unique, Prefix TEXT, DelCommands TEXT, OnReaction TEXT, PinChannel INTEGER)")
 c.execute("CREATE TABLE IF NOT EXISTS Blacklist (Id INTEGER unique, Reason TEXT)")

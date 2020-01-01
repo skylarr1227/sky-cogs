@@ -6,9 +6,9 @@ import datetime
 import urllib
 
 from .DBService import DBService
-from discord.ext import commands
-from .OwnerOnly import blacklist_ids
-
+#from discord.ext import commands
+#from .OwnerOnly import blacklist_ids
+from redbot.core import Config, commands, checks
 server_config_raw = DBService.exec("SELECT * FROM ServerConfig").fetchall()
 server_config = dict()
 
@@ -22,20 +22,19 @@ for i in server_config_raw:
 
 del server_config_raw
 
-with open('configs/config.json') as json_data:
-	response_json = json.load(json_data)
-	#default_prefix = response_json['default_prefix']
-	success_string = response_json['response_string']['success']
-	error_string = response_json['response_string']['error']
-	del response_json
+#with open('configs/config.json') as json_data:
+	##default_prefix = response_json['default_prefix']
+	#success_string = response_json['response_string']['success']
+	#error_string = response_json['response_string']['error']
+	#del response_json
 
-	def personal_embed(db_response, author):
-		if isinstance(author, discord.Member) and author.color != discord.Colour.default():
+def personal_embed(db_response, author):
+	if isinstance(author, discord.Member) and author.color != discord.Colour.default():
 			embed = discord.Embed(description = db_response[2], color = author.color)
-		else:
+	else:
 			embed = discord.Embed(description = db_response[2])
 			embed.set_author(name = str(author), icon_url = author.avatar_url)
-		if db_response[3] != None:
+	if db_response[3] != None:
 			attachments = db_response[3].split(' | ')
 			if len(attachments) == 1 and (attachments[0].lower().endswith(('.jpg', '.jpeg', '.png', '.gif', '.gifv', '.webp', '.bmp')) or attachments[0].lower().startswith('https://chart.googleapis.com/chart?')):
 				embed.set_image(url = attachments[0])
@@ -144,9 +143,9 @@ class quoteit(commands.Cog):
 					else:
 						await channel.send(embed = quote_embed(channel, message, user))
 
-	@commands.command(aliases = ['q'])
+	@commands.command(aliases = ['qqq'])
 	@commands.cooldown(rate = 2, per = 5, type = commands.BucketType.channel)
-	async def quote(self, ctx, msg_arg = None, *, reply = None):
+	async def quote2(self, ctx, msg_arg = None, *, reply = None):
 		if not msg_arg:
 			return await ctx.send(content = error_string + ' **Please provide a valid message argument.**')
 
@@ -217,7 +216,7 @@ class quoteit(commands.Cog):
 #
 	@commands.command(aliases = ['delcmds'])
 	@commands.has_permissions(manage_guild = True)
-	async def delcommands(self, ctx):
+	async def delcommands2(self, ctx):
 		if not server_config[ctx.guild.id]['del_commands']:
 
 			try:
@@ -237,7 +236,7 @@ class quoteit(commands.Cog):
 
 	@commands.command()
 	@commands.has_permissions(manage_guild = True)
-	async def reactions(self, ctx):
+	async def reactions2(self, ctx):
 		if not server_config[ctx.guild.id]['on_reaction']:
 
 			try:
@@ -258,7 +257,7 @@ class quoteit(commands.Cog):
 	@commands.command(aliases = ['dupe'])
 	@commands.has_permissions(manage_guild = True)
 	@commands.cooldown(rate = 2, per = 30, type = commands.BucketType.guild)
-	async def duplicate(self, ctx, msgs: int, from_channel: discord.TextChannel, to_channel: discord.TextChannel = None):
+	async def duplicate2(self, ctx, msgs: int, from_channel: discord.TextChannel, to_channel: discord.TextChannel = None):
 		if not to_channel:
 			to_channel = ctx.channel
 
@@ -298,7 +297,7 @@ class quoteit(commands.Cog):
 
 	@commands.command()
 	@commands.cooldown(rate = 2, per = 5, type = commands.BucketType.user)
-	async def lookup(self, ctx, arg):
+	async def lookup2(self, ctx, arg):
 		try:
 			invite = await self.bot.fetch_invite(arg, with_counts = True)
 		except discord.NotFound:
@@ -329,15 +328,15 @@ class quoteit(commands.Cog):
 			await ctx.send(embed = embed)
 
 	@commands.command()
-	async def snowflake(self, ctx, snowflake: int):
+	async def snowflake2(self, ctx, snowflake: int):
 		await ctx.send(content = '```fix\n' + discord.utils.snowflake_time(snowflake).strftime('%A %Y/%m/%d %H:%M:%S UTC') + '\n```')
 
 	
 
 
-#class PersonalQuotes(commands.Cog):
-#	def __init__(self, bot):
-#		self.bot = bot
+class PersonalQuotes(commands.Cog):
+	def __init__(self, bot):
+		self.bot = bot
 
 	@commands.command(aliases = ['padd'])
 	async def personaladd(self, ctx, trigger, *, response = None):

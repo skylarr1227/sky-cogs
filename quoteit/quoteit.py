@@ -6,9 +6,9 @@ import datetime
 import urllib
 
 from .DBService import DBService
-#from discord.ext import commands
+from discord.ext import commands
 #from .OwnerOnly import blacklist_ids
-from redbot.core import Config, commands, checks
+
 server_config_raw = DBService.exec("SELECT * FROM ServerConfig").fetchall()
 server_config = dict()
 
@@ -143,9 +143,9 @@ class quoteit(commands.Cog):
 					else:
 						await channel.send(embed = quote_embed(channel, message, user))
 
-	@commands.command(aliases = ['qqq'])
+	@commands.command(aliases = ['q'])
 	@commands.cooldown(rate = 2, per = 5, type = commands.BucketType.channel)
-	async def quote2(self, ctx, msg_arg = None, *, reply = None):
+	async def quote(self, ctx, msg_arg = None, *, reply = None):
 		if not msg_arg:
 			return await ctx.send(content = error_string + ' **Please provide a valid message argument.**')
 
@@ -216,7 +216,7 @@ class quoteit(commands.Cog):
 #
 	@commands.command(aliases = ['delcmds'])
 	@commands.has_permissions(manage_guild = True)
-	async def delcommands2(self, ctx):
+	async def delcommands(self, ctx):
 		if not server_config[ctx.guild.id]['del_commands']:
 
 			try:
@@ -236,7 +236,7 @@ class quoteit(commands.Cog):
 
 	@commands.command()
 	@commands.has_permissions(manage_guild = True)
-	async def reactions2(self, ctx):
+	async def reactions(self, ctx):
 		if not server_config[ctx.guild.id]['on_reaction']:
 
 			try:
@@ -257,7 +257,7 @@ class quoteit(commands.Cog):
 	@commands.command(aliases = ['dupe'])
 	@commands.has_permissions(manage_guild = True)
 	@commands.cooldown(rate = 2, per = 30, type = commands.BucketType.guild)
-	async def duplicate2(self, ctx, msgs: int, from_channel: discord.TextChannel, to_channel: discord.TextChannel = None):
+	async def duplicate(self, ctx, msgs: int, from_channel: discord.TextChannel, to_channel: discord.TextChannel = None):
 		if not to_channel:
 			to_channel = ctx.channel
 
@@ -297,7 +297,7 @@ class quoteit(commands.Cog):
 
 	@commands.command()
 	@commands.cooldown(rate = 2, per = 5, type = commands.BucketType.user)
-	async def lookup2(self, ctx, arg):
+	async def lookup(self, ctx, arg):
 		try:
 			invite = await self.bot.fetch_invite(arg, with_counts = True)
 		except discord.NotFound:
@@ -328,7 +328,7 @@ class quoteit(commands.Cog):
 			await ctx.send(embed = embed)
 
 	@commands.command()
-	async def snowflake2(self, ctx, snowflake: int):
+	async def snowflake(self, ctx, snowflake: int):
 		await ctx.send(content = '```fix\n' + discord.utils.snowflake_time(snowflake).strftime('%A %Y/%m/%d %H:%M:%S UTC') + '\n```')
 
 	

@@ -6,15 +6,20 @@ import datetime
 import urllib
 
 from .DBService import DBService
-from discord.ext import commands
-#from .OwnerOnly import blacklist_ids
+#from discord.ext import commands
+from .OwnerOnly import blacklist_ids
+from redbot.core.config import Config
+from redbot.core import commands, checks
+
+
+snipes = dict()
 
 server_config_raw = DBService.exec("SELECT * FROM ServerConfig").fetchall()
 server_config = dict()
 
 
 def cache_guild(db_response):
-   server_config[db_response[0]] = {'del_commands': True if db_response[2] else False, 'on_reaction': True if db_response[3] else False}
+	server_config[db_response[0]] = {'del_commands': True if db_response[2] else False, 'on_reaction': True if db_response[3] else False}
 
 
 for i in server_config_raw:
@@ -22,19 +27,20 @@ for i in server_config_raw:
 
 del server_config_raw
 
-#with open('configs/config.json') as json_data:
-	##default_prefix = response_json['default_prefix']
-	#success_string = response_json['response_string']['success']
-	#error_string = response_json['response_string']['error']
-	#del response_json
+with open('configs/config.json') as json_data:
+	response_json = json.load(json_data)
+	#default_prefix = response_json['default_prefix']
+	success_string = response_json['response_string']['success']
+	error_string = response_json['response_string']['error']
+	del response_json
 
-def personal_embed(db_response, author):
-	if isinstance(author, discord.Member) and author.color != discord.Colour.default():
+	def personal_embed(db_response, author):
+		if isinstance(author, discord.Member) and author.color != discord.Colour.default():
 			embed = discord.Embed(description = db_response[2], color = author.color)
-	else:
+		else:
 			embed = discord.Embed(description = db_response[2])
 			embed.set_author(name = str(author), icon_url = author.avatar_url)
-	if db_response[3] != None:
+		if db_response[3] != None:
 			attachments = db_response[3].split(' | ')
 			if len(attachments) == 1 and (attachments[0].lower().endswith(('.jpg', '.jpeg', '.png', '.gif', '.gifv', '.webp', '.bmp')) or attachments[0].lower().startswith('https://chart.googleapis.com/chart?')):
 				embed.set_image(url = attachments[0])
@@ -78,9 +84,47 @@ def quote_embed(context_channel, message, user):
 			embed.set_footer(text = 'Quoted by: ' + str(user))
 	return embed
 
+def snipe_embed(context_channel, message, user):
+    if message.author not in message.guild.members or message.author.color == discord.Colour.default():
+        embed = discord.Embed(description = message.content, timestamp = message.created_at)
+    else:
+        embed = discord.Embed(description = message.content, color = message.author.color, timestamp = message.created_at)
+        embed.set_author(name = str(message.author), icon_url = message.author.avatar_url)
+        if message.attachments:
+            embed.add_field(name = 'Attachment(s)', value = '\n'.join([attachment.filename for attachment in message.attachments]) + '\n\n__Attachment URLs are invalidated once the message is deleted.__')
+            if message.channel != context_channel:
+                embed.set_footer(text = 'Sniped by: ' + str(user) + ' | in channel: #' + message.channel.name)
+            else:
+                embed.set_footer(text = 'Sniped by: ' + str(user))
+                return embed
+
 class quoteit(commands.Cog):
 	def __init__(self, bot):
 		self.bot = bot
+
+	@commands.Cog.listener()
+	async def on_guild_remove(self, guild):
+		try:
+			del snipes[guild.id]
+		except KeyError:
+			pass
+
+	@commands.Cog.listener()
+	async def on_guild_channel_delete(self, channel):
+		try:
+			del snipes[channel.guild.id][channel.id]
+		except KeyError:
+			pass
+
+	@commands.Cog.listener()
+	async def on_message_delete(self, message):
+		if message.guild and not message.author.bot:
+			try:
+				snipes[message.guild.id][message.channel.id] = message
+			except KeyError:
+				snipes[message.guild.id] = {message.channel.id: message}
+
+
 
 	@commands.Cog.listener()
 	async def on_ready(self):
@@ -101,28 +145,12 @@ class quoteit(commands.Cog):
 			if i not in guild_ids:
 				del cached_guilds[i]
 
-	@commands.Cog.listener()
-	async def on_guild_remove(self, guild):
-		try:
-			del server_config[guild.id]
-		except KeyError:
-			pass
 
 	@commands.Cog.listener()
-	async def on_guild_join(self, guild):
-		try:
-			DBService.exec("INSERT INTO ServerConfig (Guild) VALUES (" + str(guild.id) + ")")
-		except Exception:
-			pass
+	async def on_command_error(self, ctx, error):
+		if isinstance(error, commands.CommandOnCooldown):
+			await ctx.send(content = error_string + ' **Please wait ' + str(round(error.retry_after, 1)) + ' seconds before invoking this again.**', delete_after = 5)
 
-		db_response = DBService.exec("SELECT * FROM ServerConfig WHERE Guild = " + str(guild.id)).fetchone()
-		cache_guild(db_response)
-
-#	'''@commands.Cog.listener()
-#	async def on_command_error(self, ctx, error):
-#		if isinstance(error, commands.CommandOnCooldown):
-#			await ctx.send(content = error_string + ' **Please wait ' + str(round(error.retry_after, 1)) + ' seconds before invoking this again.**', delete_after = 5)
-#'''
 	@commands.Cog.listener()
 	async def on_raw_reaction_add(self, payload):
 		if str(payload.emoji) == '💬' and payload.user_id not in blacklist_ids and not self.bot.get_guild(payload.guild_id).get_member(payload.user_id).bot and server_config[payload.guild_id]['on_reaction']:
@@ -341,7 +369,7 @@ class PersonalQuotes(commands.Cog):
 	@commands.command(aliases = ['padd'])
 	async def personaladd(self, ctx, trigger, *, response = None):
 		if not response and not ctx.message.attachments:
-			return await ctx.send(content = error_string + ' **You must include at least a response or an attachment in your message.**')
+			return await ctx.send(content = error_string + ' **You must` include at least a response or an attachment in your message.**')
 		else:
 			try:
 				DBService.exec("INSERT INTO PersonalQuotes (User, Trigger" + (", Response" if response else "") + (", Attachments" if ctx.message.attachments else "") + ") VALUES (" + str(ctx.author.id) + ", '" + trigger.replace('\'', '\'\'') + "'" + (", '" + response.replace('\'', '\'\'') + "'" if response else "") + (", '" + " | ".join([attachment.url for attachment in ctx.message.attachments]).replace('\'', '\'\'') + "'" if ctx.message.attachments else "") + ")")
@@ -397,8 +425,27 @@ class PersonalQuotes(commands.Cog):
 		await ctx.send(content = success_string + ' **Cleared all your personal quotes.**')
 
 
- 
- 
+
+	@commands.command()
+	async def snipe(self, ctx, channel: discord.TextChannel = None):
+		if not channel:
+			channel = ctx.channel
+
+		if not ctx.author.guild_permissions.manage_messages or not ctx.author.permissions_in(channel).read_messages or not ctx.author.permissions_in(channel).read_message_history:
+			return
+
+		if server_config[ctx.guild.id]['del_commands'] and ctx.guild.me.permissions_in(ctx.channel).manage_messages:
+			await ctx.message.delete()
+
+		try:
+			sniped_message = snipes[ctx.guild.id][channel.id]
+		except KeyError:
+			await ctx.send(content = error_string + ' **No available messages.**')
+		else:
+			await ctx.send(embed = snipe_embed(ctx.channel, sniped_message, ctx.author))
+
+
+
 
 def setup(bot):
 	bot.add_cog(quoteit(bot))

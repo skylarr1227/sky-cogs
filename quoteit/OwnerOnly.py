@@ -1,6 +1,6 @@
 import discord
 import json
-from DBService import DBService
+from .DBService import DBService
 from discord.ext import commands
 
 blacklist_ids = DBService.exec("SELECT Id FROM Blacklist").fetchall()

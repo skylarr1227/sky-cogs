@@ -1,4 +1,4 @@
-from .quoteit import *
+from .quoteit import quoteit, PersonalQuotes
 
 
 def setup(bot):

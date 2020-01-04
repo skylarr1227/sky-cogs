@@ -142,7 +142,7 @@ class Skyembed(commands.Cog):
     @commands.command(name='embedly', description='embed image test #1')
     async def testimgembed(self, ctx):
         embed = discord.Embed(title="test test test", colour=discord.Colour(0x12bdca), description="")
-        embed.set_image(url="https://raw.githubusercontent.com/tdmalone/pokecss-media/master/graphics/pokemon/ani-front/caterpie.gif")
+        embed.set_image(url="http://67.207.95.132/index.php/apps/gallery/#Pokemon/Sugimori%20Artwork/Non-Shiny%20gen%201-7/64px-Sugimori_412b.png")
         embed.set_thumbnail(url="https://pokepla.net/epic.gif")
         embed.set_author(name="Mega Test", url="http://pokepla.net", icon_url="https://go.goodguitarist.com/hosted/images/78/538b29231e4c1ab2c02cb6b8dc24b1/blue-arrows-flashing.gif")
       #  embed.set_footer(text="Suggestions on how to make this better? DM Skylarr#6666!!", icon_url="https://pokepla.net/epic2.gif")

@@ -1,0 +1,383 @@
+{
+AddImage: addimage Add an image for the bot to directly upload,
+Admin:
+selfrole Add a role to yourself.
+AdminUtils:
+massnick Mass nicknames everyone on the server
+resetnicks Resets nicknames on the server
+Adventure:
+adventure This will send you on an adventure!
+adventureset Setup various adventure settings.
+backpack This shows the contents of your backpack.
+bless [Cleric Class Only]
+convert Convert normal, rare or epic chests.
+equip This equips an item from your backpack.
+focus [Wizard Class Only]
+forge [Tinkerer Class Only]
+give [Admin] Commands to add things to players' inventories.
+heroclass This allows you to select a class if you are Level 10...
+loadout Setup various adventure settings.
+loot This opens one of your precious treasure chests.
+music [Bard Class Only]
+negaverse This will send you to fight a nega-member!
+pet [Ranger Class Only]
+rage [Berserker Class Only]
+skill This allows you to spend skillpoints.
+stats This draws up a charsheet of you or an optionally specifi...
+unequip This stashes a specified equipped item into your backpa...
+Type +help <command> for more info on a command. You can also type +help <category> for more info on a category
+
+Alias:
+alias Manage command aliases.
+AniSearch:
+anime Searches for anime using Anilist
+character Searches for characters using Anilist
+manga Searches for manga using Anilist
+user Searches users using Anilist
+Audio:
+audioset Music configuration options.
+audiostats Audio stats.
+bump Bump a track number to the top of the queue.
+disconnect Disconnect from the voice channel.
+eq Equalizer management.
+local Local playback commands.
+now Now playing.
+pause Pause or resume a playing track.
+percent Queue percentage.
+play Play a URL or search for a track.
+playlist Playlist configuration options.
+prev Skip to the start of the previously played track.
+queue List the songs in the queue.
+remove Remove a specific track number from the queue.
+repeat Toggle repeat.
+search Pick a track with a search.
+seek Seek ahead or behind on a track by seconds or a to a speci...
+shuffle Toggle shuffle.
+sing Make Red sing one of her songs.
+skip Skip to the next track, or to a given track number.
+stop Stop playback and clear the queue.
+summon Summon the bot to a voice channel.
+volume Set the volume, 1% - 150%.
+Type +help <command> for more info on a command. You can also type +help <category> for more info on a category.
+
+{+} •°• Skybot Help Menu
+Red V3
+Page 3 of 11
+Away:
+away Tell the bot you're away or back.
+awaysettings View your current away settings
+dnd Set an automatic reply when you're dnd.
+gaming Set an automatic reply when you're playing a specified g...
+idle Set an automatic reply when you're idle.
+listening Set an automatic reply when you're listening to Spoti...
+offline Set an automatic reply when you're offline.
+streaming Set an automatic reply when you're streaming.
+toggleaway Toggle away messages on the whole server.
+Battle:
+attack Battles another user!
+protect reloads user stats
+status List status of user
+Battleship:
+battleship Start a game of battleship.
+battleshipboard View your current board in an ongoing game.
+CCRole:
+ccrole Custom commands management with roles
+CardsAgainstHumanity:
+cahcredits Code credits.
+cahgames Displays up to 10 CAH games in progress.
+chat Broadcasts a message to the other players in your game.
+flushhand Flushes the cards in your hand - can only be done onc...
+game Displays the game's current status.
+hand Shows your hand.
+idlekick Sets whether or not to kick members if idle for 5 minu...
+joinbot Adds a bot to the game. Can only be done by the player...
+joinbots Adds bots to the game. Can only be done by the player...
+joincah Join a Cards Against Humanity game. If no id or user i...
+laid Shows who laid their cards and who hasn't.
+lay Lays a card or cards from your hand. If multiple cards are...
+leavecah Leaves the current game you're in.
+newcah Starts a new Cards Against Humanity game.
+pick As the judge - pick the winning card(s).
+removebot Removes a bot from the game. Can only be done by the...
+removeplayer Removes a player from the game. Can only be done ...
+Type +help <command> for more info on a command. You can also type +help <category> for more info on a category.
+
+{+} •°• Skybot Help Menu
+Red V3
+Page 4 of 11
+CardsAgainstHumanity: (continued)
+score Display the score of the current game.
+Casino:
+allin Bets all your currency for a chance to win big!
+blackjack Play a game of blackjack.
+casino Interacts with the Casino system.
+casinoset Changes Casino settings
+coin Coin flip game with a 50/50 chance to win.
+craps Plays a modified version of craps
+cups Guess which cup of three is hiding the coin.
+dice Roll a set of dice and win on 2, 7, 11, 12.
+double Play a game of Double Or Nothing.
+hilo Pick high, low, or 7 in a dice rolling game.
+war Play a modified game of war.
+Chatchart:
+chatchart Generates a pie chart, representing the last 5000 mes...
+Cleanup:
+cleanup Delete messages.
+CommandChart:
+commandchart See the used commands in a certain channel within ...
+Core:
+autoimmune Server settings for immunity from automated actions
+command Manage the bot's commands.
+contact Sends a message to the owner
+embedset Commands for toggling embeds on or off.
+info Shows info about Red
+localblacklist blacklist management commands.
+localwhitelist Whitelist management commands.
+set Changes Red's settings
+uptime Shows Red's uptime
+Type +help <command> for more info on a command. You can also type +help <category> for more info on a category.
+
+{+} •°• Skybot Help Menu
+Red V3
+Page 5 of 11
+CustomCommands:
+customcom Custom commands management.
+Deleter:
+deleter Group command for commands dealing with auto-timed dele...
+Dictionary:
+antonym Displays antonyms for a given word.
+define Displays definitions of a given word.
+synonym Displays synonyms for a given word.
+Downloader:
+findcog Find which cog a command comes from.
+Economy:
+bank Manage the bank.
+leaderboard Print the leaderboard.
+payday Get some free currency.
+payouts Show the payouts for the slot machine.
+slot Use the slot machine.
+EmbedInvite:
+invite Send personalized invite for the bot.
+EmbedMaker:
+embed Embed commands
+EventMaker:
+event Base command for events
+eventset Event maker settings
+ExtendedModLog:
+modlog Toggle various extended modlog notifications
+ForceMention:
+forcemention Mentions that role, regardless if it's unmentionable
+Fun:
+oof react :o2:🇴🇫 to a message
+react Add letter(s) as reaction to previous message.
+regional Replace letters with regional indicator emojis
+space Add n spaces between each letter. Ex: [p]space 2 thicc
+textflip Flip given text.
+vowelreplace Replaces all vowels in a word with a letter
+Type +help <command> for more info on a command. You can also type +help <category> for more info on a category.
+
+{+} •°• Skybot Help Menu
+Red V3
+Page 6 of 11
+General:
+8 Ask 8 ball a question.
+choose Choose between multiple options.
+flip Flip a coin... or a user.
+lmgtfy Create a lmgtfy link.
+roll Roll a random number.
+rps Play Rock Paper Scissors.
+stopwatch Start or stop the stopwatch.
+urban Search the Urban Dictionary.
+Grammar:
+grammar Get words related to the passed arguments.
+Hangman:
+hangman Play hangman with the bot.
+Highlight:
+highlight Highlighting Commands.
+Image:
+gif Retrieve the first search result from Giphy.
+gifr Retrieve a random GIF from a Giphy search.
+imgur Retrieve pictures from Imgur.
+ImperialToolkit:
+botstat Get stats about the bot including messages sent and rec...
+Leveler:
+backgrounds Gives a list of backgrounds.
+lvladmin Admin Toggle Features
+lvlinfo Gives more specific details about user profile image.
+lvlset Profile Configuration Options
+profile Displays a user profile.
+rank Displays the rank of a user.
+rep Gives a reputation point to a designated player.
+top Displays leaderboard.
+Listemoji:
+listemoji Lists all available emojis in a server, perfect for a...
+Type +help <command> for more info on a command. You can also type +help <category> for more info on a category.
+
+{+} •°• Skybot Help Menu
+Red V3
+Page 7 of 11
+Lock:
+lockignore Ignore a channel during server lock. 
+locksetup Go through the initial setup process. 
+lockunignore Remove channels from the ignored list.
+LogsFrom:
+logsfrom Logs the specified channel into a file, then uploads t...
+MartTools:
+bankstats Show stats of the bank.
+prefix Show all prefixes of the bot
+servercount Send servers stats of the bot.
+serversregions Show total of regions where the bot is.
+usagecount Show the usage count of the bot.
+Memento:
+memento Create reminders for yourself or to ping a role in a sp...
+Mod:
+ignore Add servers or channels to the ignore list.
+modset Manage server administration settings.
+mute Mute users.
+names Show previous names and nicknames of a user.
+rename Change a user's nickname.
+unignore Remove servers or channels from the ignore list.
+unmute Unmute users.
+userinfo Show information about a user.
+voiceban Ban a user from speaking and listening in the server's...
+voicekick Kick a member from a voice channel.
+voiceunban Unban a user from speaking and listening in the serv...
+Type +help <command> for more info on a command. You can also type +help <category> for more info on a category.
+
+{+} •°• Skybot Help Menu
+Red V3
+Page 8 of 11
+ModLog:
+case Show the specified case.
+casesfor Display cases for the specified member.
+modlogset Manage modlog settings.
+reason Specify a reason for a modlog case.
+Modmail:
+modmail Manually send modmail.
+modmailset Modmail Commands
+Monopoly:
+monopoly Play monopoly with 2-8 people.
+monopolyconvert Convert a savefile to work with the latest vers...
+NestedCommands:
+say Says what you say.
+Nsfw:
+nsfwversion Get the version of the installed Nsfw cog.
+PartyGames:
+partygames Group command for party games.
+Permissions:
+permissions Command permission management tools.
+QuoteTools:
+quote gets (a) message(s) by ID(s)
+Race:
+race Race related commands.
+setrace Race settings commands
+Raffle:
+raffle Raffle group command
+setraffle Set Raffle group command
+ReactPoll:
+rpoll Start a reaction poll
+RequestBox:
+requestset Configuration settings for Request Box
+RoleManagement:
+hackrole Puts a stickyrole on someone not in the server.
+massrole Commands for mass role management
+rolebind Binds a role to a reaction on a message...
+roleset Settings for role requirements
+roleunbind unbinds a role from a reaction on a message
+srole Self assignable role commands
+Type +help <command> for more info on a command. You can also type +help <category> for more info on a category.
+
+{+} •°• Skybot Help Menu
+Red V3
+Page 9 of 11
+ServerInfo:
+serverinfo Show server information.
+SimpleEmbed:
+sendembed Send an embed.
+Skydex:
+pokeability 
+pokefusion Get a pokemon fusion.
+pokeinfo Get stats about a pokemon. You can specify either its ...
+pokeitem 
+pokemove Get information about a pokemon move.
+pokerandom Get stats about a random pokemon.
+poketype Get information about a type.
+Skyembed:
+advhelp 
+embedly 
+lvlhelp 
+phelp 
+rhelp 
+sembed 
+showdown
+Skyutils:
+eventmsg Send an embed for a special event
+fuckchoices 
+helpadv Quick reference for Adventure...bitches 
+nick Set your nickname.
+pfp Displays a user's avatar.
+testconfirm
+SmartReact:
+addreact Add an auto reaction to a word
+delreact Delete an auto reaction to a word
+listreact List reactions for this server
+Sql:
+sql Group command for SQL cog. Warning: due to the input of va...
+Suggestion:
+addreason Add a reason to a rejected suggestion.
+approve Approve a suggestion.
+reject Reject a suggestion. Reason is optional.
+setsuggest Suggestion settings
+showsuggestion Show a suggestion.
+suggest Suggest something. Message is required.
+Type +help <command> for more info on a command. You can also type +help <category> for more info on a category.
+
+{+} •°• Skybot Help Menu
+Red V3
+Page 10 of 11
+Targeter:
+target Targets users based on the passed arguments.
+Timezone:
+time Checks the time.
+Tools:
+access Check channel access
+banlist Displays the server's banlist.
+cid Shows the channel ID.
+cinfo Shows channel information. Defaults to current text chann...
+eid Get an id for an emoji.
+einfo Emoji information.
+inrole Check members in the role specified.
+listchannel List the channels of the current server
+newusers Lists the newest 5 members.
+perms Fetch a specific user's permissions.
+rid Shows the id of a role.
+rinfo Shows role info.
+rolelist Displays the server's roles.
+sid Show the server ID.
+sinfo Shows server information.
+uinfo Shows user information. Defaults to author.
+whatis What is it?
+Warnings:
+actionlist List all configured automated actions for Warnings.
+reasonlist List all configured reasons for Warnings.
+unwarn Remove a warning from a user.
+warn Warn the user for the specified reason.
+warnaction Manage automated actions for Warnings.
+warnings List the warnings for the specified user.
+warningset Manage settings for Warnings.
+warnreason Manage warning reasons.
+Type +help <command> for more info on a command. You can also type +help <category> for more info on a category.
+
+{+} •°• Skybot Help Menu
+Red V3
+Page 11 of 11
+WordStats:
+topchatters Prints the members who have said the most words.
+topratio Prints the members with the highest "word to all words...
+wordstats Prints the most commonly used words.
+invitegen:
+joinsrv Create instant invite
+makeinvite Creates an invite to a specified server
+skyping Pings the bot.
+Type +help <command> for more info on a command. You can also type +help <category> for more info on a category.
+}

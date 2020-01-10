@@ -1,0 +1,11 @@
+{
+    "author": ["Skylarr"],
+    "install_msg": "Advanced Math Calc installed",
+    "name": "Advanced Math Calculations",
+    "disabled": false,
+    "short": "for more advanced calculations",
+    "description": "for more advanced calculations",
+    "tags": [],
+    "requirements": ["pyparsing"],
+    "hidden": false
+}

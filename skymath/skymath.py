@@ -3,8 +3,8 @@ import asyncio
 import discord
 import random
 from redbot.core import commands, checks
-from   Cogs import Settings
-from   Cogs import Nullify
+#from   Cogs import Settings
+#from   Cogs import Nullify
 
 from pyparsing import (Literal,CaselessLiteral,Word,Combine,Group,Optional,
                     ZeroOrMore,Forward,nums,alphas,oneOf)

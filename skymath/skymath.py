@@ -122,8 +122,8 @@ class Calc(commands.Cog):
         self.bot = bot
         self.nsp=NumericStringParser()
 
-    @commands.command(pass_context=True)
-    async def calc(self, ctx, *, formula = None):
+    @commands.Cog.listener()
+    async def on_message(self,message):
         """Do some math."""
 
         if formula == None:

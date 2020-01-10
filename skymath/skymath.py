@@ -3,21 +3,18 @@ import asyncio
 import discord
 import random
 from redbot.core import commands, checks
-#from   Cogs import Settings
-#from   Cogs import Nullify
 
 from pyparsing import (Literal,CaselessLiteral,Word,Combine,Group,Optional,
                     ZeroOrMore,Forward,nums,alphas,oneOf)
 import math
 import operator
 
-def setup(bot):
-	# Add the bot
+def setup(bot):	
 	bot.add_cog(Calc(bot))
 
-__author__='Someone'
-__version__ = '$Revision: 0.0 $'
-__date__ = '$Date: 2009-03-20 $'
+__author__='Sky'
+__version__ = '$Revision: 1.0 $'
+__date__ = '$Date: 2020-01-10 $'
 __source__='''
 '''
 __note__='''
@@ -117,7 +114,7 @@ class NumericStringParser(object):
 
 class Calc(commands.Cog):
 
-    # Init with the bot reference, and a reference to the settings var
+    
     def __init__(self, bot):
         self.bot = bot
         self.nsp=NumericStringParser()
@@ -144,15 +141,12 @@ class Calc(commands.Cog):
             msg += "atom    :: PI | E | real | fn '(' expr ')' | '(' expr ')'\n"
             msg += "factor  :: atom [ expop factor ]*\n"
             msg += "term    :: factor [ multop factor ]*\n"
-            msg += "expr    :: term [ addop term ]*```"
-            #msg = Nullify.clean(msg)
+            msg += "expr    :: term [ addop term ]*```"            
             await ctx.channel.send(msg)
             return
           
-        if int(answer) == answer:
-            # Check if it's a whole number and cast to int if so
+        if int(answer) == answer:           
             answer = int(answer)
             
-        msg = '{} = {}'.format(formula, answer)
-        # Say message
+        msg = '{} = {}'.format(formula, answer)       
         await ctx.channel.send(msg)

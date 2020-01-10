@@ -127,7 +127,7 @@ class Calc(commands.Cog):
         """Do some math."""
 
         if formula == None:
-            msg = 'Usage: `{}calc [formula]`'.format(ctx.prefix)
+            msg = 'Usage: `[formula]`'.format(ctx.prefix)
             await ctx.channel.send(msg)
             return
 
@@ -144,7 +144,7 @@ class Calc(commands.Cog):
             msg += "factor  :: atom [ expop factor ]*\n"
             msg += "term    :: factor [ multop factor ]*\n"
             msg += "expr    :: term [ addop term ]*```"
-            msg = Nullify.clean(msg)
+            #msg = Nullify.clean(msg)
             await ctx.channel.send(msg)
             return
           

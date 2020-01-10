@@ -127,7 +127,7 @@ class Calc(commands.Cog):
         """Do some math."""
 
         if formula == None:
-            msg = 'Usage: `[formula]`'.format(ctx.prefix)
+            msg = message.content
             await ctx.channel.send(msg)
             return
 

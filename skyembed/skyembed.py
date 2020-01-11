@@ -96,7 +96,7 @@ class Skyembed(commands.Cog):
     async def level_help(self, ctx): 
         embed = discord.Embed(title="Skybot's leveling system", colour=discord.Colour(0xfbfcfb), description="```diff\n+ You level up by sending messages where the bot can see them\n- Hope this menu helps with using our system! Have fun!```")
 
-        embed.set_image(url="https://pokepla.net/lvlhelp.png")
+        embed.set_image(url="http://castelia.realmbot.org:8080/regular-gen8-HD/880.gif")
         embed.set_thumbnail(url="https://pokepla.net/skybot.png")
         embed.set_author(name="Skybot's Profile/Rank System overview", icon_url="https://pokepla.net/epic2.gif")
         embed.set_footer(text="See +phelp, +rhelp, and +bhelp for detailed help on each one", icon_url="https://pokepla.net/epic2.gif")

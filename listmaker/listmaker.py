@@ -63,7 +63,7 @@ class ListMaker(commands.Cog):
 				await ctx.send('The number of columns provided does not match the number of columns in the list.')
 				return
 			lists[list_name]['data'].append(values)
-		await ctx.send('Data added.')
+		await ctx.send('Entry added.')
 	
 	@list_group.command()
 	async def remove(self, ctx, list_name, row_number: int):
@@ -80,9 +80,9 @@ class ListMaker(commands.Cog):
 			if list_name not in lists:
 				await ctx.send('That list does not exist.')
 				return
-			if lists[list_name]['author'] != ctx.author.id:
-				await ctx.send('You do not own that list.')
-				return
+			#if lists[list_name]['author'] != ctx.author.id:
+			#	await ctx.send('You do not own that list.')
+			#	return
 			if row_number <= 0:
 				await ctx.send('The row number must be greater than 0.')
 				return
@@ -91,7 +91,7 @@ class ListMaker(commands.Cog):
 				return
 			del lists[list_name]['data'][row_number - 1]
 		
-		await ctx.send('Data removed.')
+		await ctx.send('Entry removed.')
 	
 	@list_group.command()
 	async def show(self, ctx, list_name):

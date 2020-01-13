@@ -1,1 +1,11 @@
-
+{
+    "author": ["Skylarr"],
+    "install_msg": "This cog was made by skylarr, thanks for installing.",
+    "name": "SkyWiki cog",
+    "disabled": false,
+    "short": "Sky's Wiki cog",
+    "description": "cog made by Skylarr",
+    "tags": [wiki],
+    "requirements": [],
+    "hidden": false
+}

@@ -56,9 +56,9 @@ class ListMaker(commands.Cog):
 			if list_name not in lists:
 				await ctx.send('That list does not exist.')
 				return
-			if lists[list_name]['author'] != ctx.author.id:
-				await ctx.send('You do not own that list.')
-				return
+			#if lists[list_name]['author'] != ctx.author.id:
+			#	await ctx.send('You do not own that list.')
+			#	return
 			if len(values) != len(lists[list_name]['columns']):
 				await ctx.send('The number of columns provided does not match the number of columns in the list.')
 				return

@@ -1,0 +1,10 @@
+{
+    "author" : ["Sky (skylarr)"],
+    "install_msg" : "Thanks for installing the Mewbot Bulk Trade utility.",
+    "name" : "Mewbot Trade Utility",
+    "short" : "Helpful utility to extract pokemon ID's from mewbots embeds for bulk trading",
+    "requirements" : [],
+    "description" : "Helpful utility to extract pokemon ID's from mewbots embeds for bulk trading",
+    "tags" : ["utility"],
+    "min_python_version": [3, 8, 1]
+}

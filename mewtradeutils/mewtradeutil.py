@@ -23,4 +23,5 @@ async def trade(ctx, msg_id: int):
 		end = sub.find('|')
 		final = sub[:end - 1]
 		result.append(int(final))
-	return result
+	#return result
+        await ctx.send(result)

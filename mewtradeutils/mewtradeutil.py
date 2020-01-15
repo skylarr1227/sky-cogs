@@ -22,5 +22,11 @@ async def trade(ctx, msg_id: int):
 		sub = line[start + 14:]
 		end = sub.find('|')
 		final = sub[:end - 1]
-		result.append(int(final))
+		result.append(int(final)q@
+)
 	await ctx.send(result)
+
+
+
+def setup(bot):
+    bot.add_cog(Mewtradeutil(Bot))

@@ -1,6 +1,6 @@
 {
-    "author" : ["Flame442 (Flame#2941)"],
-    "install_msg" : "Thanks for installing ListMaker. See `[p]help listmaker` for more.",
+    "author" : ["Flame442-and sky? xD"],
+    "install_msg" : "Thanks for installing ListMaker. See `[p]help list` for more.",
     "name" : "ListMaker",
     "short" : "Make lists to store personal data.",
     "requirements" : ["tabulate"],

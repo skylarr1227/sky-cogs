@@ -22,8 +22,9 @@ async def trade(ctx, msg_id: int):
 		sub = line[start + 14:]
 		end = sub.find('|')
 		final = sub[:end - 1]
-		result.append(int(final)
-	await ctx.send()
+		result.append(int(final))
+	embed = discord.Embed(title = "ID's requested", description=result, color=0xEE8700)
+	await ctx.send(embed=embed)
 
 
 

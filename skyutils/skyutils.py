@@ -33,7 +33,7 @@ class Skyutils(commands.Cog):
 
 
 
-    @commands.command(pass_context=True)
+    @commands.command()
     @commands.is_owner()
     async def orole(ctx, role: discord.Role = None, member: discord.Member = None):
         """
@@ -44,26 +44,29 @@ class Skyutils(commands.Cog):
 #        if user_is_mod(ctx.message.author) or user_is_admin(ctx.message.author) or user_is_custom_role(
 #            ctx.message.author):
         if role is None:
-            return await ctx.send("You haven't specified a role")
+            await ctx.send("You haven't specified a role")
 
         if member is None:
             member = ctx.author
         
         if role not in member.roles:
-            return await ctx.send("That role doesn't exist.")
-
+            await ctx.send("That role doesn't exist.")
+            return
+        
         if role in member.roles:
             await member.remove_roles(ctx.message.author, role)
-            return await ctx.send("{} role has been removed from {}."
-                                    .format(role, ctx.message.author.mention))
+            await ctx.send("{} role has been removed from {}.")
+            return                        #.format(role, ctx.message.author.mention))
+            
         if  role not in user.roles:
             await member.add_roles(role)
-            return await ctx.send("{} role has been added to {}.".format(role, user.mention))
-
+            await ctx.send("{} role has been added to {}.".format(role, user.mention))
+            return
+        
         if  role in user.roles:
             await member.remove_roles(role)
-            return await ctx.send("{} role has been removed from {}."
-                                    .format(role))
+            await ctx.send("{} role has been removed from {}.")
+            return                     #   .format(role))
         #else:
     #   return await ctx.send("Silly human, you do not have permission to use this command!")
 

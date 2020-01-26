@@ -35,7 +35,7 @@ class Skyutils(commands.Cog):
 
     @commands.command(pass_context=True)
     @commands.is_owner()
-    async def role(ctx, role: discord.Role = None, user: discord.Member = None):
+    async def orole(ctx, role: discord.Role = None, user: discord.Member = None):
         """
         Usage: +role Admin`. Can take roles with spaces.
         role: Anything after "role"; should be the role name.

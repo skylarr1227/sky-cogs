@@ -46,7 +46,7 @@ class Skyutils(commands.Cog):
         """
         if user is None:
             user = ctx.author
-        await member.add_roles(ctx, user, rolename)
+        await user.add_roles(ctx, user, rolename)
 
 
     @commands.command()

@@ -46,6 +46,9 @@ class Skyutils(commands.Cog):
         if role is None:
             return await ctx.send("You haven't specified a role")
 
+        if member is None:
+            member = ctx.author
+        
         if role not in member.roles:
             return await ctx.send("That role doesn't exist.")
 

@@ -34,42 +34,19 @@ class Skyutils(commands.Cog):
 
 
     @commands.command()
-    @commands.is_owner()
-    async def orole(ctx, role: discord.Role = None, member: discord.Member = None):
+    @commands.guild_only()
+    @checks.is_owner()
+    async def skyrole(
+        self, ctx: commands.Context, rolename: discord.Role, *, user: discord.Member = None
+    ):
         """
-        Usage: +role Admin`. Can take roles with spaces.
-        role: Anything after "role"; should be the role name.
-        user: Any user
+        Add a role to a user.
+        Use double quotes if the role contains spaces.
+        If user is left blank it defaults to the author of the command.
         """
-#        if user_is_mod(ctx.message.author) or user_is_admin(ctx.message.author) or user_is_custom_role(
-#            ctx.message.author):
-        if role is None:
-            await ctx.send("You haven't specified a role")
-
-        if member is None:
-            member = ctx.author
-        
-        if role not in member.roles:
-            await ctx.send("That role doesn't exist.")
-            return
-        
-        if role in member.roles:
-            await member.remove_roles(ctx.message.author, role)
-            await ctx.send("{} role has been removed from {}.")
-            return                        #.format(role, ctx.message.author.mention))
-            
-        if  role not in user.roles:
-            await member.add_roles(role)
-            await ctx.send("{} role has been added to {}.".format(role, user.mention))
-            return
-        
-        if  role in user.roles:
-            await member.remove_roles(role)
-            await ctx.send("{} role has been removed from {}.")
-            return                     #   .format(role))
-        #else:
-    #   return await ctx.send("Silly human, you do not have permission to use this command!")
-
+        if user is None:
+            user = ctx.author
+        await await member.add_roles(ctx, user, rolename)
 
 
     @commands.command()

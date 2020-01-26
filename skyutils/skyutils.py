@@ -35,7 +35,7 @@ class Skyutils(commands.Cog):
 
     @commands.command(pass_context=True)
     @commands.is_owner()
-    async def orole(ctx, role: discord.Role = None, user: discord.Member = None):
+    async def orole(ctx, role: discord.Role = None, member: discord.Member = None):
         """
         Usage: +role Admin`. Can take roles with spaces.
         role: Anything after "role"; should be the role name.
@@ -43,29 +43,24 @@ class Skyutils(commands.Cog):
         """
 #        if user_is_mod(ctx.message.author) or user_is_admin(ctx.message.author) or user_is_custom_role(
 #            ctx.message.author):
-        if role is None and user is None:
-            return await ctx.send("You haven't specified a role or a user! ")
+        if role is None:
+            return await ctx.send("You haven't specified a role")
 
-        if role not in ctx.message.guild.roles or user not in ctx.message.guild.members:
-            return await ctx.send("That role or user doesn't exist.")
+        if role not in member.roles:
+            return await ctx.send("That role doesn't exist.")
 
-        if role not in ctx.message.author.roles and user == None:
-            await member.add_roles(ctx.message.author, role)
-            return await ctx.send("{} role has been added to {}."
-                            .format(role, ctx.message.author.mention))
-
-        if role in ctx.message.author.roles and user == None:
+        if role in member.roles:
             await member.remove_roles(ctx.message.author, role)
             return await ctx.send("{} role has been removed from {}."
                                     .format(role, ctx.message.author.mention))
-        if  user != None and role not in user.roles:
-            await member.add_roles(user, role)
+        if  role not in user.roles:
+            await member.add_roles(role)
             return await ctx.send("{} role has been added to {}.".format(role, user.mention))
 
-        if  user != None and role in user.roles:
-            await member.remove_roles(user, role)
+        if  role in user.roles:
+            await member.remove_roles(role)
             return await ctx.send("{} role has been removed from {}."
-                                    .format(role, user.mention))
+                                    .format(role))
         #else:
     #   return await ctx.send("Silly human, you do not have permission to use this command!")
 

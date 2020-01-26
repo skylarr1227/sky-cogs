@@ -46,24 +46,24 @@ class Skyutils(commands.Cog):
         if role is None and user is None:
             return await ctx.send("You haven't specified a role or a user! ")
 
-        if role not in ctx.message.server.roles or user not in ctx.message.server.members:
+        if role not in ctx.message.guild.roles or user not in ctx.message.guild.members:
             return await ctx.send("That role or user doesn't exist.")
 
         if role not in ctx.message.author.roles and user == None:
-            await client.add_roles(ctx.message.author, role)
+            await member.add_roles(ctx.message.author, role)
             return await ctx.send("{} role has been added to {}."
                             .format(role, ctx.message.author.mention))
 
         if role in ctx.message.author.roles and user == None:
-            await client.remove_roles(ctx.message.author, role)
+            await member.remove_roles(ctx.message.author, role)
             return await ctx.send("{} role has been removed from {}."
                                     .format(role, ctx.message.author.mention))
         if  user != None and role not in user.roles:
-            await client.add_roles(user, role)
+            await member.add_roles(user, role)
             return await ctx.send("{} role has been added to {}.".format(role, user.mention))
 
         if  user != None and role in user.roles:
-            await client.remove_roles(user, role)
+            await member.remove_roles(user, role)
             return await ctx.send("{} role has been removed from {}."
                                     .format(role, user.mention))
         #else:

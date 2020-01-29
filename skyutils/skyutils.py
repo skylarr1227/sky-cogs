@@ -72,7 +72,7 @@ class Skyutils(commands.Cog):
                                           \nFamiliar look and commands your used to, with an epic new spin!\
                                           \nSKY is somehow involved, that's good right??? (Right...??)\
                                           \nOh and also don't forget to [vote if you want it to grow!](https://top.gg/bot/654427498565599243)\
-                                          \n``its also in [sky's server](https://discord.gg/eBwrbNh) if you got beef with Mr. Bodeing just sayin!`")
+                                          \n\n``its also in`` [sky's server](https://discord.gg/eBwrbNh) ``if you got beef with Mr. Bodeing just sayin!``")
             embed.set_author(name="Have fun!")
             embed.set_image(url="https://images.discordapp.net/avatars/654427498565599243/07fe64e8cd90e789001f1c3da4bde6c0.png")
             await ctx.send(embed=embed)

@@ -64,12 +64,12 @@ class Skyutils(commands.Cog):
         await confirmation.confirm("Would you like to know more about Onixian? Well, react accordingly.")
 
         if confirmation.confirmed:
-            await confirmation.update("Onixian, a Pokemon bot from a developer many already know: Foreboding [Click here to join the Official Server](https://discord.gg/67Bx3sV)", color=0x55ff55)
+            await confirmation.update("Onixian, a Pokemon bot from a developer many already know: Foreboding.", color=0x55ff55)
             member = ctx.author
             embed = discord.Embed(color=discord.Color.blue(),
-                            description=f"[Link to Avatar]({member.avatar_url_as(static_format='png')})")
-            embed.set_author(name=f"{member.name}\'s Avatar")
-            embed.set_image(url=member.avatar_url)
+                            description="[Click here to join the official Onixian server](https://discord.gg/67Bx3sV)")
+            embed.set_author(name="Have fun!")
+            embed.set_image(url=https://images.discordapp.net/avatars/654427498565599243/07fe64e8cd90e789001f1c3da4bde6c0.png?size=512)
             await ctx.send(embed=embed)
         else:
             await confirmation.update("Well, good job.. now Sky owns your soul. She will be by to collect within 24 hours. Please be ready.", hide_author=True, color=0xff5555)

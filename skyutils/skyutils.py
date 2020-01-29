@@ -64,7 +64,7 @@ class Skyutils(commands.Cog):
         await confirmation.confirm("Would you like to know more about Onixian? Well, react accordingly.")
 
         if confirmation.confirmed:
-            await confirmation.update("Onixian is a new up and coming Pokemon bot, from a developer many already know: Foreboding\nThis bot is honestly delivering where many others left off/failed to- while also\nkeeping stuff close to what people are already used to.\nI honestly think that its worth your time to check out.\n```md\n1. Multiple daily updates\n2. Your Suggestions are actually heard and responded to\n3. The dev is an active member of the community\n4. Sky in some round-about way involved with something TBD```\n[Click here to join the Official Server](https://discord.gg/67Bx3sV)", color=0x55ff55)
+            await confirmation.update("Onixian, a Pokemon bot from a developer many already know: Foreboding [Click here to join the Official Server](https://discord.gg/67Bx3sV)", color=0x55ff55)
         else:
             await confirmation.update("Well, good job.. now Sky owns your soul. She will be by to collect within 24 hours. Please be ready.", hide_author=True, color=0xff5555)
 

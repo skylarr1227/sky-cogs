@@ -67,12 +67,12 @@ class Skyutils(commands.Cog):
             await confirmation.update("Onixian, a Pokemon bot from a developer many already know: Foreboding.", color=0x55ff55)
             member = ctx.author
             embed = discord.Embed(color=discord.Color.blue(),
-                            description="[Click here to join the official Onixian server](https://discord.gg/67Bx3sV)\nNew features and updates added daily!\n\
-                                          Community suggestions are heard, discussed, and implemented fast!\n\
-                                          Familiar look and commands your used to, with an epic new spin!\n\
-                                          SKY is somehow involved, that's good right??? (Right...??)\n\
-                                          Oh and also don't forget to [vote if you want it to grow!](https://top.gg/bot/654427498565599243)\n\
-                                          ``its also in [sky's server](https://discord.gg/eBwrbNh) if you got beef with Mr. Bodeing just sayin!`")
+                            description="[Click here to join the official Onixian server](https://discord.gg/67Bx3sV)\n"New features and updates added daily!"\n
+                                          "Community suggestions are heard, discussed, and implemented fast!"\n
+                                          "Familiar look and commands your used to, with an epic new spin!"\n
+                                          "SKY is somehow involved, that's good right??? (Right...??)"\n
+                                          "Oh and also don't forget to [vote if you want it to grow!](https://top.gg/bot/654427498565599243)"\n
+                                          "``its also in [sky's server](https://discord.gg/eBwrbNh) if you got beef with Mr. Bodeing just sayin!`")
             embed.set_author(name="Have fun!")
             embed.set_image(url="https://images.discordapp.net/avatars/654427498565599243/07fe64e8cd90e789001f1c3da4bde6c0.png")
             await ctx.send(embed=embed)

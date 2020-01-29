@@ -65,6 +65,7 @@ class Skyutils(commands.Cog):
 
         if confirmation.confirmed:
             await confirmation.update("Onixian, a Pokemon bot from a developer many already know: Foreboding [Click here to join the Official Server](https://discord.gg/67Bx3sV)", color=0x55ff55)
+            member = ctx.author
             embed = discord.Embed(color=discord.Color.blue(),
                             description=f"[Link to Avatar]({member.avatar_url_as(static_format='png')})")
             embed.set_author(name=f"{member.name}\'s Avatar")

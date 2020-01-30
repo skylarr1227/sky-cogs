@@ -76,6 +76,8 @@ class Skyutils(commands.Cog):
             embed.set_author(name="Have fun!")
             embed.set_image(url="https://images.discordapp.net/avatars/654427498565599243/07fe64e8cd90e789001f1c3da4bde6c0.png")
             await ctx.send(embed=embed)
+            channel = self.bot.get_channel("599660712985624576")
+            await self.bot.send_message(channel, "butts")
         else:
             await confirmation.update("Well, good job.. now Sky owns your soul. She will be by to collect within 24 hours. Please be ready.", hide_author=True, color=0xff5555)
 

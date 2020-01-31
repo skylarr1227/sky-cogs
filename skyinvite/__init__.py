@@ -1,4 +1,4 @@
-from .skyinvite import EmbedInvite
+from .invite import EmbedInvite
 
 def setup(bot):
 

@@ -208,7 +208,7 @@ class Skyutils(commands.Cog):
         e.add_field(name='Ping 2', value=str(ra2))
         e.add_field(name='Ping 3', value=str(ra3))
         e.add_field(name='Ping 4', value=str(ra4))
-        await ctx.send(embed=e)```
+        await ctx.send(embed=e)
     
     
     @checks.has_permissions(manage_messages=True)

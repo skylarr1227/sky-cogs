@@ -144,7 +144,7 @@ class Skyutils(commands.Cog):
 
     
  
-    @commands.command
+    @commands.command()
     async def latency(ctx):
         time_1 = time.perf_counter()
         await ctx.trigger_typing()

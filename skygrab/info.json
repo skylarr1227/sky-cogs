@@ -1,0 +1,9 @@
+{
+    "AUTHOR" : "daf (updated by sky)",
+    "INSTALL_MSG" : "Use [p]grabset to setup the sources and use alias to make single command shortcuts for convenience.",
+    "NAME" : "skygrab",
+    "SHORT" : "Grab things from reddit",
+    "DESCRIPTION" : "Allows you to grab images and videos from a subreddits and call a random one with a single command.",
+    "TAGS" : ["grab", "nsfw", "reddit"],
+    "REQUIREMENTS" : ["scipy"]
+}

@@ -1,0 +1,9 @@
+{
+    "AUTHOR" : "daf",
+    "INSTALL_MSG" : "",
+    "NAME" : "rolemembers",
+    "SHORT" : "role members",
+    "DESCRIPTION" : "Shows members with given role",
+    "TAGS" : ["role", "members"],
+    "REQUIREMENTS" : [""]
+}

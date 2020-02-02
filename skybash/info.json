@@ -1,0 +1,10 @@
+{
+    "author" : ["Grande#0001"],
+    "bot_version" : [3,0,0],
+    "description" : "Simple bash shell within Discord",
+    "hidden" : false,
+    "install_msg" : "Thank you for adding this cog!",
+    "short" : "Simple bash shell within Discord",
+    "requirements": [],
+    "tags" : ["bash", "shell"]
+}

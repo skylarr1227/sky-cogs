@@ -3,4 +3,4 @@ from .skytime import SkyTime
 
 
 def setup(bot: Red):
-    bot.add_cog(TimezoneConversion(bot))
+    bot.add_cog(SkyTime(bot))

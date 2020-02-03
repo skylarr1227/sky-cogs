@@ -55,7 +55,7 @@ class SkyLevel(commands.Cog):
             "removed_backgrounds": {"profile": [], "rank": [], "levelup": []},
             "backgrounds": {"profile": {}, "rank": {}, "levelup": {}},
             "xp": [15, 20],
-            "default_profile": "https://github.com/skylarr1227/drapercogs/blob/master/w.png",
+            "default_profile": "http://castelia.realmbot.org:8080/qq.png",
             "default_rank": "http://i.imgur.com/SorwIrc.jpg",
             "default_levelup": "http://i.imgur.com/eEFfKqa.jpg",
             "rep_price": 0,
@@ -86,7 +86,7 @@ class SkyLevel(commands.Cog):
         return {
             "profile": {
                 "Skull": "https://alliswall.com/file/1729/600x600/crop/3d-art-skull-wallpaper.jpg",
-                "bluestairs": "http://i.imgur.com/EjuvxjT.png",
+                "skybot": "http://castelia.realmbot.org:8080/qq.png",
                 "lamp": "http://i.imgur.com/0nQSmKX.jpg",
                 "coastline": "http://i.imgur.com/XzUtY47.jpg",
                 "redblack": "http://i.imgur.com/74J2zZn.jpg",

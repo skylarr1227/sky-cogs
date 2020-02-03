@@ -1,0 +1,21 @@
+{
+  "author": [
+    "Fixator10",
+    "Stevy`"
+  ],
+  "install_msg": "Leveler Installed!",
+  "short": "Level/Experience tracker",
+  "description": "Level/Experience tracker\nIncrease activity(or not) on your server with chat exp!",
+  "tags": [
+    "leveler",
+    "j"
+  ],
+  "requirements": [
+    "pymongo",
+    "motor",
+    "fonttools",
+    "pillow>=6.2.1",
+    "numpy",
+    "scipy"
+  ]
+}

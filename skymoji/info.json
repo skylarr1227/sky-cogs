@@ -1,0 +1,15 @@
+{
+  "author": [
+    "Fixator10",
+    "Sky"
+  ],
+  "install_msg": "Thanks for install.\nFor managing emoji",
+  "short": "Useful commands for managing emmojis",
+  "description": "Useful commands for managing emojis",
+  "tags": [
+    "admin",
+    "emoj",
+    "purge",
+    "massnick"
+  ]
+}

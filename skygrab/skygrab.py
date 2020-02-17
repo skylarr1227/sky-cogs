@@ -78,12 +78,12 @@ class SkyGrab:
         # if we got to the end we have no data
         await ctx.send("couldn't find any")
 
-    @checks.admin_or_permissions(manage_server=True)
+    @checks.is_owner()
     @commands.group()
     async def grabset(self, ctx):
         pass
 
-    @checks.admin_or_permissions(manage_server=True)
+    @checks.is_owner()
     @grabset.command(pass_context=True)
     async def add(self, ctx):
         pass

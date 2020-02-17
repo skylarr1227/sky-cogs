@@ -10,7 +10,7 @@ import re
 import scipy.stats
 
 
-class SkyGrab:
+class SkyGrab(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
         self.conf = Config.get_conf(self, identifier=208092)

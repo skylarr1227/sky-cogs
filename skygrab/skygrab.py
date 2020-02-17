@@ -79,7 +79,7 @@ class SkyGrab:
         await ctx.send("couldn't find any")
 
     @checks.admin_or_permissions(manage_server=True)
-    @commands.group(pass_context=True)
+    @commands.group()
     async def grabset(self, ctx):
         pass
 

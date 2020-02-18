@@ -21,51 +21,51 @@ from .misc import codeblock
 # Code provided by Rapptz under the MIT License
 # © 2015 Rapptz
 # https://github.com/Rapptz/RoboDanny/blob/d3148649ba504dcb6ca5499421bd397419ce7c1d/cogs/admin.py
-class PerformanceMocker:
+#class PerformanceMocker():
     """A mock object that can also be used in await expressions."""
 
-    def permissions_for(self, obj):
+ #   def permissions_for(self, obj):
         # Lie and say we don't have permissions to embed
         # This makes it so pagination sessions just abruptly end on __init__
         # Most checks based on permission have a bypass for the owner anyway
         # So this lie will not affect the actual command invocation.
-        perms = discord.Permissions.all()
-        perms.administrator = False
-        perms.embed_links = False
-        perms.add_reactions = False
-        return perms
+    #    perms = discord.Permissions.all()
+     #   perms.administrator = False
+   #     perms.embed_links = False
+   #     perms.add_reactions = False
+  #      return perms
 
-    def __getattr__(self, attr):
-        return self
+  #  def __getattr__(self, attr):
+ #      return self
 
-    def __call__(self, *args, **kwargs):
-        return self
+ #   def __call__(self, *args, **kwargs):
+   #     return self
 
-    def __repr__(self):
-        return '<PerformanceMocker>'
+#    def __repr__(self):
+   #     return '<PerformanceMocker>'
 
-    def __await__(self):
-        async def nop():
-            return self
-        return nop().__await__()
+#    def __await__(self):
+   #     async def nop():
+  #          return self
+   #     return nop().__await__()
 
-    def __enter__(self):
-        return self
+#    def __enter__(self):
+ #       return self
 
-    def __exit__(self, *args):
-        pass
+ #   def __exit__(self, *args):
+ #       pass
 
-    async def __aenter__(self):
-        return self
+#    async def __aenter__(self):
+  #      return self
 
-    async def __aexit__(self, *args):
-        pass
+#    async def __aexit__(self, *args):
+ #       pass
 
-    def __len__(self):
-        return 0
+  #  def __len__(self):
+    #    return 0
 
-    def __bool__(self):
-        return False
+  ##  def __bool__(self):
+   #     return False
 
 class skyDebug(commands.Cog):
     def __init__(self):

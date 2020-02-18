@@ -13,9 +13,6 @@
     "requirements": [
         "objgraph",
         "psutil",
-        "functools",
-        "contextlib",
-        "copy",
         "PrettyTable"
     ]
     }

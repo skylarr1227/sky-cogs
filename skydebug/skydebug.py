@@ -67,15 +67,15 @@ class PerformanceMocker:
     def __bool__(self):
         return False
 
-class skyDebug(commands.Cog, command_attrs=dict(hidden=True)):
+class skyDebug(commands.Cog):
     def __init__(self):
         if HAVE_PSUTIL:
             self.process = psutil.Process()
 
-    async def cog_check(self, context):
-        if not await context.bot.is_owner(context.author):
-            raise commands.NotOwner
-        return True
+   # async def cog_check(self, context):b   command_attrs=dict(hidden=True))
+  #      if not await context.bot.is_owner(context.author):
+   ##         raise commands.NotOwner
+  #      return True
 
     @commands.command(name='most-common-types')
     async def most_common_types(self, context):

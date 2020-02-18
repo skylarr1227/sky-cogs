@@ -15,7 +15,7 @@ class skyBash(BaseCog):
     def __init__(self, bot):
         self.bot = bot
     
-    @commands.command(aliases=["shell"])
+    @commands.command(aliases=["💲"])
     @checks.is_owner()
     async def bash(self, ctx, *, arg):
         """Bash shell"""
@@ -33,5 +33,5 @@ class skyBash(BaseCog):
         proc = await asyncio.create_subprocess_shell(arg, stdin=None, stderr=STDOUT, stdout=PIPE, env=env)
         out = await proc.stdout.read()
         msg = pagify(out.decode('utf-8'))
-        await ctx.send(f"```ini\n\n[Bash Input]: {arg}\n```")
+        await ctx.send(f"```ini\n\n[SkyBASH Input]: {arg}\n```")
         await ctx.send_interactive(msg, box_lang="py")

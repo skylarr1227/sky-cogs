@@ -1,0 +1,21 @@
+{
+    "author": [
+        "Sky"    
+    ],
+    "install_msg": "Thanks-fucker...",
+    "short": "Quick Stats",
+    "description": "Some quick server-stats",
+    "min_bot_version": "3.2.1",
+    "tags": [
+        "stats",
+        "server"
+    ],
+    "requirements": [
+        "objgraph",
+        "psutil",
+        "functools",
+        "contextlib",
+        "copy",
+        "PrettyTable"
+    ]
+    }

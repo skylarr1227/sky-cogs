@@ -22,7 +22,7 @@ from .misc import codeblock
 # © 2015 Rapptz
 # https://github.com/Rapptz/RoboDanny/blob/d3148649ba504dcb6ca5499421bd397419ce7c1d/cogs/admin.py
 #class PerformanceMocker():
-    """A mock object that can also be used in await expressions."""
+#    """A mock object that can also be used in await expressions."""
 
  #   def permissions_for(self, obj):
         # Lie and say we don't have permissions to embed

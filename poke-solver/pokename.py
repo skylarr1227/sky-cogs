@@ -1,5 +1,9 @@
 import pokelist_fetcher
 
+
+
+class PokeName(commands.Cog)
+
 def find_anagrams(name, pokemon_list):
     results = []
     new_name = ''

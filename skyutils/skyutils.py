@@ -86,7 +86,7 @@ class Skyutils(commands.Cog):
     @commands.command()        
     async def testimg(self, ctx):
         """Quick image test for Onixian """
-        embed=discord.Embed(title="HD poke Image test", description="How large is this image on your screen?", color=0xff0000)
+        embed=discord.Embed(title="HD poke Image test", description="How large is this image on your screen?", image="http://castelia.realmbot.org:8080/Gen_4/Bidoof.gif", color=0xff0000)
         embed.set_author(name="Test image")
         embed.add_field(name="undefined", value="undefined", inline=False)
         embed.set_footer(text="iPhone and Android will display differently")

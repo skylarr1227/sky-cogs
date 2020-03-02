@@ -87,8 +87,8 @@ class Skyutils(commands.Cog):
     async def testimg(self, ctx):
         """Quick image test for Onixian """
         embeds = [
-            Embed(title="HD poke Image test", description="How large is this image on your screen?", color=0xff0000)
-            Embed.set_footer(text="iPhone and Android will display differently"),
+            Embed(title="HD poke Image test", description="How large is this image on your screen?", color=0xff0000),
+           # Embed.set_footer(text="iPhone and Android will display differently"),
             Embed(title="Quick Reference cont. Loot", description="__**+loot**__\nUse to open your lootboxes\nJust specify the type\nExample:\n```+loot normal```\nor\n```+loot epic 10```\nfor multiple at once\n\n__**+combine**__\nCombiine your loot boxes by specifying type you wish to convert", color=0x5599ff),
             Embed(title="Quick Reference cont. Hero-classes", description="```+heroclass\n   -Bard\n   -Wizard\n   -Ramger\n   -Beserker\n   -Cleric```", color=0x191638)
         ]

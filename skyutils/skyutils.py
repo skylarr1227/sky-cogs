@@ -83,13 +83,14 @@ class Skyutils(commands.Cog):
             await confirmation.update("Well, good job.. now Sky owns your soul. She will be by to collect within 24 hours. Please be ready.", hide_author=True, color=0xff5555)
 
 
-# @commands.command()        
-# async def helpadv(self, ctx):
-#      """Quick reference for Adventure...bitches """
-    #   embeds = [
-    #       Embed(title="Quick Reference for Skybot", description="__**+adventure**__\nStart an adventure in your current channel\n__**+stats**__\nTo view your character sheet as well as\nyour currently equipped items.\n", color=0x115599),
-    #        Embed(title="Quick Reference cont. Loot", description="__**+loot**__\nUse to open your lootboxes\nJust specify the type\nExample:\n```+loot normal```\nor\n```+loot epic 10```\nfor multiple at once\n\n__**+combine**__\nCombiine your loot boxes by specifying type you wish to convert", color=0x5599ff),
-#     ]
+    @commands.command()        
+    async def testimg(self, ctx):
+        """Quick image test for Onixian """
+        embed=discord.Embed(title="HD poke Image test", description="How large is this image on your screen?", color=0xff0000)
+        embed.set_author(name="Test image")
+        embed.add_field(name="undefined", value="undefined", inline=False)
+        embed.set_footer(text="iPhone and Android will display differently")
+        await ctx.send(embed=embed)
 
 #     paginator = BotEmbedPaginator(ctx, embeds)
 #       await paginator.run()

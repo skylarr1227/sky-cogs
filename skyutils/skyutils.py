@@ -91,10 +91,9 @@ class Skyutils(commands.Cog):
         embed.set_image(url="http://castelia.realmbot.org:8080/Gen_4/Ambipom.gif")
         embed.add_field(name="undefined", value="undefined", inline=False)
         embed.set_footer(text="iPhone and Android will display differently")
-        await ctx.send(embed=embed)
-
-#     paginator = BotEmbedPaginator(ctx, embeds)
-#       await paginator.run()
+      #  await ctx.send(embed=embed)
+        paginator = BotEmbedPaginator(ctx, embeds)
+        await paginator.run()
 
 
         

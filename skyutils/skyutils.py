@@ -86,11 +86,19 @@ class Skyutils(commands.Cog):
     @commands.command()        
     async def testimg(self, ctx):
         """Quick image test for Onixian """
-        embed=discord.Embed(title="HD poke Image test", description="How large is this image on your screen?", color=0xff0000)
-        embed.set_author(name="Test image")
-        embed.set_image(url="http://castelia.realmbot.org:8080/Gen_4/Ambipom.gif")
-        embed.add_field(name="undefined", value="undefined", inline=False)
-        embed.set_footer(text="iPhone and Android will display differently")
+        embeds = [
+            Embed(title="HD poke Image test", description="How large is this image on your screen?", color=0xff0000),
+           # embed.set_footer(text="iPhone and Android will display differently")
+            Embed(title="Quick Reference cont. Loot", description="__**+loot**__\nUse to open your lootboxes\nJust specify the type\nExample:\n```+loot normal```\nor\n```+loot epic 10```\nfor multiple at once\n\n__**+combine**__\nCombiine your loot boxes by specifying type you wish to convert", color=0x5599ff),
+            Embed(title="Quick Reference cont. Hero-classes", description="```+heroclass\n   -Bard\n   -Wizard\n   -Ramger\n   -Beserker\n   -Cleric```", color=0x191638)
+        ]
+
+
+        #embed=discord.Embed(title="HD poke Image test", description="How large is this image on your screen?", color=0xff0000)
+        #embed.set_author(name="Test image")
+       # embed.set_image(url="http://castelia.realmbot.org:8080/Gen_4/Ambipom.gif")
+        #embed.add_field(name="undefined", value="undefined", inline=False)
+        Embed.set_footer(text="iPhone and Android will display differently")
       #  await ctx.send(embed=embed)
         paginator = BotEmbedPaginator(ctx, embeds)
         await paginator.run()

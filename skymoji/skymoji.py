@@ -9,6 +9,7 @@ from redbot.core.i18n import Translator, cog_i18n
 from redbot.core.utils import chat_formatting as chat
 from redbot.core.utils.mod import get_audit_reason
 from redbot.core.utils.predicates import MessagePredicate
+from .skymoji import convert
 
 _ = Translator("Skymoji", __file__)
 

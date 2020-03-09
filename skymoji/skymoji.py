@@ -41,8 +41,8 @@ class Skymoji(commands.Cog):
         Use double quotes if role name has spaces
 
         Examples:
-            `[p]emoji add Example https://example.com/image.png`
-            `[p]emoji add RoleBased https://example.com/image.png EmojiRole "Test image"`
+            `[p]e add Example https://example.com/image.png`
+            `[p]e add RoleBased https://example.com/image.png EmojiRole "Test image"`
         """
         try:
             async with self.session.get(url) as r:
@@ -87,8 +87,8 @@ class Skymoji(commands.Cog):
         Use double quotes if role name has spaces
 
         Examples:
-            `[p]emoji rename emoji NewEmojiName`
-            `[p]emoji rename emoji NewEmojiName Administrator "Allowed role"`
+            `[p]e rename emoji NewEmojiName`
+            `[p]e rename emoji NewEmojiName Administrator "Allowed role"`
         """
         if emoji.guild != ctx.guild:
             await ctx.send_help()
@@ -118,3 +118,21 @@ class Skymoji(commands.Cog):
             return
         await emoji.delete(reason=get_audit_reason(ctx.author))
         await ctx.tick()
+    
+    @e.command(name="info")
+    async def emoji_information(self, ctx, emoji: convert.emoji):
+		"""Retrieve information about an emoji.
+		This works for built-in as well as custom emojis.
+		"""
+		e = discord.Embed(type='rich', color=blurple)
+		if isinstance(emoji, discord.Emoji):
+			url = emoji.url.replace('discordapp.com/api', 'cdn.discordapp.com')
+			e.set_thumbnail(url=url)
+			e.add_field(name='Name', value=emoji.name)
+			e.add_field(name='ID', value=emoji.id)
+			e.add_field(name='Created at', value=emoji.created_at.strftime(datetime_format))
+			e.add_field(name='URL', value=url)
+		else:
+			e.add_field(name='Name', value=unicodedata.name(emoji))
+			e.add_field(name='ID', value='Built-in')
+		await ctx.send(embed=e) 

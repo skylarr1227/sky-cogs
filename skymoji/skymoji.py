@@ -127,12 +127,12 @@ class Skymoji(commands.Cog):
         e = discord.Embed(type='rich', color=blurple)
         if isinstance(emoji, discord.Emoji):
 	    url = emoji.url.replace('discordapp.com/api', 'cdn.discordapp.com')
-	    e.set_thumbnail(url=url)
-	    e.add_field(name='Name', value=emoji.name)
-	    e.add_field(name='ID', value=emoji.id)
-	    e.add_field(name='Created at', value=emoji.created_at.strftime(datetime_format))
-	    e.add_field(name='URL', value=url)
-        else:
+            e.set_thumbnail(url=url)
+            e.add_field(name='Name', value=emoji.name)
+            e.add_field(name='ID', value=emoji.id)
+            e.add_field(name='Created at', value=emoji.created_at.strftime(datetime_format))
+            e.add_field(name='URL', value=url)
+       else:
 	    e.add_field(name='Name', value=unicodedata.name(emoji))
-	    e.add_field(name='ID', value='Built-in')
-        await ctx.send(embed=e) 
+            e.add_field(name='ID', value='Built-in')
+       await ctx.send(embed=e) 

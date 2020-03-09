@@ -2,7 +2,7 @@ from asyncio import TimeoutError as AsyncTimeoutError
 from asyncio import sleep
 
 import aiohttp
-import discord
+import discord, math, string, unicodedata
 from redbot.core import checks
 from redbot.core import commands
 from redbot.core.i18n import Translator, cog_i18n

@@ -132,7 +132,7 @@ class Skymoji(commands.Cog):
             e.add_field(name='ID', value=emoji.id)
             e.add_field(name='Created at', value=emoji.created_at.strftime(datetime_format))
             e.add_field(name='URL', value=url)
-            else:
-	        e.add_field(name='Name', value=unicodedata.name(emoji))
-                e.add_field(name='ID', value='Built-in')
-                await ctx.send(embed=e) 
+        else:
+	    e.add_field(name='Name', value=unicodedata.name(emoji))
+            e.add_field(name='ID', value='Built-in')
+            await ctx.send(embed=e) 

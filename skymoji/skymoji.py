@@ -12,6 +12,9 @@ from redbot.core.utils.predicates import MessagePredicate
 
 _ = Translator("Skymoji", __file__)
 
+blurple = discord.Color.blurple()
+datetime_format = '%Y-%m-%d %I:%M %p UTC'
+abc_emoji = [unicodedata.lookup('REGIONAL INDICATOR SYMBOL LETTER %s' % letter) for letter in string.ascii_uppercase]
 
 @cog_i18n(_)
 class Skymoji(commands.Cog):

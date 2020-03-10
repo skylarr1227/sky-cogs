@@ -17,7 +17,7 @@ class SkyImgInfo(commands.Cog):
         fontbig = ImageFont.truetype("/root/.local/share/Red-DiscordBot/cogs/CogManager/cogs/skyimginfo/Fitamint Script.ttf", 400)
         #    (x,y)::↓ ↓ ↓ (text)::↓ ↓     (r,g,b)::↓ ↓ ↓
         draw.text((200, 0), "Information:", (255, 255, 255), font=fontbig) 
-        draw.text((50, 500), "Username: {}".format(user.name), (255, 255, 255), font=font)
+        draw.text((50, 500), "Username: {}".format(user.display_name), (255, 255, 255), font=font)
         draw.text((50, 700), "ID:  {}".format(user.id), (255, 255, 255), font=font) 
         draw.text((50, 900), "User Status:{}".format(user.status), (255, 255, 255), font=font)
         draw.text((50, 1100), "Account created: {}".format(user.created_at), (255, 255, 255), font=font) 

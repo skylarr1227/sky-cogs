@@ -13,8 +13,8 @@ class SkyImgInfo(commands.Cog):
     async def skyinfo(ctx, user: discord.Member):
         img = Image.open('/root/.local/share/Red-DiscordBot/cogs/CogManager/cogs/skyimginfo/infoimgimg.png') 
         draw = ImageDraw.Draw(img)
-        font = ImageFont.truetype("Modern_Sans_Light.otf", 100)
-        fontbig = ImageFont.truetype("Fitamint Script.ttf", 400)
+        font = ImageFont.truetype("/root/.local/share/Red-DiscordBot/cogs/CogManager/cogs/skyimginfo/Modern_Sans_Light.otf", 100)
+        fontbig = ImageFont.truetype("/root/.local/share/Red-DiscordBot/cogs/CogManager/cogs/skyimginfo/Fitamint Script.ttf", 400)
         #    (x,y)::↓ ↓ ↓ (text)::↓ ↓     (r,g,b)::↓ ↓ ↓
         draw.text((200, 0), "Information:", (255, 255, 255), font=fontbig) 
         draw.text((50, 500), "Username: {}".format(user.name), (255, 255, 255), font=font)

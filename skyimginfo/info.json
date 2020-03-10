@@ -1,0 +1,11 @@
+{
+    "author": ["Skylarr"],
+    "install_msg": "BEEP BEEP, SELF DESTRUCT ACTIVATED. WILL DELETE BOT FILES IN 2:00 MINUTES. GOODLUCK MOTHERFUCKER.",
+    "name": "image information cog",
+    "disabled": false,
+    "short": "Image Info test",
+    "description": "image information cog muchomuchomucho <33333",
+    "tags": [],
+    "requirements": ["Pillow"],
+    "hidden": false
+}

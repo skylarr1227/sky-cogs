@@ -11,10 +11,10 @@ class SkyImgInfo(commands.Cog):
 
     @commands.command(pass_context=True)
     async def skyinfo(ctx, user: discord.Member):
-        img = Image.open(r"./infoimgimg.png") 
+        img = Image.open(r"infoimgimg.png") 
         draw = ImageDraw.Draw(img)
-        font = ImageFont.truetype("./Modern_Sans_Light.otf", 100)
-        fontbig = ImageFont.truetype("./Fitamint Script.ttf", 400)
+        font = ImageFont.truetype("Modern_Sans_Light.otf", 100)
+        fontbig = ImageFont.truetype("Fitamint Script.ttf", 400)
         #    (x,y)::↓ ↓ ↓ (text)::↓ ↓     (r,g,b)::↓ ↓ ↓
         draw.text((200, 0), "Information:", (255, 255, 255), font=fontbig) 
         draw.text((50, 500), "Username: {}".format(user.name), (255, 255, 255), font=font)
@@ -25,7 +25,7 @@ class SkyImgInfo(commands.Cog):
         draw.text((50, 1500), "Users' Top Role:{}".format(user.top_role), (255, 255, 255), font=font) 
         draw.text((50, 1700), "User Joined:{}".format(user.joined_at), (255, 255, 255), font=font)
         img.save('infoimg2.png')
-        await ctx.upload("./infoimg2.png")
+        await ctx.upload("infoimg2.png")
     
     
 

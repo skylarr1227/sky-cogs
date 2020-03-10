@@ -11,7 +11,7 @@ class SkyImgInfo(commands.Cog):
 
     @commands.command(pass_context=True)
     async def skyinfo(ctx, user: discord.Member):
-        img = Image.open(r"infoimgimg.png") 
+        img = Image.open(infoimgimg.png) 
         draw = ImageDraw.Draw(img)
         font = ImageFont.truetype("Modern_Sans_Light.otf", 100)
         fontbig = ImageFont.truetype("Fitamint Script.ttf", 400)

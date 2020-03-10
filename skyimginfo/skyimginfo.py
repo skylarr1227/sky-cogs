@@ -9,7 +9,7 @@ class SkyImgInfo(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
-    @commands.command(pass_context=True)
+    @commands.command()
     async def skyinfo(ctx, user: discord.Member):
         img = Image.open('/root/.local/share/Red-DiscordBot/cogs/CogManager/cogs/skyimginfo/infoimgimg.png') 
         draw = ImageDraw.Draw(img)

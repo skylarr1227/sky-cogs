@@ -85,7 +85,7 @@ class Skyutils(commands.Cog):
             await confirmation.update("Well, good job.. now Sky owns your soul. She will be by to collect within 24 hours. Please be ready.", hide_author=True, color=0xff5555)
 
 
-    @commands.command()        
+  @commands.command()        
     async def changelog(self, ctx):
         """Change Logs"""
         embeds = [
@@ -114,13 +114,43 @@ class Skyutils(commands.Cog):
               \n• Character with more rebirths will be able to convert lesser loot chest into higher quality loot chests\
               \n• Characters with more rebirths will have their skill cooldowns significantly reduced\
               \n• Characters can only trade items to other users with the same or higher number of rebirths.", color=0x115599),
-        Embed(title="test page 2", description="Nothing interesting here.", color=0x5599ff),
+        Embed(title="Rebirth Update Cont.", description="How to rebirth\
+              When your character reach max level they can run [p]rebirth\
+              \n• This will cost all their current currency\
+              \n• This will remove all their items with the following exceptions\
+              \n• ```md\nSet items will stay with you forever\
+              \n• Tinkerer items will stay with you as long as you are a tinkerer\
+              \n• Legendary items will stay with you for 3 rebirths after you get them```\
+              \n• Say you get a legendary item with you on level 30 Rebirth 3, this item will stay with you until your 6th rebirth\
+              \n• Any loot chests or other items you has prior to rebirthing will be removed\
+              \n• You will keep your class upon rebirthing\
+              \n\nMax Level\
+              \nNew dynamic Max levels based on number of rebirths your character has.\
+              \n• For character with 0 rebirths the max level is 5\
+              \n• For character with 1 rebirth the Max level is 20\
+              \n• For character with 2 to 9 rebirths the max level increases by 5 per rebirth\
+              \n• For character with 10 to 19 rebirths the max level increases by 10 per rebirth (70, 80, 90...)\
+              \n• For character with 20 to 38 rebirths the max level increases by 5 per rebirth (170, 175, 180..)\
+              \n• Characters will stop gaining XP once their character reach max level\
+              \n\nItem Level\
+              \n• • Items now have dynamically generated Item levels based on their stats.\
+              \nSet Items\
+              \n• Sets provide significant bonuses when all pieces are equipped.\
+              \n• The 12 new sets can be broken down in a total of 86 Set items.\
+              \n• Set Bonuses are as follow\
+              \n• Extra Attack points\
+              \n• Extra Dexterity points\
+              \n• Extra Intelligence points\
+              \n• Extra Charisma points\
+              \n• Extra Luck points\
+              \n• A XP multiplier for all activities that reward users with XP\
+              \n• A Currency multiplier for all activities that reward the user with currency\
+              \n• Stats multipliers, some sets bonuses will straight up multiply all your stats by the multiplier the set provides.", color=0x5599ff),
         Embed(title="test page 3", description="Why are you still here?", color=0x191638)
     ]
 
         paginator = BotEmbedPaginator(ctx, embeds)
         await paginator.run()
-
 
         
 

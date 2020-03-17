@@ -103,7 +103,17 @@ class Skyutils(commands.Cog):
               \n• 1 common chest per 5 rebirths they have\
               \n• 1 rare chest per 10 rebirths they have\
               \n• 1 epic chest per 20 rebirths they have\
-              \n• 1 legendary test per 50 rebirths they have", color=0x115599),
+              \n• 1 legendary test per 50 rebirths they have\
+              \nMechanics affect by rebirths\
+              \n\nAs your rebirths increases the following will change\
+              \nThe amount of XP you gain for activities will also increase\
+              \nThe amount of currency you gain for activities will also increase\
+              \nYou will get better items from loot chests\
+              \nThe amount you sell items for will be higher\
+              \nCharacters with more rebirths will be more likely to encounter stronger monsters that will rebirth more XP\
+              \nCharacter with more rebirths will be able to convert lesser loot chest into higher quality loot chests\
+              \nCharacters with more rebirths will have their skill cooldowns significantly reduced\
+              \nCharacters can only trade items to other users with the same or higher number of rebirths.", color=0x115599),
         Embed(title="test page 2", description="Nothing interesting here.", color=0x5599ff),
         Embed(title="test page 3", description="Why are you still here?", color=0x191638)
     ]

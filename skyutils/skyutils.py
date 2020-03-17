@@ -86,23 +86,44 @@ class Skyutils(commands.Cog):
 
 
     @commands.command()        
-    async def testimg(ctx):
-        """Quick image test for Onixian """
+    async def changelog(ctx):
+        """Change Logs"""
         embeds = [
-            Embed1,#(title="HD poke Image test", description="How large is this image on your screen?", color=0xff0000),
-            Embed2,#(title="Quick Reference cont. Loot", description="__**+loot**__\nUse to open your lootboxes\nJust specify the type\nExample:\n```+loot normal```\nor\n```+loot epic 10```\nfor multiple at once\n\n__**+combine**__\nCombiine your loot boxes by specifying type you wish to convert", color=0x5599ff),
-            Embed3#(title="Quick Reference cont. Hero-classes", description="```+heroclass\n   -Bard\n   -Wizard\n   -Ramger\n   -Beserker\n   -Cleric```", color=0x191638)
-        ]
-        #Embed1.set_footer(text="iPhone and Android will display differently")
+        Embed(title="test page 1", description="New features
 
-        #embed
-        
-       # embed.set_image(url="http://castelia.realmbot.org:8080/Gen_4/Ambipom.gif")
-        #embed.add_field(name="undefined", value="undefined", inline=False)
-      #  Embed.set_footer(text="iPhone and Android will display differently")
-      #  await ctx.send(embed=embed)
-        paginator = BotEmbedPaginator(ctx, embeds)
-        await paginator.run()
+Rebirths
+
+Users now have the ability to rebirth at max level.
+
+Can be used to reset a character back to level 1
+
+Upon re-birthing your character gains increase base points to all stats
+
+The number of points for re-birthing varies based on the number of total rebirths your character has
+
+Between 1 - 9 rebirths you get 2 base stats per rebirth
+
+Between 10 - 19 rebirths you get 1 extra base stats per rebirth
+
+Between 20 - 29 rebirths you get 5 extra base stats per rebirth
+
+After 30 rebirths you get 3 extra base stats per rebirth
+
+Characters are guaranteed some item chests after their rebirth
+
+1 common chest per 5 rebirths they have
+
+1 rare chest per 10 rebirths they have
+
+1 epic chest per 20 rebirths they have
+
+1 legendary test per 50 rebirths they have", color=0x115599),
+        Embed(title="test page 2", description="Nothing interesting here.", color=0x5599ff),
+        Embed(title="test page 3", description="Why are you still here?", color=0x191638)
+    ]
+
+    paginator = BotEmbedPaginator(ctx, embeds)
+    await paginator.run()
 
 
         

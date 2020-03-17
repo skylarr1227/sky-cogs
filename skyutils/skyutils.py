@@ -28,7 +28,7 @@ BaseCog = getattr(commands, "Cog", object)
 Embed1 = discord.Embed(title="HD poke Image test", description="How large is this image on your screen?", color=0xff0000)
 Embed2 = discord.Embed(title="Quick Reference cont. Loot", description="__**+loot**__\nUse to open your lootboxes\nJust specify the type\nExample:\n```+loot normal```\nor\n```+loot epic 10```\nfor multiple at once\n\n__**+combine**__\nCombiine your loot boxes by specifying type you wish to convert", color=0x5599ff),
 Embed3 = discord.Embed(title="Quick Reference cont. Hero-classes", description="```+heroclass\n   -Bard\n   -Wizard\n   -Ramger\n   -Beserker\n   -Cleric```", color=0x191638)
-#Embed = discord.Embed
+Embed = discord.Embed
 
 class Skyutils(commands.Cog):
     def __init__(self, bot):

@@ -108,8 +108,8 @@ class Skyutils(commands.Cog):
         Embed(title="test page 3", description="Why are you still here?", color=0x191638)
     ]
 
-    paginator = BotEmbedPaginator(ctx, embeds)
-    await paginator.run()
+        paginator = BotEmbedPaginator(ctx, embeds)
+        await paginator.run()
 
 
         

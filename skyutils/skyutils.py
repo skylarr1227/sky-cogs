@@ -85,7 +85,7 @@ class Skyutils(commands.Cog):
             await confirmation.update("Well, good job.. now Sky owns your soul. She will be by to collect within 24 hours. Please be ready.", hide_author=True, color=0xff5555)
 
 
-  @commands.command()        
+    @commands.command()        
     async def changelog(self, ctx):
         """Change Logs"""
         embeds = [
@@ -151,6 +151,7 @@ class Skyutils(commands.Cog):
 
         paginator = BotEmbedPaginator(ctx, embeds)
         await paginator.run()
+
 
         
 

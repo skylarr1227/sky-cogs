@@ -89,21 +89,21 @@ class Skyutils(commands.Cog):
     async def changelog(self, ctx):
         """Change Logs"""
         embeds = [
-        Embed(title="test page 1", description="New features\
-              \nRebirths\
-              \nUsers now have the ability to rebirth at max level.\
-              \nCan be used to reset a character back to level 1\
-              \nUpon re-birthing your character gains increase base points to all stats\
-              \nThe number of points for re-birthing varies based on the number of total rebirths your character has\
-              \nBetween 1 - 9 rebirths you get 2 base stats per rebirth\
-              \nBetween 10 - 19 rebirths you get 1 extra base stats per rebirth\
-              \nBetween 20 - 29 rebirths you get 5 extra base stats per rebirth\
-              \nAfter 30 rebirths you get 3 extra base stats per rebirth\
-              \nCharacters are guaranteed some item chests after their rebirth\
-              \n1 common chest per 5 rebirths they have\
-              \n1 rare chest per 10 rebirths they have\
-              \n1 epic chest per 20 rebirths they have\
-              \n1 legendary test per 50 rebirths they have", color=0x115599),
+        Embed(title="Rebirth Update", description="**New features**\
+              \n\n**Rebirths**\
+              \n• Users now have the ability to rebirth at max level.\
+              \n• Can be used to reset a character back to level 1\
+              \n• Upon re-birthing your character gains increase base points to all stats\
+              \n• The number of points for re-birthing varies based on the number of total rebirths your character has\
+              \n• Between 1 - 9 rebirths you get 2 base stats per rebirth\
+              \n• Between 10 - 19 rebirths you get 1 extra base stats per rebirth\
+              \n• Between 20 - 29 rebirths you get 5 extra base stats per rebirth\
+              \n• After 30 rebirths you get 3 extra base stats per rebirth\
+              \n• Characters are guaranteed some item chests after their rebirth\
+              \n• 1 common chest per 5 rebirths they have\
+              \n• 1 rare chest per 10 rebirths they have\
+              \n• 1 epic chest per 20 rebirths they have\
+              \n• 1 legendary test per 50 rebirths they have", color=0x115599),
         Embed(title="test page 2", description="Nothing interesting here.", color=0x5599ff),
         Embed(title="test page 3", description="Why are you still here?", color=0x191638)
     ]

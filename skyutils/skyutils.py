@@ -126,11 +126,6 @@ class Skyutils(commands.Cog):
               \n• You will keep your class upon rebirthing\
               \n\nMax Level\
               \nNew dynamic Max levels based on number of rebirths your character has.\
-              \n• For character with 0 rebirths the max level is 5\
-              \n• For character with 1 rebirth the Max level is 20\
-              \n• For character with 2 to 9 rebirths the max level increases by 5 per rebirth\
-              \n• For character with 10 to 19 rebirths the max level increases by 10 per rebirth (70, 80, 90...)\
-              \n• For character with 20 to 38 rebirths the max level increases by 5 per rebirth (170, 175, 180..)\
               \n• Characters will stop gaining XP once their character reach max level\
               \n\nItem Level\
               \n• • Items now have dynamically generated Item levels based on their stats.\

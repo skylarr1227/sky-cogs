@@ -86,7 +86,7 @@ class Skyutils(commands.Cog):
 
 
     @commands.command()        
-    async def changelog(ctx):
+    async def changelog(self, ctx):
         """Change Logs"""
         embeds = [
         Embed(title="test page 1", description="New features\

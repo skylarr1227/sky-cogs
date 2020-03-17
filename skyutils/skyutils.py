@@ -86,7 +86,7 @@ class Skyutils(commands.Cog):
 
 
     @commands.command()        
-    async def testimg(self, ctx):
+    async def testimg(ctx):
         """Quick image test for Onixian """
         embeds = [
             Embed1,#(title="HD poke Image test", description="How large is this image on your screen?", color=0xff0000),

@@ -1,15 +1,15 @@
 import requests
 import discord
-#from discord.ext import commands
+from discord.ext import commands
 import socket
 import json
 import re
 from redbot.core.config import Config
-from redbot.core import commands, checks
+#from redbot.core import commands, checks
 from .config import lapi_key
 
 
-
+bot = commands.Bot
 
 def lookup_ip(ip_address):
 	response = requests.get(f'https://api.ipdata.co/{ip_address}?api-key={lapi_key}')

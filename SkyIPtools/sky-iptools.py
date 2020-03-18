@@ -51,27 +51,27 @@ Abuser: {str(response_json['threat']['is_known_abuser'])}
 Threat: {str(response_json['threat']['is_threat'])}
 Bogon: {str(response_json['threat']['is_bogon'])}```'''
 
-@commands.command(name='ping')
-async def ping(ctx):
-	"""sends bot's ping"""
-	#above is an description of the command
-	
-	#sends the ping
+class SkyIP(commands.Cog):
+    def __init__(self, bot):
+        self.bot = bot
+
+
+
+    @commands.command(name='ping')
+    async def ping(ctx):
+        """sends bot's ping"""
 	await ctx.send(f'My ping is {round(bot.latency * 1000)}ms')
 
 
 
-@commands.command(name='geo', aliases=['ip'])
-async def geo(ctx, *, ip):
-	"""looks up an ip address"""
+    @commands.command(name='geo', aliases=['ip'])
+    async def geo(ctx, *, ip):
+        """looks up an ip address"""
 	try:
-		#gets ip address
-		ip_address = socket.gethostbyname(ip)
-		await ctx.send(lookup_ip(ip_address))
-
-	except socket.gaierror:
-		await ctx.send('There is no such an ip or domain')
-
-	except:
-		await ctx.send('Error has occured!')
-		print('Error has occured!')
+            ip_address = socket.gethostbyname(ip)
+	    await ctx.send(lookup_ip(ip_address))
+            except socket.gaierror:
+                await ctx.send('Hey dipshit, there is no ip or domain matching this')
+        except:
+	    await ctx.send('Oh fuck... error has occured!')
+            print('Error has occured!')

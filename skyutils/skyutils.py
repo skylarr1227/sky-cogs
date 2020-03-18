@@ -148,7 +148,7 @@ class Skyutils(commands.Cog):
               \n• Stats multipliers, some sets bonuses will straight up multiply all your stats by the multiplier the set provides.", color=0x5599ff),
         Embed(title="test page 3", description="Why are you still here?", color=0x191638)
         #Embed.set_image(url="http://cloud.skylarr.me/index.php/apps/sharingpath/skylarr/Rpg/Spells/41.png")
-        Embed.set_author(name="Have fun!")
+        #Embed.set_author(name="Have fun!")
     ]
         
         paginator = BotEmbedPaginator(ctx, embeds)

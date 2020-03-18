@@ -1,4 +1,4 @@
-from .sky-iptools import SkyIP
+from .skyiptools import SkyIP
 
 
 

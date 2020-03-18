@@ -62,7 +62,7 @@ class Skyutils(commands.Cog):
 
 
     @commands.command()
-    async def onixian(self, ctx):
+    async def onixian(self, *, ctx):
         confirmation = BotConfirmation(ctx, 0x012345)
         await confirmation.confirm("Would you like to know more about Onixian? Well, react accordingly.")
 

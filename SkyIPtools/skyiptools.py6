@@ -59,19 +59,19 @@ class SkyIP(commands.Cog):
 
     @commands.command(name='pong')
     async def ponger(ctx):
-        """sends bot's ping"""
-	await ctx.send(f'It took roughly {round(bot.latency * 1000)}ms for this pong to reach the server-satisfied?')
+        """Sends bot's pong"""
+        await ctx.send(f'It took roughly {round(bot.latency * 1000)}ms for this pong to reach the server-satisfied?')
 
 
 
     @commands.command(name='geo', aliases=['ip'])
     async def geo(ctx, *, ip):
         """looks up an ip address"""
-	try:
+        try:
             ip_address = socket.gethostbyname(ip)
-	    await ctx.send(lookup_ip(ip_address))
+            await ctx.send(lookup_ip(ip_address))
             except socket.gaierror:
-                await ctx.send('Hey dipshit, there is no ip or domain matching this')
-        except:
-	    await ctx.send('Oh fuck... error has occured!')
-            print('Error has occured!')
+                await ctx.send('Hey dipshit, there is no ip or domain matching your input')
+                except:
+	            await ctx.send('Oh fuck... error has occured!')
+                    print('Error has occured!')

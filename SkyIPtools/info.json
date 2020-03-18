@@ -1,0 +1,11 @@
+{
+    "author": ["Skylarr"],
+    "install_msg": "This is for sky, anyone else, use at your own risk",
+    "name": "Sky's IP tools",
+    "disabled": false,
+    "short": "IP trace tools",
+    "description": "Tools for tracing the location of domains/ip's",
+    "tags": [],
+    "requirements": [],
+    "hidden": false
+}

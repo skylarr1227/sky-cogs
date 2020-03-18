@@ -5,14 +5,17 @@ import socket
 import json
 import re
 from redbot.core.config import Config
-#from redbot.core import commands, checks
-from .config import lapi_key
+from redbot.core import commands, checks
+from config import lapi_key
 
-
+class SkyIP(commands.Cog):
+    def __init__(self, bot):
+        self.bot = bot
+	
 bot = commands.Bot
 
-def lookup_ip(ip_address):
-	response = requests.get(f'https://api.ipdata.co/{ip_address}?api-key={lapi_key}')
+    def lookup_ip(ip_address):
+        response = requests.get(f'https://api.ipdata.co/{ip_address}?api-key={lapi_key}')
 	response_json = json.loads(response.text)
 	return f'''
 ```
@@ -51,9 +54,7 @@ Abuser: {str(response_json['threat']['is_known_abuser'])}
 Threat: {str(response_json['threat']['is_threat'])}
 Bogon: {str(response_json['threat']['is_bogon'])}```'''
 
-class SkyIP(commands.Cog):
-    def __init__(self, bot):
-        self.bot = bot
+
 
 
 

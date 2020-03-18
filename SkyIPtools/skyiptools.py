@@ -12,13 +12,10 @@ bot = commands.Bot
 class SkyIP(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
-	
-
-
- def lookup_ip(ip_address):
-     response = requests.get(f'https://api.ipdata.co/{ip_address}?api-key={lapi_key}')
-     response_json = json.loads(response.text)
-     return f'''
+    def lookup_ip(ip_address):
+        response = requests.get(f'https://api.ipdata.co/{ip_address}?api-key={lapi_key}')
+        response_json = json.loads(response.text)
+        return f'''
 ```
 IP: {str(response_json['ip'])}
 IP LOCATION INFO

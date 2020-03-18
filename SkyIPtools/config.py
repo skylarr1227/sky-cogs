@@ -1,1 +1,1 @@
-lapi_key = "your_api_key_from_ipdata.co"
+lapi_key = "51f13aa38f4bb16893ab5ef08634a671de04f70a7b709432fcdea328"

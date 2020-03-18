@@ -86,7 +86,7 @@ class Skyutils(commands.Cog):
 
 
     @commands.command()        
-    async def changelog(self, *):
+    async def changelog(self, *, url):
         """Change Logs for Adventure"""
         embeds = [
         Embed(title="Rebirth Update", description="**New features**\

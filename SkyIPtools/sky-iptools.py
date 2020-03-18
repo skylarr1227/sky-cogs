@@ -1,9 +1,11 @@
 import requests
 import discord
-from discord.ext import commands
+#from discord.ext import commands
 import socket
 import json
 import re
+from redbot.core.config import Config
+from redbot.core import commands, checks
 
 #imports api key from hidden.py file
 from config import lapi_key

@@ -147,8 +147,10 @@ class Skyutils(commands.Cog):
               \n• A Currency multiplier for all activities that reward the user with currency\
               \n• Stats multipliers, some sets bonuses will straight up multiply all your stats by the multiplier the set provides.", color=0x5599ff),
         Embed(title="test page 3", description="Why are you still here?", color=0x191638)
+        Embed.set_image(url="http://cloud.skylarr.me/index.php/apps/sharingpath/skylarr/Rpg Resources/Spell HUD Icons/35.png")
+        Embed.set_author(name="Have fun!")
     ]
-        embeds.set_thumbnail(url="http://cloud.skylarr.me/index.php/apps/sharingpath/skylarr/Rpg Resources/Spell HUD Icons/35.png")
+        
         paginator = BotEmbedPaginator(ctx, embeds)
         await paginator.run()
 

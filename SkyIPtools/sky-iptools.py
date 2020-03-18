@@ -6,9 +6,7 @@ import json
 import re
 from redbot.core.config import Config
 from redbot.core import commands, checks
-
-#imports api key from hidden.py file
-from config import lapi_key
+from .config import lapi_key
 
 
 
@@ -59,10 +57,10 @@ class SkyIP(commands.Cog):
 
 
 
-    @commands.command(name='ping')
-    async def ping(ctx):
+    @commands.command(name='pong')
+    async def ponger(ctx):
         """sends bot's ping"""
-	await ctx.send(f'My ping is {round(bot.latency * 1000)}ms')
+	await ctx.send(f'It took roughly {round(bot.latency * 1000)}ms for this pong to reach the server-satisfied?')
 
 
 

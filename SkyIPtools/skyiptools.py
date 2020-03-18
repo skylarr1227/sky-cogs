@@ -4,8 +4,8 @@ from discord.ext import commands
 import socket
 import json
 import re
-from redbot.core.config import Config
-from redbot.core import commands, checks
+#from redbot.core.config import Config
+#from redbot.core import commands, checks
 from .config import lapi_key
 bot = commands.Bot
 
@@ -64,7 +64,7 @@ Bogon: {str(response_json['threat']['is_bogon'])}```'''
 
 
     @commands.command(name='geo', aliases=['ip'])
-    async def geo(ctx, *, ip):
+    async def geo(self, *, ip):
         """looks up an ip address"""
         try:
             ip_address = socket.gethostbyname(ip)

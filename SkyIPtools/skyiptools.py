@@ -6,7 +6,7 @@ import json
 import re
 from redbot.core.config import Config
 from redbot.core import commands, checks
-from config import lapi_key
+from .config import lapi_key
 bot = commands.Bot
 
 class SkyIP(commands.Cog):

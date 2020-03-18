@@ -87,7 +87,7 @@ class Skyutils(commands.Cog):
 
     @commands.command()        
     async def changelog(self, ctx):
-        """Change Logs"""
+        """Change Logs for Adventure"""
         embeds = [
         Embed(title="Rebirth Update", description="**New features**\
               \n\n**Rebirths**\
@@ -126,6 +126,11 @@ class Skyutils(commands.Cog):
               \n• You will keep your class upon rebirthing\
               \n\nMax Level\
               \nNew dynamic Max levels based on number of rebirths your character has.\
+              \n• For character with 0 rebirths the max level is 5\
+              \n• For character with 1 rebirth the Max level is 20\
+              \n• For character with 2 to 9 rebirths the max level increases by 5 per rebirth\
+              \n• For character with 10 to 19 rebirths the max level increases by 10 per rebirth (70, 80, 90...)\
+              \n• For character with 20 to 38 rebirths the max level increases by 5 per rebirth (170, 175, 180..)\
               \n• Characters will stop gaining XP once their character reach max level\
               \n\nItem Level\
               \n• • Items now have dynamically generated Item levels based on their stats.\
@@ -143,7 +148,7 @@ class Skyutils(commands.Cog):
               \n• Stats multipliers, some sets bonuses will straight up multiply all your stats by the multiplier the set provides.", color=0x5599ff),
         Embed(title="test page 3", description="Why are you still here?", color=0x191638)
     ]
-
+        Embed.set_image(url="http://cloud.skylarr.me/index.php/apps/sharingpath/skylarr/Rpg Resources/Spell HUD Icons/35.png")
         paginator = BotEmbedPaginator(ctx, embeds)
         await paginator.run()
 

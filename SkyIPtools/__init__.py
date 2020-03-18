@@ -1,1 +1,1 @@
-from * import SkyIP
+from .sky-iptools import SkyIP

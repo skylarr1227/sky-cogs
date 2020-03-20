@@ -6,7 +6,7 @@ import time
 import traceback
 from redbot.core import commands
 import discord
-from discord.ext import commands
+#from d import commands
 import humanize
 import objgraph
 try:

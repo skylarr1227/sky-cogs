@@ -143,6 +143,6 @@ class skyDebug(commands.Cog):
 #def setup(bot):
 #    bot.add_cog(skyDebug())
 
-    if not HAVE_PSUTIL:
-        for command in 'objgrowth', 'most-common-types', 'mem':
-            bot.remove_command(command)
+   # if not HAVE_PSUTIL:
+      #  for command in 'objgrowth', 'most-common-types', 'mem':
+        #    bot.remove_command(command)

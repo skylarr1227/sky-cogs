@@ -29,7 +29,7 @@ class Game():
             url='https://github.com/Snaptraks/SnakeBot',
             color=0x77B255,
         ).set_footer(
-            text='Coded for Discord Hack Week by Snaptraks#2606',
+            text='Ported to Red by Sky',
         ).set_author(
             name=self.ctx.author.display_name,
             icon_url=self.ctx.author.avatar_url_as(static_format='png'),

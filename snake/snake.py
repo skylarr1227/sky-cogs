@@ -64,13 +64,12 @@ class Snake(commands.Cog):
             title='A Game of Snake',
             description='Personnal Best',
             type='rich',
-            url='https://github.com/Snaptraks/SnakeBot',
             color=0x77B255,
         ).set_author(
             name=ctx.author.display_name,
             icon_url=ctx.author.avatar_url_as(static_format='png'),
         ).set_footer(
-            text='Coded for Discord Hack Week by Snaptraks#2606',
+            text='Dont mess up!',
         )
         if len(dict_best) != 0:
             for s in dict_best:
@@ -113,10 +112,9 @@ class Snake(commands.Cog):
             title='A Game of Snake',
             description='High Scores',
             type='rich',
-            url='https://github.com/Snaptraks/SnakeBot',
             color=0x77B255,
         ).set_footer(
-            text='Coded for Discord Hack Week by Snaptraks#2606',
+            text='Dont mess up!',
         )
         if len(dict_top) != 0:
             for s in dict_top:

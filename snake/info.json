@@ -1,0 +1,10 @@
+{
+    "author" : ["Ported to Red by Sky from Snaptraks SnakeBot"],
+    "install_msg" : "Thanks for installing this remake of the original game Snake. Ported to redbot by Sky from Snaptraks SnakeBot",
+    "name" : "Snake",
+    "short" : "Play a remake of the classic game Snake inside of Discord.",
+    "requirements" : ["numpy"],
+    "description" : "Play a remake of the classic game Snake inside of Discord.",
+    "tags" : ["game"],
+    "min_python_version": [3, 8, 0]
+}

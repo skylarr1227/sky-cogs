@@ -2,7 +2,7 @@ import asyncio
 import numpy as np
 
 import discord
-from discord.ext import commands
+from redbot.core import commands
 
 from .emoji import Emoji
 from .game import Game

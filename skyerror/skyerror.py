@@ -4,8 +4,8 @@ from redbot.core.config import Config
 from redbot.core import commands, checks
 #from discord.ext import commands
 #from discord.ext.commands import Cog
-from helpers.checks import check_if_verified
-from helpers.errcodes import *
+from .helpers.checks import check_if_verified
+from .helpers.errcodes import *
 
 bot = commands.Bot
 BaseCog = getattr(commands, "Cog", object)

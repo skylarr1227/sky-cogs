@@ -97,7 +97,7 @@ class Auctioneer(commands.Cog):
 			await ctx.send('You cannot bid on your own auction!')
 			return
 		if not await self._check_balance(ctx.author.id, amount, auction['bid_type']):
-			await ctx.send('You do not have enough credits!')
+			await ctx.send(f'You do not have enough {auction["bid_type"]}!')
 			return
 		if amount < auction['bid_min']:
 			await ctx.send('That bid is lower than the minimum bid!')

@@ -160,7 +160,7 @@ class Auctioneer(commands.Cog):
 		self.safe_num += 1
 		await self.config.current_num.set(self.safe_num)
 		num = str(self.safe_num)
-		end = (datetime.datetime.utcnow() + datetime.timedelta(days=1)).timestamp() #TODO: revert this to days=1
+		end = (datetime.datetime.utcnow() + datetime.timedelta(days=1)).timestamp()
 		pokemon_info, channel_name = await self._get_pokemon_info(poke, num)
 		embed = await self._build_embed(num, ctx.author.id, pokemon_info, bid_type, bid_min, [], 'active', end)
 		
@@ -335,7 +335,7 @@ class Auctioneer(commands.Cog):
 			else:
 				gender = self.bot.get_emoji(732731778674065448) or '\N{FEMALE SIGN}'
 			pokemon_info = (
-				f'Level {pokemon["pokelevel"]} {pokemon["pokname"]} "{pokemon["poknick"]}" {gender}\n'
+				f'Level {pokemon["pokelevel"]} {star} {pokemon["pokname"]} "{pokemon["poknick"]}" {gender}\n'
 				f'**Nature**: {pokemon["nature"]}\n'
 				f'**HP**: {pokemon["hpiv"]} **IVs** | {pokemon["hpev"]} **EVs**\n'
 				f'**Attack**: {pokemon["atkiv"]} **IVs** | {pokemon["atkev"]} **EVs**\n'

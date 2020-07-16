@@ -210,18 +210,46 @@ class Auctioneer(commands.Cog):
 			return
 		bids = auction['bids']
 		if bids:
-			await ctx.send('There are bids on that auction!')
+			await ctx.send('There are bids on that auction! Use `,a endearly` to end an auction early.')
 			return
 		await self._add_pokemon(ctx.author.id, auction['poke'])
 		await self.config.auctions.set_raw(auction_id, 'status', value='canceled')
+		await self.config.auctions.set_raw(auction_id, 'end', value=datetime.datetime.utcnow().timestamp())
 		await self._update_auction(auction_id)
 		cat = self.bot.get_channel(INACTIVE_CAT_ID)
 		channel = self.bot.get_channel(auction['channel'])
 		if cat and channel:
 			await channel.edit(category=cat)
 		if channel:
-			await channel.send(f'Auction #{auction_id} by {ctx.author} was canceled.')
+			await channel.send(f'Auction #{auction_id} by {ctx.author.mention} was canceled.')
 		await ctx.send('Your auction has been canceled.')
+
+	@auctioneer.command()
+	async def endearly(self, ctx, auction_id: int):
+		"""
+		End an auction early, accepting the current highest bid.
+		
+		Auctions can only be ended early once they have a bid.
+		"""
+		auction_id = str(auction_id)
+		try:
+			auction = await self.config.auctions.get_raw(auction_id)
+		except KeyError:
+			await ctx.send('An auction with that id does not exist!')
+			return
+		if auction['status'] != 'active':
+			await ctx.send('That auction is no longer active!')
+			return
+		if auction['author'] != ctx.author.id:
+			await ctx.send('You cannot end auctions you do not own!')
+			return
+		bids = auction['bids']
+		if not bids:
+			await ctx.send('There are no bids on that auction! Use `,a cancel` to cancel an auction.')
+			return
+		await self.config.auctions.set_raw(auction_id, 'end', value=datetime.datetime.utcnow().timestamp())
+		await self._end_auction(auction_id)
+		await ctx.send('Your auction has been ended.')
 
 	async def _build_embed(self, num, author, pokemon_info, bid_type, bid_min, bids, status, end):
 		"""Creates an embed that represents a given auction."""

@@ -264,8 +264,12 @@ class Auctioneer(commands.Cog):
 			winner = winner.mention
 		else:
 			winner = bids[-1][0]
+		if auction['bid_type'] == 'mewcoins':
+			emoji = self.bot.get_emoji(731709469414785047) or 'Mewcoins'
+		else:
+			emoji = 'Redeem'
 		if channel:
-			await channel.send(f'Auction #{num} by {author} has ended.\nThe winner is {winner} with a bid of {amount}.')
+			await channel.send(f'Auction #{num} by {author} has ended.\nThe winner is {winner} with a bid of {amount} {emoji}.')
 	
 	def cog_unload(self):
 		"""Closes auction tasks on cog unload."""

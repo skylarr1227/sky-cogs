@@ -189,14 +189,48 @@ class Auctioneer(commands.Cog):
 		self.tasks.append(task)
 		await ctx.send(f'Auction #{num} created.')
 
+	@auctioneer.command()
+	async def cancel(self, ctx, auction_id: int):
+		"""
+		Cancel an existing auction you created.
+		
+		Auctions can only be canceled if there are no bids.
+		"""
+		auction_id = str(auction_id)
+		try:
+			auction = await self.config.auctions.get_raw(auction_id)
+		except KeyError:
+			await ctx.send('An auction with that id does not exist!')
+			return
+		if auction['status'] != 'active':
+			await ctx.send('That auction is no longer active!')
+			return
+		if auction['author'] != ctx.author.id:
+			await ctx.send('You cannot cancel auctions you do not own!')
+			return
+		bids = auction['bids']
+		if bids:
+			await ctx.send('There are bids on that auction!')
+			return
+		await self._add_pokemon(ctx.author.id, auction['poke'])
+		await self.config.auctions.set_raw(auction_id, 'status', value='canceled')
+		await self._update_auction(auction_id)
+		cat = self.bot.get_channel(INACTIVE_CAT_ID)
+		channel = self.bot.get_channel(auction['channel'])
+		if cat and channel:
+			await channel.edit(category=cat)
+		if channel:
+			await channel.send(f'Auction #{auction_id} by {ctx.author} was canceled.')
+		await ctx.send('Your auction has been canceled.')
+
 	async def _build_embed(self, num, author, pokemon_info, bid_type, bid_min, bids, status, end):
 		"""Creates an embed that represents a given auction."""
-		colors = {'active': discord.Color.green(), 'ended': discord.Color.red()}
+		colors = {'active': discord.Color.green(), 'ended': discord.Color.red(), 'canceled': discord.Color.dark_red()}
 		embed = discord.Embed(
 			title=f'Auction #{num}',
 			description=pokemon_info,
 			color=colors[status],
-			timestamp = datetime.datetime.fromtimestamp(end)
+			timestamp=datetime.datetime.fromtimestamp(end)
 		)
 		author = self.bot.get_user(author) or author
 		embed.add_field(name='**Author**', value=f'{author}')
@@ -238,7 +272,7 @@ class Auctioneer(commands.Cog):
 		status = auction = await self.config.auctions.get_raw(num, 'status')
 		if not status == 'active':
 			return
-		auction = await self.config.auctions.set_raw(num, 'status', value='ended')
+		await self.config.auctions.set_raw(num, 'status', value='ended')
 		await self._update_auction(num)
 		auction = await self.config.auctions.get_raw(num)
 		cat = self.bot.get_channel(INACTIVE_CAT_ID)

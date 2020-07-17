@@ -133,6 +133,7 @@ class Auctioneer(commands.Cog):
 			return
 		
 		try:
+			#Q1
 			await ctx.send('Do you want to auction your pokemon for `mewcoins` or `redeem`?')
 			resp = await self.bot.wait_for('message', timeout=60, check=lambda m: m.author == ctx.author and m.channel == ctx.channel)
 			resp = resp.content.lower()
@@ -141,18 +142,33 @@ class Auctioneer(commands.Cog):
 			else:
 				await ctx.send('Type specified was not valid.')
 				return
+			#Q2
 			await ctx.send('What should be the minimum bid?')
 			resp = await self.bot.wait_for('message', timeout=60, check=lambda m: m.author == ctx.author and m.channel == ctx.channel)
+			try:
+				bid_min = int(resp.content)
+			except ValueError:
+				await ctx.send('Value specified was not a number.')
+				return
+			if bid_min < 1:
+				await ctx.send('Value specified should not be below 1.')
+				return
+			#Q3
+			await ctx.send('How many hours should the auction last for?')
+			resp = await self.bot.wait_for('message', timeout=60, check=lambda m: m.author == ctx.author and m.channel == ctx.channel)
+			try:
+				hours = int(resp.content)
+			except ValueError:
+				await ctx.send('Value specified was not a number.')
+				return
+			if hours < 1:
+				await ctx.send('Value specified should not be below 1.')
+				return
+			if hours > 168:
+				await ctx.send('Value specified should not be above 168.')
+				return
 		except asyncio.TimeoutError:
 			await ctx.send('You took too long to respond.')
-			return
-		try:
-			bid_min = int(resp.content)
-		except ValueError:
-			await ctx.send('Value specified was not a number.')
-			return
-		if bid_min < 1:
-			await ctx.send('Value specified should not be below 1.')
 			return
 		
 		if not self.safe_num:
@@ -160,7 +176,7 @@ class Auctioneer(commands.Cog):
 		self.safe_num += 1
 		await self.config.current_num.set(self.safe_num)
 		num = str(self.safe_num)
-		end = (datetime.datetime.utcnow() + datetime.timedelta(days=1)).timestamp()
+		end = (datetime.datetime.utcnow() + datetime.timedelta(hours=hours)).timestamp()
 		pokemon_info, channel_name = await self._get_pokemon_info(poke, num)
 		embed = await self._build_embed(num, ctx.author.id, pokemon_info, bid_type, bid_min, [], 'active', end)
 		

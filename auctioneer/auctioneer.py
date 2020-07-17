@@ -72,7 +72,7 @@ class Auctioneer(commands.Cog):
 		auctions = await self.config.auctions()
 		for num, auction in auctions.items():
 			if auction['status'] == 'active':
-				task = await asyncio.create_task(self._await_auction(num))
+				task = asyncio.create_task(self._await_auction(num))
 				task.add_done_callback(self._error_callback)
 				self.tasks.append(task)
 	

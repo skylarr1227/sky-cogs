@@ -1,5 +1,5 @@
-from .skychill import Chillzone
+from .skychill import skychill
 
 
 def setup(bot):
-    bot.add_cog(Chillzone(bot))
+    bot.add_cog(skychill(bot))

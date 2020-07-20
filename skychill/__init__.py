@@ -1,4 +1,4 @@
-from .skychill import skychill
+from .chillzone import skychill
 
 
 def setup(bot):

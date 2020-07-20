@@ -37,6 +37,7 @@ class Auctioneer(commands.Cog):
 				"bid_type": "mewcoins",
 				"bid_min": 1000,
 				"bids": [[631840748924436490, 100], [620229667294674955, 200]],
+				"interval": 1,
 				"channel": 731974207218647121,
 				"message": 731974207717638214,
 				"status": "active",
@@ -109,6 +110,9 @@ class Auctioneer(commands.Cog):
 		if bids and bids[-1][1] >= amount:
 			await ctx.send('Your bid is lower than the current highest bid!')
 			return
+		if bids and amount - bids[-1][1] < auction['interval']:
+			await ctx.send('Your bid is lower than the minimum interval!')
+			return
 		if bids:
 			await self._add_credits(bids[-1][0], bids[-1][1], auction['bid_type'])
 		bids.append([ctx.author.id, amount])
@@ -167,6 +171,17 @@ class Auctioneer(commands.Cog):
 			if hours > 168:
 				await ctx.send('Value specified should not be above 168.')
 				return
+			#Q4
+			await ctx.send('What should be the minimum interval between bids?')
+			resp = await self.bot.wait_for('message', timeout=60, check=lambda m: m.author == ctx.author and m.channel == ctx.channel)
+			try:
+				interval = int(resp.content)
+			except ValueError:
+				await ctx.send('Value specified was not a number.')
+				return
+			if interval < 1:
+				await ctx.send('Value specified should not be below 1.')
+				return
 		except asyncio.TimeoutError:
 			await ctx.send('You took too long to respond.')
 			return
@@ -178,7 +193,7 @@ class Auctioneer(commands.Cog):
 		num = str(self.safe_num)
 		end = (datetime.datetime.utcnow() + datetime.timedelta(hours=hours)).timestamp()
 		pokemon_info, channel_name = await self._get_pokemon_info(poke, num)
-		embed = await self._build_embed(num, ctx.author.id, pokemon_info, bid_type, bid_min, [], 'active', end)
+		embed = await self._build_embed(num, ctx.author.id, pokemon_info, bid_type, bid_min, [], interval, 'active', end)
 		
 		try:
 			channel = await category.create_text_channel(channel_name, reason='Auctioneer')
@@ -192,6 +207,7 @@ class Auctioneer(commands.Cog):
 			'bid_type': bid_type,
 			'bid_min': bid_min,
 			'bids': [],
+			'interval': interval,
 			'channel': channel.id,
 			'message': message.id,
 			'status': 'active',
@@ -267,7 +283,7 @@ class Auctioneer(commands.Cog):
 		await self._end_auction(auction_id)
 		await ctx.send('Your auction has been ended.')
 
-	async def _build_embed(self, num, author, pokemon_info, bid_type, bid_min, bids, status, end):
+	async def _build_embed(self, num, author, pokemon_info, bid_type, bid_min, bids, interval, status, end):
 		"""Creates an embed that represents a given auction."""
 		colors = {'active': discord.Color.green(), 'ended': discord.Color.red(), 'canceled': discord.Color.dark_red()}
 		embed = discord.Embed(
@@ -286,6 +302,8 @@ class Auctioneer(commands.Cog):
 			bid_member = self.bot.get_user(bids[-1][0]) or bids[-1][0]
 			bid_value = bids[-1][1]
 			embed.add_field(name='**Top bid**', value=f'{bid_value} {emoji} by {bid_member}')
+			if status == 'active':
+				embed.add_field(name='**Minimum interval**', value=f'{interval} {emoji}')
 		else:
 			embed.add_field(name='**Top bid**', value=f'No bids yet\nMinimum bid is {bid_min} {emoji}')
 		embed.set_footer(text='Auction ends' if status == 'active' else 'Auction ended')
@@ -294,7 +312,7 @@ class Auctioneer(commands.Cog):
 	async def _update_auction(self, num):
 		"""Updates the auction message for a given auction."""
 		auction = await self.config.auctions.get_raw(num)
-		embed = await self._build_embed(num, auction['author'], auction['pokemon_info'], auction['bid_type'], auction['bid_min'], auction['bids'], auction['status'], auction['end'])
+		embed = await self._build_embed(num, auction['author'], auction['pokemon_info'], auction['bid_type'], auction['bid_min'], auction['bids'], auction['interval'], auction['status'], auction['end'])
 		channel = self.bot.get_channel(auction['channel'])
 		if not channel:
 			return

@@ -6,10 +6,10 @@ from redbot.core import Config, commands, checks, modlog
 from redbot.core.utils.chat_formatting import box, pagify
 
 
-log = logging.getLogger("red.sky.chillzone")
+log = logging.getLogger("red.sky.skychill")
 
 
-class chillzone(commands.Cog):
+class skychill(commands.Cog):
     """Auto-quarantine suspicious users."""
 
     def __init__(self, bot):

@@ -378,7 +378,7 @@ class Auctioneer(commands.Cog):
 			else:
 				bidder = f'Min bid: {auctions[auction_id]["bid_min"]}'
 				bid = 'No one yet...'
-			data.append([auction_id, poke_data['shiny'] + poke_data['pokname'], poke_data['iv_percent'] + '%', bid, bidder])
+			data.append([auction_id, poke_data['shiny'] + poke_data['pokname'], str(poke_data['iv_percent']) + '%', bid, bidder])
 		msg = tabulate(data, headers=['#', 'Name', 'IV %', 'Highest Bid', 'Bidder'])
 		paged = pagify(msg)
 		box_paged = (f'```\n{x}```' for x in paged)

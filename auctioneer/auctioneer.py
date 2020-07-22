@@ -374,12 +374,12 @@ class Auctioneer(commands.Cog):
 			if auctions[auction_id]['bids']:
 				bidder = auctions[auction_id]['bids'][-1][0]
 				bidder = self.bot.get_user(bidder) or bidder
-				bid = auctions[auction_id]['bids'][-1][1]
+				bid = str(auctions[auction_id]['bids'][-1][1]) + ' ' + auctions[auction_id]['bid_type']
 			else:
-				bidder = f'Min bid: {auctions[auction_id]["bid_min"]}'
-				bid = 'No one yet...'
-			data.append([auction_id, poke_data['shiny'] + poke_data['pokname'], str(poke_data['iv_percent']) + '%', bid, bidder])
-		msg = tabulate(data, headers=['#', 'Name', 'IV %', 'Highest Bid', 'Bidder'])
+				bidder = '-'
+				bid = f'Min bid: {auctions[auction_id]["bid_min"]} {auctions[auction_id]["bid_type"]}'
+			data.append([auction_id, poke_data['shiny'].strip(), poke_data['pokname'], str(poke_data['iv_percent']) + '%', bid, bidder])
+		msg = tabulate(data, headers=['#', '\N{SPARKLES}', 'Name', 'IV %', 'Highest Bid', 'Bidder'])
 		paged = pagify(msg)
 		box_paged = (f'```\n{x}```' for x in paged)
 		await ctx.send_interactive(box_paged)

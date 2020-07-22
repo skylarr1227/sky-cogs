@@ -522,6 +522,7 @@ class Auctioneer(commands.Cog):
 				'happiness, shiny FROM pokes WHERE id = $1'
 			)
 			pokemon = await pconn.fetchrow(call, poke)
+			pokemon = dict(pokemon)
 			pokemon['shiny'] = '\N{SPARKLES} ' if pokemon['shiny'] else ''
 			total_iv = pokemon['hpiv'] + pokemon['atkiv'] + pokemon['defiv'] + pokemon['spatkiv'] + pokemon['spdefiv'] + pokemon['speediv']
 			pokemon['iv_percent'] = round((total_iv / 186) * 100, 2)

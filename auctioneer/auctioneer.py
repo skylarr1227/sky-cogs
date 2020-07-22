@@ -364,7 +364,7 @@ class Auctioneer(commands.Cog):
 	async def list_auctions(self, ctx):
 		"""List all active auctions."""
 		data = []
-		auctions = self.config.auctions()
+		auctions = await self.config.auctions()
 		for auction_id in auctions:
 			if auctions[auction_id]['status'] != 'active':
 				continue

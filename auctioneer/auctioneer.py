@@ -373,7 +373,7 @@ class Auctioneer(commands.Cog):
 			poke_data = auctions[auction_id]['poke_data']
 			if auctions[auction_id]['bids']:
 				bidder = auctions[auction_id]['bids'][0]
-				bidder = self.bot.get_user() or bidder
+				bidder = self.bot.get_user(bidder) or bidder
 				bid = auctions[auction_id]['bids'][1]
 			else:
 				bidder = f'Min bid: {auctions[auction_id]["bid_min"]}'

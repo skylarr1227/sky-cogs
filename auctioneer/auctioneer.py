@@ -198,7 +198,21 @@ class Auctioneer(commands.Cog):
 		await self.config.current_num.set(self.safe_num)
 		num = str(self.safe_num)
 		end = (datetime.datetime.utcnow() + datetime.timedelta(hours=hours)).timestamp()
-		pokemon_info, channel_name = await self._get_pokemon_info(poke, num)
+		poke_data = await self._get_pokemon_data(poke)
+		pokemon_info = (
+			f'Level {poke_data["pokelevel"]} {poke_data["shiny"]} {poke_data["pokname"]} "{poke_data["poknick"]}" {poke_data["gender"]}\n'
+			f'**Nature**: {poke_data["nature"]}\n'
+			f'**HP**: {poke_data["hpiv"]} **IVs** | {poke_data["hpev"]} **EVs**\n'
+			f'**Attack**: {poke_data["atkiv"]} **IVs** | {poke_data["atkev"]} **EVs**\n'
+			f'**Defense**: {poke_data["defiv"]} **IVs** | {poke_data["defev"]} **EVs**\n'
+			f'**Sp. Atk**: {poke_data["spatkiv"]} **IVs** | {poke_data["spatkev"]} **EVs**\n'
+			f'**Sp. Def**: {poke_data["spdefiv"]} **IVs** | {poke_data["spdefev"]} **EVs**\n'
+			f'**Speed**: {poke_data["speediv"]} **IVs** | {poke_data["speedev"]} **EVs**\n'
+			f'**Happiness**: {poke_data["happiness"]}\n'
+			f'IV %: {poke_data["iv_percent"]}'
+		)
+		channel_name = f'{num} {poke_data["shiny"]}{poke_data["pokname"]} {round(poke_data["iv_percent"])}'
+		return (pokemon_info, channel_name)
 		embed = await self._build_embed(num, ctx.author.id, pokemon_info, bid_type, bid_min, [], interval, 'active', end)
 		
 		try:
@@ -218,7 +232,8 @@ class Auctioneer(commands.Cog):
 			'message': message.id,
 			'status': 'active',
 			'end': end,
-			'poke': poke
+			'poke': poke,
+			'poke_data': poke_data
 		}
 		await self.config.auctions.set_raw(num, value=auction)
 		await self._remove_pokemon(ctx.author.id, poke)
@@ -344,6 +359,28 @@ class Auctioneer(commands.Cog):
 		await self.config.auctions.set_raw(auction_id, 'end', value=datetime.datetime.utcnow().timestamp())
 		await self._end_auction(auction_id)
 		await ctx.send('Your auction has been ended.')
+
+	@auctioneer.command(name='list')
+	async def list_auctions(self, ctx):
+		"""List all active auctions."""
+		data = []
+		auctions = self.config.auctions()
+		for auction_id in auctions:
+			auctions[auction_id]['status'] != 'active':
+				continue
+			poke_data = auctions[auction_id]['poke_data']
+			if auctions[auction_id]['bids']:
+				bidder = auctions[auction_id]['bids'][0]
+				bidder = self.bot.get_user() or bidder
+				bid = auctions[auction_id]['bids'][1]
+			else:
+				bidder = f'Min bid: {auctions[auction_id]["bid_min"]}'
+				bid = 'No one yet...'
+			data.append([auction_id, poke_data[''], poke_data[''], bid, bidder])
+		msg = tabulate(data, headers=['#', 'Name', 'IV %', 'Highest Bid', 'Bidder'])
+		paged = pagify(msg)
+		box_paged = (f'```\n{x}```' for x in paged)
+		await ctx.send_interactive(box_paged)
 
 	async def _build_embed(self, num, author, pokemon_info, bid_type, bid_min, bids, interval, status, end):
 		"""Creates an embed that represents a given auction."""
@@ -471,11 +508,11 @@ class Auctioneer(commands.Cog):
 		async with self.db.acquire() as pconn:
 			await pconn.execute('UPDATE users SET pokes = array_remove(pokes, $1) WHERE u_id = $2', poke, userid)
 	
-	async def _get_pokemon_info(self, poke: int, num: str):
+	async def _get_pokemon_data(self, poke: int):
 		"""
 		Gets the pokemon info of a specific pokemon.
 		
-		Returns (pokemon_info, channel_name).
+		Returns a dict containing the information about that pokemon.
 		"""
 		async with self.db.acquire() as pconn:
 			call = (
@@ -485,27 +522,14 @@ class Auctioneer(commands.Cog):
 				'happiness, shiny FROM pokes WHERE id = $1'
 			)
 			pokemon = await pconn.fetchrow(call, poke)
-			star = '\N{SPARKLES} ' if pokemon['shiny'] else ''
-			total_iv = pokemon["hpiv"] + pokemon["atkiv"] + pokemon["defiv"] + pokemon["spatkiv"] + pokemon["spdefiv"] + pokemon["speediv"]
-			iv = round((total_iv / 186) * 100, 2)
-			if pokemon["gender"] == '-m':
-				gender = self.bot.get_emoji(732731801797132370) or '\N{MALE SIGN}'
+			pokemon['shiny'] = '\N{SPARKLES} ' if pokemon['shiny'] else ''
+			total_iv = pokemon['hpiv'] + pokemon['atkiv'] + pokemon['defiv'] + pokemon['spatkiv'] + pokemon['spdefiv'] + pokemon['speediv']
+			pokemon['iv_percent'] = round((total_iv / 186) * 100, 2)
+			if pokemon['gender'] == '-m':
+				pokemon['gender'] = self.bot.get_emoji(732731801797132370) or '\N{MALE SIGN}'
 			else:
-				gender = self.bot.get_emoji(732731778674065448) or '\N{FEMALE SIGN}'
-			pokemon_info = (
-				f'Level {pokemon["pokelevel"]} {star} {pokemon["pokname"]} "{pokemon["poknick"]}" {gender}\n'
-				f'**Nature**: {pokemon["nature"]}\n'
-				f'**HP**: {pokemon["hpiv"]} **IVs** | {pokemon["hpev"]} **EVs**\n'
-				f'**Attack**: {pokemon["atkiv"]} **IVs** | {pokemon["atkev"]} **EVs**\n'
-				f'**Defense**: {pokemon["defiv"]} **IVs** | {pokemon["defev"]} **EVs**\n'
-				f'**Sp. Atk**: {pokemon["spatkiv"]} **IVs** | {pokemon["spatkev"]} **EVs**\n'
-				f'**Sp. Def**: {pokemon["spdefiv"]} **IVs** | {pokemon["spdefev"]} **EVs**\n'
-				f'**Speed**: {pokemon["speediv"]} **IVs** | {pokemon["speedev"]} **EVs**\n'
-				f'**Happiness**: {pokemon["happiness"]}\n'
-				f'IV %: {iv}'
-			)
-			channel_name = f'{num} {star}{pokemon["pokname"]} {round(iv)}'
-			return (pokemon_info, channel_name)
+				pokemon['gender'] = self.bot.get_emoji(732731778674065448) or '\N{FEMALE SIGN}'
+			return pokemon
 	
 	async def _check_balance(self, userid: int, amount: int, bid_type: str):
 		"""Returns a bool indicating whether or not "userid" has at least "amount" credits of "bid_type" type."""

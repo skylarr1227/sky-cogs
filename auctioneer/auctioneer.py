@@ -366,7 +366,7 @@ class Auctioneer(commands.Cog):
 		data = []
 		auctions = self.config.auctions()
 		for auction_id in auctions:
-			auctions[auction_id]['status'] != 'active':
+			if auctions[auction_id]['status'] != 'active':
 				continue
 			poke_data = auctions[auction_id]['poke_data']
 			if auctions[auction_id]['bids']:

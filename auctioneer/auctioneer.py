@@ -1,12 +1,14 @@
 import discord
 from redbot.core import commands
 from redbot.core import Config
+from redbot.core.utils.chat_formatting import pagify
 import asyncio
 import asyncpg
 import datetime
 import logging
 import os
 import ujson
+from tabulate import tabulate
 
 ACTIVE_CAT_ID = 731973669898682379
 INACTIVE_CAT_ID = 732740398535147590
@@ -376,7 +378,7 @@ class Auctioneer(commands.Cog):
 			else:
 				bidder = f'Min bid: {auctions[auction_id]["bid_min"]}'
 				bid = 'No one yet...'
-			data.append([auction_id, poke_data[''], poke_data[''], bid, bidder])
+			data.append([auction_id, poke_data['shiny'] + poke_data['pokname'], poke_data['iv_percent'] + '%', bid, bidder])
 		msg = tabulate(data, headers=['#', 'Name', 'IV %', 'Highest Bid', 'Bidder'])
 		paged = pagify(msg)
 		box_paged = (f'```\n{x}```' for x in paged)

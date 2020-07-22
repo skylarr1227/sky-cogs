@@ -256,6 +256,62 @@ class Auctioneer(commands.Cog):
 			await channel.send(f'Auction #{auction_id} by {ctx.author.mention} was canceled.')
 		await ctx.send('Your auction has been canceled.')
 
+	@auctioneer.group()
+	async def edit(self, ctx):
+		"""Edit the properties of an existing auction."""
+		pass
+	
+	@edit.command()
+	async def interval(self, ctx, auction_id: int, interval: int):
+		"""Set the minimum interval for an auction."""
+		auction_id = str(auction_id)
+		try:
+			auction = await self.config.auctions.get_raw(auction_id)
+		except KeyError:
+			await ctx.send('An auction with that id does not exist!')
+			return
+		if auction['status'] != 'active':
+			await ctx.send('That auction is no longer active!')
+			return
+		if auction['author'] != ctx.author.id:
+			await ctx.send('You cannot edit auctions you do not own!')
+			return
+		if interval < 1:
+			await ctx.send('Value specified should not be below 1.')
+		await self.config.auctions.set_raw(auction_id, 'interval', value=interval)
+		await self._update_auction(auction_id)
+		await ctx.send('Interval set.')
+	
+	@edit.command()
+	async def minbid(self, ctx, auction_id: int, minbid: int):
+		"""
+		Set the minimum bid for an auction.
+		
+		Auctions with bids cannot have their minimum bid changed.
+		"""
+		auction_id = str(auction_id)
+		try:
+			auction = await self.config.auctions.get_raw(auction_id)
+		except KeyError:
+			await ctx.send('An auction with that id does not exist!')
+			return
+		if auction['status'] != 'active':
+			await ctx.send('That auction is no longer active!')
+			return
+		if auction['author'] != ctx.author.id:
+			await ctx.send('You cannot edit auctions you do not own!')
+			return
+		bids = auction['bids']
+		if bids:
+			await ctx.send('There are already bids on that auction!')
+			return
+		if minbid < 1:
+			await ctx.send('Value specified should not be below 1.')
+			return
+		await self.config.auctions.set_raw(auction_id, 'bid_min', value=minbid)
+		await self._update_auction(auction_id)
+		await ctx.send('Minimum bid set.')
+
 	@auctioneer.command()
 	async def endearly(self, ctx, auction_id: int):
 		"""

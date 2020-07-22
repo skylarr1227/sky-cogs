@@ -115,6 +115,12 @@ class Auctioneer(commands.Cog):
 			return
 		if bids:
 			await self._add_credits(bids[-1][0], bids[-1][1], auction['bid_type'])
+			user = self.bot.get_user(bids[-1][0])
+			if user:
+				try:
+					await user.send(f'You have been outbid by {ctx.author} in auction #{auction_id}!')
+				except discord.errors.HTTPException:
+					pass
 		bids.append([ctx.author.id, amount])
 		await self.config.auctions.set_raw(auction_id, 'bids', value=bids)
 		await self._remove_credits(ctx.author.id, amount, auction['bid_type'])

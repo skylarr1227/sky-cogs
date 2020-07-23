@@ -214,7 +214,6 @@ class Auctioneer(commands.Cog):
 			f'IV %: {poke_data["iv_percent"]}'
 		)
 		channel_name = f'{num} {poke_data["shiny"]}{poke_data["pokname"]} {round(poke_data["iv_percent"])}'
-		return (pokemon_info, channel_name)
 		embed = await self._build_embed(num, ctx.author.id, pokemon_info, bid_type, bid_min, [], interval, 'active', end)
 		
 		try:

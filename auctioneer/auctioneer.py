@@ -370,15 +370,31 @@ class Auctioneer(commands.Cog):
 			if auctions[auction_id]['status'] != 'active':
 				continue
 			poke_data = auctions[auction_id]['poke_data']
+			
+			if auctions[auction_id]['bid_type'] == 'mewcoins':
+				bid_type = 'c'
+			elif auctions[auction_id]['bid_type'] == 'redeem':
+				bid_type = 'r'
+			
 			if auctions[auction_id]['bids']:
 				bidder = auctions[auction_id]['bids'][-1][0]
 				bidder = self.bot.get_user(bidder) or bidder
-				bid = str(auctions[auction_id]['bids'][-1][1]) + ' ' + auctions[auction_id]['bid_type']
 			else:
 				bidder = '-'
-				bid = f'Min bid: {auctions[auction_id]["bid_min"]} {auctions[auction_id]["bid_type"]}'
-			data.append([auction_id, poke_data['shiny'].strip(), poke_data['pokname'], str(poke_data['iv_percent']) + '%', bid, bidder])
-		msg = tabulate(data, headers=['#', '\N{SPARKLES}', 'Name', 'IV %', 'Highest Bid', 'Bidder'])
+			
+			t = datetime.datetime.fromtimestamp(auctions[auction_id]['end'])
+			d = t - datetime.datetime.utcnow()
+			if d.days:
+				time = str(d.days) + 'd'
+			elif d.seconds // 3600:
+				time = str(d.seconds // 3600) + 'h'
+			elif d.seconds // 60:
+				time = str(d.seconds // 60) + 'm'
+			elif d.seconds:
+				time = str(d.seconds) + 's'
+			
+			data.append([auction_id, poke_data['shiny'].strip(), poke_data['pokname'], str(poke_data['iv_percent']) + '%', bid_type, bidder, time])
+		msg = tabulate(data, headers=['#', '\N{SPARKLES}', 'Name', 'IV %', '$', 'Bidder', 'Time'])
 		paged = pagify(msg)
 		box_paged = (f'```\n{x}```' for x in paged)
 		await ctx.send_interactive(box_paged)

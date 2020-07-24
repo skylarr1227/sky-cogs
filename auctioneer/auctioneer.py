@@ -40,11 +40,34 @@ class Auctioneer(commands.Cog):
 				"bid_min": 1000,
 				"bids": [[631840748924436490, 100], [620229667294674955, 200]],
 				"interval": 1,
+				"buyout": 10000,
 				"channel": 731974207218647121,
 				"message": 731974207717638214,
 				"status": "active",
 				"end": 1594603316.7081,
-				"poke": 2342
+				"poke": 2342,
+				"poke_data": {
+					"pokelevel": 1,
+					"pokname": "Clefable",
+					"poknick": "",
+					"gender": "\N{MALE SIGN}",
+					"nature": "Lax",
+					"hpiv": 0,
+					"hpev": 0,
+					"atkiv": 0,
+					"atkev": 0,
+					"defiv": 0,
+					"defev": 0,
+					"spatkiv": 0,
+					"spatkev": 0,
+					"spdefiv": 0,
+					"spdefev": 0,
+					"speediv": 0,
+					"speedev": 0,
+					"happiness": 2,
+					"shiny": "",
+					"iv_percent": 4.42
+				}
 			},
 			"2": {...}
 		}
@@ -126,7 +149,11 @@ class Auctioneer(commands.Cog):
 		bids.append([ctx.author.id, amount])
 		await self.config.auctions.set_raw(auction_id, 'bids', value=bids)
 		await self._remove_credits(ctx.author.id, amount, auction['bid_type'])
-		await self._update_auction(auction_id)
+		if auction['buyout'] and amount >= auction['buyout']:
+			await self.config.auctions.set_raw(auction_id, 'end', value=datetime.datetime.utcnow().timestamp())
+			await self._end_auction(auction_id)
+		else:
+			await self._update_auction(auction_id)
 		await ctx.send('Your bid has been submitted.')
 	
 	@auctioneer.command()
@@ -142,6 +169,9 @@ class Auctioneer(commands.Cog):
 		category = self.bot.get_channel(ACTIVE_CAT_ID)
 		if not category:
 			await ctx.send('I could not find the category I am supposed to send auctions to.')
+			return
+		if len(category.channels) >= 50:
+			await ctx.send('There are currently too many auctions to create a new one. Try again later.')
 			return
 		
 		try:
@@ -190,6 +220,23 @@ class Auctioneer(commands.Cog):
 			if interval < 1:
 				await ctx.send('Value specified should not be below 1.')
 				return
+			#Q5
+			await ctx.send('What should be the buyout amount? If you do not want a buyout, say `none`.')
+			resp = await self.bot.wait_for('message', timeout=60, check=lambda m: m.author == ctx.author and m.channel == ctx.channel)
+			if resp.lower() == 'none':
+				buyout = None
+			else:
+				try:
+					buyout = int(resp.content)
+				except ValueError:
+					await ctx.send('Value specified was not a number or `none`.')
+					return
+				if buyout < 1:
+					await ctx.send('Value specified should not be below 1.')
+					return
+				if buyout <= bid_min:
+					await ctx.send('Value specified should be greater than the minimum bid.')
+					return
 		except asyncio.TimeoutError:
 			await ctx.send('You took too long to respond.')
 			return
@@ -214,14 +261,6 @@ class Auctioneer(commands.Cog):
 			f'IV %: {poke_data["iv_percent"]}'
 		)
 		channel_name = f'{num} {poke_data["shiny"]}{poke_data["pokname"]} {round(poke_data["iv_percent"])}'
-		embed = await self._build_embed(num, ctx.author.id, pokemon_info, bid_type, bid_min, [], interval, 'active', end)
-		
-		try:
-			channel = await category.create_text_channel(channel_name, reason='Auctioneer')
-		except discord.errors.HTTPException:
-			await ctx.send('I do not have permission to create text channels.')
-			return
-		message = await channel.send(embed=embed)
 		auction = {
 			'author': ctx.author.id,
 			'pokemon_info': pokemon_info,
@@ -229,13 +268,25 @@ class Auctioneer(commands.Cog):
 			'bid_min': bid_min,
 			'bids': [],
 			'interval': interval,
-			'channel': channel.id,
-			'message': message.id,
+			'buyout': buyout,
+			'channel': 0, #set AFTER sending message
+			'message': 0, #^
 			'status': 'active',
 			'end': end,
 			'poke': poke,
 			'poke_data': poke_data
 		}
+		embed = await self._build_embed(num, auction)
+		
+		try:
+			channel = await category.create_text_channel(channel_name, reason='Auctioneer')
+		except discord.errors.HTTPException:
+			await ctx.send('I do not have permission to create text channels.')
+			return
+		message = await channel.send(embed=embed)
+		auction['channel'] = channel.id
+		auction['message'] = message.id
+		
 		await self.config.auctions.set_raw(num, value=auction)
 		await self._remove_pokemon(ctx.author.id, poke)
 		task = asyncio.create_task(self._await_auction(num))
@@ -284,6 +335,34 @@ class Auctioneer(commands.Cog):
 		pass
 	
 	@edit.command()
+	async def buyout(self, ctx, auction_id: int, buyout: int):
+		"""Set the buyout for an auction."""
+		auction_id = str(auction_id)
+		try:
+			auction = await self.config.auctions.get_raw(auction_id)
+		except KeyError:
+			await ctx.send('An auction with that id does not exist!')
+			return
+		if auction['status'] != 'active':
+			await ctx.send('That auction is no longer active!')
+			return
+		if auction['author'] != ctx.author.id:
+			await ctx.send('You cannot edit auctions you do not own!')
+			return
+		if buyout < 1:
+			await ctx.send('Value specified should not be below 1.')
+			return
+		if buyout <= auction['bid_min']:
+			await ctx.send('Value specified should be greater than the minimum bid.')
+			return
+		if auction['bids'] and buyout <= auction['bids'][-1][1]:
+			await ctx.send('Value specified should be greater than the current highest bid.')
+			return
+		await self.config.auctions.set_raw(auction_id, 'buyout', value=buyout)
+		await self._update_auction(auction_id)
+		await ctx.send('Buyout set.')
+	
+	@edit.command()
 	async def interval(self, ctx, auction_id: int, interval: int):
 		"""Set the minimum interval for an auction."""
 		auction_id = str(auction_id)
@@ -300,6 +379,7 @@ class Auctioneer(commands.Cog):
 			return
 		if interval < 1:
 			await ctx.send('Value specified should not be below 1.')
+			return
 		await self.config.auctions.set_raw(auction_id, 'interval', value=interval)
 		await self._update_auction(auction_id)
 		await ctx.send('Interval set.')
@@ -323,8 +403,7 @@ class Auctioneer(commands.Cog):
 		if auction['author'] != ctx.author.id:
 			await ctx.send('You cannot edit auctions you do not own!')
 			return
-		bids = auction['bids']
-		if bids:
+		if auction['bids']:
 			await ctx.send('There are already bids on that auction!')
 			return
 		if minbid < 1:
@@ -399,36 +478,38 @@ class Auctioneer(commands.Cog):
 		box_paged = (f'```\n{x}```' for x in paged)
 		await ctx.send_interactive(box_paged)
 
-	async def _build_embed(self, num, author, pokemon_info, bid_type, bid_min, bids, interval, status, end):
+	async def _build_embed(self, num, auction):
 		"""Creates an embed that represents a given auction."""
 		colors = {'active': discord.Color.green(), 'ended': discord.Color.red(), 'canceled': discord.Color.dark_red()}
 		embed = discord.Embed(
 			title=f'Auction #{num}',
-			description=pokemon_info,
-			color=colors[status],
-			timestamp=datetime.datetime.fromtimestamp(end)
+			description=auction['pokemon_info'],
+			color=colors[auction['status']],
+			timestamp=datetime.datetime.fromtimestamp(auction['end'])
 		)
-		author = self.bot.get_user(author) or author
+		author = self.bot.get_user(auction['author']) or auction['author']
 		embed.add_field(name='**Author**', value=f'{author}')
-		if bid_type == 'mewcoins':
+		if auction['bid_type'] == 'mewcoins':
 			emoji = self.bot.get_emoji(731709469414785047) or 'Mewcoins'
 		else:
 			emoji = 'Redeem'
-		if bids:
-			bid_member = self.bot.get_user(bids[-1][0]) or bids[-1][0]
-			bid_value = bids[-1][1]
+		if auction['bids']:
+			bid_member = self.bot.get_user(auction['bids'][-1][0]) or auction['bids'][-1][0]
+			bid_value = auction['bids'][-1][1]
 			embed.add_field(name='**Top bid**', value=f'{bid_value} {emoji} by {bid_member}')
-			if status == 'active':
-				embed.add_field(name='**Minimum interval**', value=f'{interval} {emoji}')
+			if auction['status'] == 'active':
+				embed.add_field(name='**Minimum interval**', value=f'{auction["interval"]} {emoji}')
 		else:
-			embed.add_field(name='**Top bid**', value=f'No bids yet\nMinimum bid is {bid_min} {emoji}')
-		embed.set_footer(text='Auction ends' if status == 'active' else 'Auction ended')
+			embed.add_field(name='**Top bid**', value=f'No bids yet\nMinimum bid is {auction["bid_min"]} {emoji}')
+		if auction['buyout']:
+			embed.add_field(name='**Buyout**', value=f'{auction["buyout"]} {emoji}')
+		embed.set_footer(text='Auction ends' if auction['status'] == 'active' else 'Auction ended')
 		return embed
 	
 	async def _update_auction(self, num):
 		"""Updates the auction message for a given auction."""
 		auction = await self.config.auctions.get_raw(num)
-		embed = await self._build_embed(num, auction['author'], auction['pokemon_info'], auction['bid_type'], auction['bid_min'], auction['bids'], auction['interval'], auction['status'], auction['end'])
+		embed = await self._build_embed(num, auction)
 		channel = self.bot.get_channel(auction['channel'])
 		if not channel:
 			return
@@ -537,7 +618,7 @@ class Auctioneer(commands.Cog):
 				'nature, hpiv, hpev, atkiv, atkev, defiv, defev, '
 				'spatkiv, spatkev, spdefiv, spdefev, speediv, speedev, '
 				'happiness, shiny FROM pokes WHERE id = $1'
-			)
+			)			
 			pokemon = await pconn.fetchrow(call, poke)
 			pokemon = dict(pokemon)
 			pokemon['shiny'] = '\N{SPARKLES} ' if pokemon['shiny'] else ''
@@ -571,7 +652,6 @@ class Auctioneer(commands.Cog):
 				await pconn.execute('UPDATE users SET redeems = redeems + $1 WHERE u_id = $2', amount, userid)
 			else:
 				raise ValueError(f'Invalid bid_type "{bid_type}".')
-			
 		
 	async def _remove_credits(self, userid: int, amount: int, bid_type: str):
 		"""Removes "amount" credits from the balance of "userid" of "bid_type" type."""

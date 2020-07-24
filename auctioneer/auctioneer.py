@@ -164,7 +164,7 @@ class Auctioneer(commands.Cog):
 			return 
 		poke = await self._find_pokemon(ctx.author.id, poke)
 		if poke is None:
-			await ctx.send('You do not have that Pokemon or that Pokemon is currently selected.')
+			await ctx.send('You do not have that Pokemon, that Pokemon is currently selected, or that pokemon is enlisted in the market.')
 			return
 		category = self.bot.get_channel(ACTIVE_CAT_ID)
 		if not category:
@@ -588,8 +588,10 @@ class Auctioneer(commands.Cog):
 		"""
 		async with self.db.acquire() as pconn:
 			poke = await pconn.fetchval('SELECT pokes[$1] FROM users WHERE u_id = $2', user_poke, userid)
-			name = await pconn.fetchval('SELECT pokname FROM pokes WHERE id = $1', poke)
-			if name in (None, 'Egg'):
+			data = await pconn.fetchrow('SELECT pokname, market_enlist FROM pokes WHERE id = $1', poke)
+			if data['name'] in (None, 'Egg'):
+				return None
+			if data['market_enlist']:
 				return None
 			selected = await pconn.fetchval('SELECT selected FROM users WHERE u_id = $1', userid)
 			if selected and selected == poke:

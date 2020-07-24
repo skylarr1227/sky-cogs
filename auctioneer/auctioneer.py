@@ -223,7 +223,7 @@ class Auctioneer(commands.Cog):
 			#Q5
 			await ctx.send('What should be the buyout amount? If you do not want a buyout, say `none`.')
 			resp = await self.bot.wait_for('message', timeout=60, check=lambda m: m.author == ctx.author and m.channel == ctx.channel)
-			if resp.lower() == 'none':
+			if resp.content.lower() == 'none':
 				buyout = None
 			else:
 				try:

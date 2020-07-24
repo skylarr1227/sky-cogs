@@ -589,7 +589,7 @@ class Auctioneer(commands.Cog):
 		async with self.db.acquire() as pconn:
 			poke = await pconn.fetchval('SELECT pokes[$1] FROM users WHERE u_id = $2', user_poke, userid)
 			data = await pconn.fetchrow('SELECT pokname, market_enlist FROM pokes WHERE id = $1', poke)
-			if data['name'] in (None, 'Egg'):
+			if data['pokname'] in (None, 'Egg'):
 				return None
 			if data['market_enlist']:
 				return None

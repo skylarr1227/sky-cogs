@@ -98,6 +98,11 @@ class Auctioneer(commands.Cog):
 		auctions = await self.config.auctions()
 		for num, auction in auctions.items():
 			if auction['status'] == 'active':
+				#TEMPORARY CODE FOR FIX
+				new_end = auction['end'] + 86400.0
+				await self.config.auctions.set_raw(num, 'end', value=new_end)
+				await self._update_auction(num)
+				#END OF TEMPORARY CODE
 				task = asyncio.create_task(self._await_auction(num))
 				task.add_done_callback(self._error_callback)
 				self.tasks.append(task)

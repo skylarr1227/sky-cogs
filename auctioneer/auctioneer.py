@@ -28,6 +28,7 @@ class Auctioneer(commands.Cog):
 		self.log = logging.getLogger('red.flamebountycogs.auctioneer')
 		self.safe_num = None
 		self.tasks = []
+		self.allow_interaction = True
 		task = asyncio.create_task(self._startup())
 		task.add_done_callback(self._error_callback)
 		self.tasks.append(task)
@@ -94,15 +95,14 @@ class Auctioneer(commands.Cog):
 	
 	async def _startup(self):
 		"""Opens the DB connection and creates auction waiting tasks after a cog restart."""
-		self.db = await asyncpg.create_pool(DATABASE_URL, min_size=5, max_size=200, command_timeout=5, init=self.init)
+		try:
+			self.db = await asyncpg.create_pool(DATABASE_URL, min_size=5, max_size=200, command_timeout=5, init=self.init)
+		except ConnectionError:
+			self.allow_interaction = False
+			return
 		auctions = await self.config.auctions()
 		for num, auction in auctions.items():
 			if auction['status'] == 'active':
-				#TEMPORARY CODE FOR FIX
-				new_end = auction['end'] + 86400.0
-				await self.config.auctions.set_raw(num, 'end', value=new_end)
-				await self._update_auction(num)
-				#END OF TEMPORARY CODE
 				task = asyncio.create_task(self._await_auction(num))
 				task.add_done_callback(self._error_callback)
 				self.tasks.append(task)
@@ -115,6 +115,9 @@ class Auctioneer(commands.Cog):
 	@auctioneer.command()
 	async def bid(self, ctx, auction_id: int, amount: int):
 		"""Bid on a running auction."""
+		if not self.allow_interaction or not await self._test_db():
+			await ctx.send('This cog is currently disabled because I cannot access the database.')
+			return
 		auction_id = str(auction_id)
 		try:
 			auction = await self.config.auctions.get_raw(auction_id)
@@ -126,9 +129,6 @@ class Auctioneer(commands.Cog):
 			return
 		if auction['author'] == ctx.author.id:
 			await ctx.send('You cannot bid on your own auction!')
-			return
-		if not await self._check_balance(ctx.author.id, amount, auction['bid_type']):
-			await ctx.send(f'You do not have enough {auction["bid_type"]}!')
 			return
 		if amount < auction['bid_min']:
 			await ctx.send('That bid is lower than the minimum bid!')
@@ -142,6 +142,9 @@ class Auctioneer(commands.Cog):
 			return
 		if bids and amount - bids[-1][1] < auction['interval']:
 			await ctx.send('Your bid is lower than the minimum interval!')
+			return
+		if not await self._check_balance(ctx.author.id, amount, auction['bid_type']):
+			await ctx.send(f'You do not have enough {auction["bid_type"]}!')
 			return
 		if bids:
 			await self._add_credits(bids[-1][0], bids[-1][1], auction['bid_type'])
@@ -164,6 +167,9 @@ class Auctioneer(commands.Cog):
 	@auctioneer.command()
 	async def create(self, ctx, poke: int):
 		"""Create a new auction for a mewbot pokemon."""
+		if not self.allow_interaction or not await self._test_db():
+			await ctx.send('This cog is currently disabled because I cannot access the database.')
+			return
 		if poke == 1:
 			await ctx.send('You can not use your first Pokemon in the auction!')
 			return 
@@ -306,6 +312,9 @@ class Auctioneer(commands.Cog):
 		
 		Auctions can only be canceled if there are no bids.
 		"""
+		if not self.allow_interaction or not await self._test_db():
+			await ctx.send('This cog is currently disabled because I cannot access the database.')
+			return
 		auction_id = str(auction_id)
 		try:
 			auction = await self.config.auctions.get_raw(auction_id)
@@ -342,6 +351,9 @@ class Auctioneer(commands.Cog):
 	@edit.command()
 	async def buyout(self, ctx, auction_id: int, buyout: int):
 		"""Set the buyout for an auction."""
+		if not self.allow_interaction:
+			await ctx.send('This cog is currently disabled because I cannot access the database.')
+			return
 		auction_id = str(auction_id)
 		try:
 			auction = await self.config.auctions.get_raw(auction_id)
@@ -370,6 +382,9 @@ class Auctioneer(commands.Cog):
 	@edit.command()
 	async def interval(self, ctx, auction_id: int, interval: int):
 		"""Set the minimum interval for an auction."""
+		if not self.allow_interaction:
+			await ctx.send('This cog is currently disabled because I cannot access the database.')
+			return
 		auction_id = str(auction_id)
 		try:
 			auction = await self.config.auctions.get_raw(auction_id)
@@ -396,6 +411,9 @@ class Auctioneer(commands.Cog):
 		
 		Auctions with bids cannot have their minimum bid changed.
 		"""
+		if not self.allow_interaction:
+			await ctx.send('This cog is currently disabled because I cannot access the database.')
+			return
 		auction_id = str(auction_id)
 		try:
 			auction = await self.config.auctions.get_raw(auction_id)
@@ -425,6 +443,9 @@ class Auctioneer(commands.Cog):
 		
 		Auctions can only be ended early once they have a bid.
 		"""
+		if not self.allow_interaction or not await self._test_db():
+			await ctx.send('This cog is currently disabled because I cannot access the database.')
+			return
 		auction_id = str(auction_id)
 		try:
 			auction = await self.config.auctions.get_raw(auction_id)
@@ -448,6 +469,9 @@ class Auctioneer(commands.Cog):
 	@auctioneer.command(name='list')
 	async def list_auctions(self, ctx):
 		"""List all active auctions."""
+		if not self.allow_interaction:
+			await ctx.send('This cog is currently disabled because I cannot access the database.')
+			return
 		data = []
 		auctions = await self.config.auctions()
 		for auction_id in auctions:
@@ -533,16 +557,20 @@ class Auctioneer(commands.Cog):
 	
 	async def _end_auction(self, num):
 		"""Ends a given auction."""
-		status = auction = await self.config.auctions.get_raw(num, 'status')
-		if not status == 'active':
+		if not self.allow_interaction or not await self._test_db():
+			return
+		auction = await self.config.auctions.get_raw(num)
+		if not auction['status'] == 'active':
 			return
 		await self.config.auctions.set_raw(num, 'status', value='ended')
-		await self._update_auction(num)
-		auction = await self.config.auctions.get_raw(num)
 		cat = self.bot.get_channel(INACTIVE_CAT_ID)
 		channel = self.bot.get_channel(auction['channel'])
 		if cat and channel:
-			await channel.edit(category=cat)
+			try:
+				await channel.edit(category=cat)
+			except discord.errors.HTTPException:
+				pass
+		await self._update_auction(num)
 		bids = auction['bids']
 		author = self.bot.get_user(auction['author'])
 		if author:
@@ -585,6 +613,21 @@ class Auctioneer(commands.Cog):
 			await self.db.close()
 	
 	#DB INTERACTING FUNCS
+	async def _test_db(self):
+		"""Tests if the DB is available, shuts down the cog if it is not."""
+		try:
+			async with self.db.acquire() as pconn:
+				pass
+		except ConnectionError:
+			for task in self.tasks:
+				try:
+					task.cancel()
+				except Exception:
+					pass
+			self.allow_interaction = False
+			return False
+		return True
+	
 	async def _find_pokemon(self, userid: int, user_poke: int):
 		"""
 		Gets the pokeid of a specific pokemon "userid" owns.

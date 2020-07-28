@@ -137,28 +137,33 @@ class Auctioneer(commands.Cog):
 		if bids and bids[-1][1] >= amount:
 			await ctx.send('Your bid is lower than the current highest bid!')
 			return
-		if bids and amount - bids[-1][1] < auction['interval']:
-			await ctx.send('Your bid is lower than the minimum interval!')
-			return
-		if not await self._check_balance(ctx.author.id, amount, auction['bid_type']):
-			await ctx.send(f'You do not have enough {auction["bid_type"]}!')
-			return
-		would_buyout = auction['buyout'] and amount >= auction['buyout']
-		if not would_buyout and bids and bids[-1][0] == ctx.author.id:
-			await ctx.send('You already have the highest bid!')
-			return
-		if bids:
-			await self._add_credits(bids[-1][0], bids[-1][1], auction['bid_type'])
-			user = self.bot.get_user(bids[-1][0])
-			if user:
-				try:
-					await user.send(f'You have been outbid by {ctx.author} in auction #{auction_id}!')
-				except discord.errors.HTTPException:
-					pass
+		#user wants to raise their own bid
+		if bids and bids[-1][0] == ctx.author.id:
+			delta = amount - bids[-1][1]
+			if not await self._check_balance(ctx.author.id, delta, auction['bid_type']):
+				await ctx.send(f'You do not have enough {auction["bid_type"]}!')
+				return
+			await self._remove_credits(ctx.author.id, delta, auction['bid_type'])
+		#user bidding normally
+		else:
+			if bids and amount - bids[-1][1] < auction['interval']:
+				await ctx.send('Your bid is lower than the minimum interval!')
+				return
+			if not await self._check_balance(ctx.author.id, amount, auction['bid_type']):
+				await ctx.send(f'You do not have enough {auction["bid_type"]}!')
+				return
+			if bids:
+				await self._add_credits(bids[-1][0], bids[-1][1], auction['bid_type'])
+				user = self.bot.get_user(bids[-1][0])
+				if user:
+					try:
+						await user.send(f'You have been outbid by {ctx.author} in auction #{auction_id}!')
+					except discord.errors.HTTPException:
+						pass
+			await self._remove_credits(ctx.author.id, amount, auction['bid_type'])
 		bids.append([ctx.author.id, amount])
 		await self.config.auctions.set_raw(auction_id, 'bids', value=bids)
-		await self._remove_credits(ctx.author.id, amount, auction['bid_type'])
-		if would_buyout:
+		if auction['buyout'] and amount >= auction['buyout']:
 			await self.config.auctions.set_raw(auction_id, 'end', value=datetime.datetime.utcnow().timestamp())
 			await self._end_auction(auction_id)
 		else:

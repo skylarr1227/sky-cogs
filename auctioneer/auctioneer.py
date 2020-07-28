@@ -134,9 +134,6 @@ class Auctioneer(commands.Cog):
 			await ctx.send('That bid is lower than the minimum bid!')
 			return
 		bids = auction['bids']
-		if bids and bids[-1][0] == ctx.author.id:
-			await ctx.send('You already have the highest bid!')
-			return
 		if bids and bids[-1][1] >= amount:
 			await ctx.send('Your bid is lower than the current highest bid!')
 			return
@@ -145,6 +142,10 @@ class Auctioneer(commands.Cog):
 			return
 		if not await self._check_balance(ctx.author.id, amount, auction['bid_type']):
 			await ctx.send(f'You do not have enough {auction["bid_type"]}!')
+			return
+		would_buyout = auction['buyout'] and amount >= auction['buyout']
+		if not would_buyout and bids and bids[-1][0] == ctx.author.id:
+			await ctx.send('You already have the highest bid!')
 			return
 		if bids:
 			await self._add_credits(bids[-1][0], bids[-1][1], auction['bid_type'])
@@ -157,7 +158,7 @@ class Auctioneer(commands.Cog):
 		bids.append([ctx.author.id, amount])
 		await self.config.auctions.set_raw(auction_id, 'bids', value=bids)
 		await self._remove_credits(ctx.author.id, amount, auction['bid_type'])
-		if auction['buyout'] and amount >= auction['buyout']:
+		if would_buyout:
 			await self.config.auctions.set_raw(auction_id, 'end', value=datetime.datetime.utcnow().timestamp())
 			await self._end_auction(auction_id)
 		else:
@@ -683,7 +684,7 @@ class Auctioneer(commands.Cog):
 	async def _check_balance(self, userid: int, amount: int, bid_type: str):
 		"""Returns a bool indicating whether or not "userid" has at least "amount" credits of "bid_type" type."""
 		async with self.db.acquire() as pconn:
-			#Yes, I know I'm testing for equality then hardcoding intead of just using the string. However, since this is technically
+			#Yes, I know I'm testing for equality then hardcoding instead of just using the string. However, since this is technically
 			#string user input, I'd rather be slightly inefficient than risk a db breach.
 			if bid_type == 'mewcoins':
 				money = await pconn.fetchval('SELECT mewcoins FROM users WHERE u_id = $1', userid)

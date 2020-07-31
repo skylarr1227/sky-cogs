@@ -1,6 +1,6 @@
 <?php
 // insert your webhook secret here!
-$secret_webhook_id = "et1ji6lxjzFEKelrMjiPVWjW1YYRaB3kdkbKNte-BFf5uvCs1zUVfGrEIpwngDpe";
+$secret_webhook_id = "BaJum6GHa1ihmwjb8ABjpcLhuWzENnUCtZDRE6c5QMjDzEk6SSD-0tavkhS3AbHF";
 // insert your discord webhook url here
 $discord_webhook = "https://discord.com/api/webhooks/738545423601631252/v60h5gH-6G7N9IYNmaa8HZhOrf6mLR7yIDZuVEIvY7BKi8-r4lJZaosMM8LayMRnH9Ba";
 

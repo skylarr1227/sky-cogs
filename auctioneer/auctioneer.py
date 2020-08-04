@@ -12,6 +12,7 @@ from tabulate import tabulate
 
 ACTIVE_CAT_ID = 731973669898682379
 INACTIVE_CAT_ID = 732740398535147590
+LOG_CHANNEL = 740017242401407026
 DATABASE_URL = os.environ["DATABASE_URL"]
 
 
@@ -169,6 +170,7 @@ class Auctioneer(commands.Cog):
 		else:
 			await self._update_auction(auction_id)
 		await ctx.send('Your bid has been submitted.')
+		await self._log_interaction(f'Bid\nAuction: {auction_id}\nUser: {ctx.author}\nAmount: {amount}')
 	
 	@auctioneer.command()
 	async def create(self, ctx, poke: int):
@@ -310,6 +312,7 @@ class Auctioneer(commands.Cog):
 		task.add_done_callback(self._error_callback)
 		self.tasks.append(task)
 		await ctx.send(f'Auction #{num} created.')
+		await self._log_interaction(f'Auction Created\nAuction: {num}\nUser: {ctx.author}')
 
 	@auctioneer.command()
 	async def cancel(self, ctx, auction_id: int):
@@ -348,6 +351,7 @@ class Auctioneer(commands.Cog):
 		if channel:
 			await channel.send(f'Auction #{auction_id} by {ctx.author.mention} was canceled.')
 		await ctx.send('Your auction has been canceled.')
+		await self._log_interaction(f'Auction Canceled\nAuction: {auction_id}\nUser: {ctx.author}')
 
 	@auctioneer.group()
 	async def edit(self, ctx):
@@ -384,6 +388,7 @@ class Auctioneer(commands.Cog):
 		await self.config.auctions.set_raw(auction_id, 'buyout', value=buyout)
 		await self._update_auction(auction_id)
 		await ctx.send('Buyout set.')
+		await self._log_interaction(f'Auction Edited\nAuction: {auction_id}\nUser: {ctx.author}\nBuyout: {buyout}')
 	
 	@edit.command()
 	async def interval(self, ctx, auction_id: int, interval: int):
@@ -409,6 +414,7 @@ class Auctioneer(commands.Cog):
 		await self.config.auctions.set_raw(auction_id, 'interval', value=interval)
 		await self._update_auction(auction_id)
 		await ctx.send('Interval set.')
+		await self._log_interaction(f'Auction Edited\nAuction: {auction_id}\nUser: {ctx.author}\nInterval: {interval}')
 	
 	@edit.command()
 	async def minbid(self, ctx, auction_id: int, minbid: int):
@@ -441,6 +447,7 @@ class Auctioneer(commands.Cog):
 		await self.config.auctions.set_raw(auction_id, 'bid_min', value=minbid)
 		await self._update_auction(auction_id)
 		await ctx.send('Minimum bid set.')
+		await self._log_interaction(f'Auction Edited\nAuction: {auction_id}\nUser: {ctx.author}\nMinimum Bid: {minbid}')
 
 	@auctioneer.command()
 	async def endearly(self, ctx, auction_id: int):
@@ -579,29 +586,36 @@ class Auctioneer(commands.Cog):
 		await self._update_auction(num)
 		bids = auction['bids']
 		author = self.bot.get_user(auction['author'])
-		if author:
-			author = author.mention
-		else:
+		if not author:
 			author = auction['author']
 		if not bids:
 			await self._add_pokemon(auction['author'], auction['poke'])
 			if channel:
-				await channel.send(f'Auction #{num} by {author} has ended.\nThere were no bids.')
+				await channel.send(f'Auction #{num} by {author.mention} has ended.\nThere were no bids.')
+			await self._log_interaction(f'Auction Ended\nAuction: {num}\nUser: {author}\nWinner: None')
 			return
 		amount = bids[-1][1]
 		await self._add_credits(auction['author'], amount, auction['bid_type'])
 		await self._add_pokemon(bids[-1][0], auction['poke'])
 		winner = self.bot.get_user(bids[-1][0])
-		if winner:
-			winner = winner.mention
-		else:
+		if not winner:
 			winner = bids[-1][0]
 		if auction['bid_type'] == 'mewcoins':
 			emoji = self.bot.get_emoji(731709469414785047) or 'Mewcoins'
 		else:
 			emoji = 'Redeem'
 		if channel:
-			await channel.send(f'Auction #{num} by {author} has ended.\nThe winner is {winner} with a bid of {amount} {emoji}.')
+			await channel.send(f'Auction #{num} by {author.mention} has ended.\nThe winner is {winner.mention} with a bid of {amount} {emoji}.')
+		await self._log_interaction(f'Auction Ended\nAuction: {num}\nUser: {author}\nWinner: {winner}\nAmount: {amount}')
+	
+	async def _log_interaction(self, message):
+		"""Logs a message to the designated logging channel."""
+		channel = self.bot.get_channel(LOG_CHANNEL)
+		if channel:
+			try:
+				await channel.send(f'```\n{message}```')
+			except Exception:
+				pass
 	
 	def cog_unload(self):
 		"""Closes auction tasks on cog unload."""

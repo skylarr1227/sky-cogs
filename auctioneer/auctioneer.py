@@ -347,7 +347,15 @@ class Auctioneer(commands.Cog):
 		cat = self.bot.get_channel(INACTIVE_CAT_ID)
 		channel = self.bot.get_channel(auction['channel'])
 		if cat and channel:
-			await channel.edit(category=cat)
+			if len(cat.channels) >= 50:
+				try:
+					await cat.channels[0].delete()
+				except discord.errors.HTTPException:
+					pass
+			try:
+				await channel.edit(category=cat)
+			except discord.errors.HTTPException:
+				pass
 		if channel:
 			await channel.send(f'Auction #{auction_id} by {ctx.author.mention} was canceled.')
 		await ctx.send('Your auction has been canceled.')

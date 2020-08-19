@@ -488,8 +488,17 @@ class Auctioneer(commands.Cog):
 		await ctx.send('Your auction has been ended.')
 
 	@auctioneer.command(name='list')
-	async def list_auctions(self, ctx):
-		"""List all active auctions."""
+	async def list_auctions(self, ctx, order=None):
+		"""
+		List all active auctions.
+		
+		The `order` param can be one of the following options:
+		`shiny`
+		`poke`
+		`iv`
+		`bidder`
+		`time`
+		"""
 		if not self.allow_interaction:
 			await ctx.send('This cog is currently disabled because I cannot access the database.')
 			return
@@ -523,6 +532,28 @@ class Auctioneer(commands.Cog):
 				time = str(d.seconds) + 's'
 			
 			data.append([auction_id, poke_data['shiny'].strip(), poke_data['pokname'], str(poke_data['iv_percent']) + '%', bid_type, bidder, time])
+		
+		if order:
+			order = order.lower()
+			if order == 'shiny':
+				data.sort(key=lambda d: d[1])
+			elif order == 'poke':
+				data.sort(key=lambda d: d[2])
+			elif order == 'iv':
+				data.sort(key=lambda d: float(d[3][:-1]))
+			elif order == 'bidder':
+				data.sort(key=lambda d: d[5])
+			elif order == 'time':
+				def convert(val):
+					num = int(val[:-1])
+					unit = val[-1]
+					num *= {'s': 1, 'm': 60, 'h': 3600, 'd': 86400}.get(unit)
+					return num
+				data.sort(key=convert(d[6]))
+			else:
+				await ctx.send(f'Invalid value passed to the `order` param. See `{ctx.prefix}help a list` for more information.')
+				return
+		
 		msg = tabulate(data, headers=['#', '\N{SPARKLES}', 'Name', 'IV %', '$', 'Bidder', 'Time'])
 		paged = pagify(msg)
 		box_paged = (f'```\n{x}```' for x in paged)

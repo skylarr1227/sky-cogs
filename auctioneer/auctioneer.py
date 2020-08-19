@@ -536,20 +536,20 @@ class Auctioneer(commands.Cog):
 		if order:
 			order = order.lower()
 			if order == 'shiny':
-				data.sort(key=lambda d: d[1])
+				data.sort(key=lambda d: d[1], reverse=True)
 			elif order == 'poke':
 				data.sort(key=lambda d: d[2])
 			elif order == 'iv':
-				data.sort(key=lambda d: float(d[3][:-1]))
+				data.sort(key=lambda d: float(d[3][:-1]), reverse=True)
 			elif order == 'bidder':
-				data.sort(key=lambda d: d[5])
+				data.sort(key=lambda d: str(d[5]))
 			elif order == 'time':
 				def convert(val):
 					num = int(val[:-1])
 					unit = val[-1]
 					num *= {'s': 1, 'm': 60, 'h': 3600, 'd': 86400}.get(unit)
 					return num
-				data.sort(key=convert(d[6]))
+				data.sort(key=lambda d: convert(d[6]))
 			else:
 				await ctx.send(f'Invalid value passed to the `order` param. See `{ctx.prefix}help a list` for more information.')
 				return

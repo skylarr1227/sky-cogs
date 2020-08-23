@@ -57,13 +57,12 @@ class skychill(commands.Cog):
         if not chillzone_role_obj:
             return await ctx.send("No chillzone role set.")
 
-        new_roles = [r for r in ctx.message.author.roles if r.managed]
+        new_roles = [r for r in user.roles if r.managed]
         try:
             await user.edit(
                 roles=new_roles, reason=f"Removing all roles, {ctx.message.author} is banishing user"
             )
         except discord.Forbidden:
-            raise
             return await ctx.send(
                 "I need permission to manage roles or the role hierarchy might not allow me to do this. I need a role higher than the person you're trying to banish."
             )

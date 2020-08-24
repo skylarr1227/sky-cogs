@@ -33,7 +33,7 @@ class Patreon(commands.Cog):
 	async def _startup(self):
 		"""Opens the DB connection and check for missed updates after a cog restart."""
 		try:
-			self.db = await asyncpg.create_pool(DATABASE_URL, min_size=5, max_size=200, command_timeout=5, init=self.init)
+			self.db = await asyncpg.create_pool(DATABASE_URL, min_size=2, max_size=5, command_timeout=5, init=self.init)
 		except ConnectionError:
 			return
 		channel = self.bot.get_channel(CHANNEL_ID)

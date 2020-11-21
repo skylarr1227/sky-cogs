@@ -615,6 +615,11 @@ class Auctioneer(commands.Cog):
 		if not auction['status'] == 'active':
 			return
 		await self.config.auctions.set_raw(num, 'status', value='ended')
+		
+		#Sleep and reaquire auction, prevents ghost bids.
+		await asyncio.sleep(5)
+		auction = await self.config.auctions.get_raw(num)
+		
 		cat = self.bot.get_channel(INACTIVE_CAT_ID)
 		channel = self.bot.get_channel(auction['channel'])
 		if cat and channel:
@@ -731,11 +736,13 @@ class Auctioneer(commands.Cog):
 				'SELECT pokelevel, pokname, poknick, gender, '
 				'nature, hpiv, hpev, atkiv, atkev, defiv, defev, '
 				'spatkiv, spatkev, spdefiv, spdefev, speediv, speedev, '
-				'happiness, shiny FROM pokes WHERE id = $1'
+				'happiness, shiny, radiant FROM pokes WHERE id = $1'
 			)			
 			pokemon = await pconn.fetchrow(call, poke)
 			pokemon = dict(pokemon)
 			pokemon['shiny'] = '\N{SPARKLES} ' if pokemon['shiny'] else ''
+			pokemon['shiny'] = '\N{COLLISION SYMBOL} ' if pokemon['radiant'] else ''
+			del pokemon['radiant']
 			total_iv = pokemon['hpiv'] + pokemon['atkiv'] + pokemon['defiv'] + pokemon['spatkiv'] + pokemon['spdefiv'] + pokemon['speediv']
 			pokemon['iv_percent'] = round((total_iv / 186) * 100, 2)
 			if pokemon['gender'] == '-m':

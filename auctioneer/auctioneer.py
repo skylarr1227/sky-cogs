@@ -741,7 +741,7 @@ class Auctioneer(commands.Cog):
 			pokemon = await pconn.fetchrow(call, poke)
 			pokemon = dict(pokemon)
 			pokemon['shiny'] = '\N{SPARKLES} ' if pokemon['shiny'] else ''
-			pokemon['shiny'] = '\N{COLLISION SYMBOL} ' if pokemon['radiant'] else ''
+			pokemon['shiny'] = '\N{COLLISION SYMBOL} ' if pokemon['radiant'] else pokemon['shiny']
 			del pokemon['radiant']
 			total_iv = pokemon['hpiv'] + pokemon['atkiv'] + pokemon['defiv'] + pokemon['spatkiv'] + pokemon['spdefiv'] + pokemon['speediv']
 			pokemon['iv_percent'] = round((total_iv / 186) * 100, 2)

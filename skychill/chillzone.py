@@ -63,6 +63,17 @@ class skychill(commands.Cog):
             await user.edit(
                 roles=new_roles, reason=f"Removing all roles, {ctx.message.author} is banishing user"
             )
+            rlist = ", ".join([r.mention for r in ctx.user.roles if r.id != ctx.guild.id])
+
+            e = discord.Embed(title="User has been sent to Chillzone!", description=(
+                        f"User's Name: {ctx.user.name}#{ctx.user.discriminator}\n"
+                        f"User's ID: {ctx.user.id}\nSent to the chillzone by {ctx.author.name}#{ctx.author.discriminator}\n\n"
+                        f"Users roles: {rlist}\n\n"
+                        f"[Context]({ctx.message.jump_url})"
+                    ), color=0xFF0000, timestamp=datetime.utcnow())
+            e.set_thumbnail(url=ctx.user.avatar_url)
+
+            await ctx.bot.get_channel(782253601208401921).send(embed=e)
         except discord.Forbidden:
             return await ctx.send(
                 "I need permission to manage roles or the role hierarchy might not allow me to do this. I need a role higher than the person you're trying to banish."
@@ -255,17 +266,6 @@ class skychill(commands.Cog):
             if role == chillzone_role_obj:
                 role_check = True
                 try:
-                    rlist = ", ".join([r.mention for r in ctx.user.roles if r.id != ctx.guild.id])
-
-                    e = discord.Embed(title="User has been sent to Chillzone!", description=(
-                        f"User's Name: {ctx.user.name}#{ctx.user.discriminator}\n"
-                        f"User's ID: {ctx.user.id}\nSent to the chillzone by {ctx.author.name}#{ctx.author.discriminator}\n\n"
-                        f"Users roles: {rlist}\n\n"
-                        f"[Context]({ctx.message.jump_url})"
-                    ), color=0xFF0000, timestamp=datetime.utcnow())
-                    e.set_thumbnail(url=ctx.user.avatar_url)
-
-                    await ctx.bot.get_channel(782253601208401921).send(embed=e)
                     await user.remove_roles(
                         chillzone_role_obj,
                         reason=f"Removing chillzone role, verified by {ctx.message.author}.",

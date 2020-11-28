@@ -63,15 +63,27 @@ class skychill(commands.Cog):
             await user.edit(
                 roles=new_roles, reason=f"Removing all roles, {ctx.message.author} is banishing user"
             )
-            rlist = ", ".join([r.mention for r in user.roles if r.id != ctx.guild.id])
+<<<<<<< HEAD
+            rlist = ", ".join([r.mention for r in ctx.user.roles if r.id != ctx.guild.id])
 
             e = discord.Embed(title="User has been sent to Chillzone!", description=(
-                        f"User's Name: {user}\n"
-                        f"User's ID: {user.id}\nSent to the chillzone by {ctx.author.name}#{ctx.author.discriminator}\n\n"
+                        f"User's Name: {ctx.user.name}#{ctx.user.discriminator}\n"
+                        f"User's ID: {ctx.user.id}\nSent to the chillzone by {ctx.author.name}#{ctx.author.discriminator}\n\n"
                         f"Users roles: {rlist}\n\n"
                         f"[Context]({ctx.message.jump_url})"
                     ), color=0xFF0000, timestamp=datetime.utcnow())
-            e.set_thumbnail(url=user.avatar_url)
+            e.set_thumbnail(url=ctx.user.avatar_url)
+=======
+            rlist = ", ".join([r.mention for r in ctx.user.roles if r.id != ctx.guild.id])
+
+            e = discord.Embed(title="User has been sent to Chillzone!", description=(
+                        f"User's Name: {ctx.user.name}#{ctx.user.discriminator}\n"
+                        f"User's ID: {ctx.user.id}\nSent to the chillzone by {ctx.author.name}#{ctx.author.discriminator}\n\n"
+                        f"Users roles: {rlist}\n\n"
+                        f"[Context]({ctx.message.jump_url})"
+                    ), color=0xFF0000, timestamp=datetime.utcnow())
+            e.set_thumbnail(url=ctx.user.avatar_url)
+>>>>>>> upstream/master
 
             await ctx.bot.get_channel(782253601208401921).send(embed=e)
         except discord.Forbidden:

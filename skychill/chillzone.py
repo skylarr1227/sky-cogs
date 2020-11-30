@@ -60,9 +60,6 @@ class skychill(commands.Cog):
 
         new_roles = [r for r in user.roles if r.managed]
         try:
-            await user.edit(
-                roles=new_roles, reason=f"Removing all roles, {ctx.message.author} is banishing user"
-            )
             rlist = ", ".join([r.mention for r in user.roles if r.id != ctx.guild.id])
 
             e = discord.Embed(title="User has been sent to Chillzone!", description=(
@@ -74,6 +71,9 @@ class skychill(commands.Cog):
             e.set_thumbnail(url=user.avatar_url)
 
             await ctx.bot.get_channel(782253601208401921).send(embed=e)
+            await user.edit(
+                roles=new_roles, reason=f"Removing all roles, {ctx.message.author} is banishing user"
+            )
         except discord.Forbidden:
             return await ctx.send(
                 "I need permission to manage roles or the role hierarchy might not allow me to do this. I need a role higher than the person you're trying to banish."

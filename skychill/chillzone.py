@@ -60,6 +60,12 @@ class skychill(commands.Cog):
 
         new_roles = [r for r in user.roles if r.managed]
         try:
+<<<<<<< HEAD
+=======
+            await user.edit(
+                roles=new_roles, reason=f"Removing all roles, {ctx.message.author} is banishing user"
+            )
+>>>>>>> upstream/master
             rlist = ", ".join([r.mention for r in user.roles if r.id != ctx.guild.id])
 
             e = discord.Embed(title="User has been sent to Chillzone!", description=(

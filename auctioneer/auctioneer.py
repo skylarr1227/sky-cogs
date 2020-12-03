@@ -195,14 +195,17 @@ class Auctioneer(commands.Cog):
 		
 		try:
 			#Q1
-			await ctx.send('Do you want to auction your pokemon for `mewcoins` or `redeem`?')
-			resp = await self.bot.wait_for('message', timeout=60, check=lambda m: m.author == ctx.author and m.channel == ctx.channel)
-			resp = resp.content.lower()
-			if resp in ('mewcoins', 'redeem'):
-				bid_type = resp
-			else:
-				await ctx.send('Type specified was not valid.')
-				return
+			#await ctx.send('Do you want to auction your pokemon for `mewcoins` or `redeem`?')
+			#resp = await self.bot.wait_for('message', timeout=60, check=lambda m: m.author == ctx.author and m.channel == ctx.channel)
+			#resp = resp.content.lower()
+			#if resp in ('mewcoins', 'redeem'):
+			#	bid_type = resp
+			#else:
+			#	await ctx.send('Type specified was not valid.')
+			#	return
+			
+			# ^ removed while redeems are not tradeable
+			bid_type = 'mewcoins'
 			#Q2
 			await ctx.send('What should be the minimum bid?')
 			resp = await self.bot.wait_for('message', timeout=60, check=lambda m: m.author == ctx.author and m.channel == ctx.channel)

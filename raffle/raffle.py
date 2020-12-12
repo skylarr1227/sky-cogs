@@ -436,7 +436,7 @@ class Raffle(BaseCog):
             display = ", ".join(winner.mention for winner in winners)
             display = f"Congratulations {display}! You have won the {msg.embeds[0].title} giveaway!"
             for part in pagify(display, delims=[' ', '\n']):
-                await ctx.send(part)
+                await channel.send(part)
 
     async def validate_entries(self, users, msg):
         dos, roles = msg.embeds[0].fields

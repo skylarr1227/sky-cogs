@@ -12,11 +12,12 @@ import discord
 # Red
 from redbot.core import Config, commands
 from redbot.core.utils.predicates import MessagePredicate
+from redbot.core.utils.chat_formatting import pagify
 
 log = logging.getLogger("red.raffle")
 
 __author__ = "Redjumpman"
-__version__ = "4.2.4"
+__version__ = "4.2.4.edited"
 
 BaseCog = getattr(commands, "Cog", object)
 
@@ -433,7 +434,9 @@ class Raffle(BaseCog):
             )
         else:
             display = ", ".join(winner.mention for winner in winners)
-            await channel.send(f"Congratulations {display}! You have won the {msg.embeds[0].title} giveaway!")
+            display = f"Congratulations {display}! You have won the {msg.embeds[0].title} giveaway!"
+            for part in pagify(display, delims=[' ', '\n']):
+                await ctx.send(part)
 
     async def validate_entries(self, users, msg):
         dos, roles = msg.embeds[0].fields

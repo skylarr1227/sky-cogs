@@ -408,7 +408,7 @@ class skychill(commands.Cog):
                 title=f"Members of {role} - {len(members)}",
                 description=page 
             )
-            embed.set_footer(f"Page {idx} / {len(pages)}")
+            embed.set_footer(text=f"Page {idx} / {len(pages)}")
             embeds.append(embed)
         c = DEFAULT_CONTROLS if len(embeds) > 1 else {"\N{CROSS MARK}": close_menu}
         await menu(ctx, embeds, c)

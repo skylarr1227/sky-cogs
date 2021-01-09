@@ -401,7 +401,7 @@ class skychill(commands.Cog):
         """List the users of a certain role."""
         members = [str(x) for x in role.members]
         desc = "\n".join(members)
-        pages = pagify(desc, page_length=300)
+        pages = list(pagify(desc, page_length=300))
         embeds = []
         for idx, page in enumerate(pages, 1):
             embed = discord.Embed(

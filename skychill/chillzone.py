@@ -397,7 +397,7 @@ class skychill(commands.Cog):
         return await ctx.send(embed=embed)
 
     @commands.command()
-    def inrole(self, ctx, role: discord.Role):
+    async def inrole(self, ctx, role: discord.Role):
         """List the users of a certain role."""
         members = [str(x) for x in role.members]
         desc = "\n".join(members)

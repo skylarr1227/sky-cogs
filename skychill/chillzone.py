@@ -5,6 +5,7 @@ import logging
 from datetime import datetime
 from redbot.core import Config, commands, checks, modlog
 from redbot.core.utils.chat_formatting import box, pagify
+from redbot.core.utils.menus import menu, DEFAULT_CONTROLS, close_menu
 
 
 log = logging.getLogger("red.sky.skychill")
@@ -394,6 +395,23 @@ class skychill(commands.Cog):
 
         embed = discord.Embed(colour=ctx.guild.me.top_role.colour, description=msg)
         return await ctx.send(embed=embed)
+
+    @commands.command()
+    def inrole(self, ctx, role: discord.Role):
+        """List the users of a certain role."""
+        members = [str(x) for x in role.members]
+        desc = "\n".join(members)
+        pages = pagify(desc, page_length=300)
+        embeds = []
+        for idx, page in enumerate(pages, 1):
+            embed = discord.Embed(
+                title=f"Members of {role} - {len(members)}",
+                description=page 
+            )
+            embed.set_footer(f"Page {idx} / {len(pages)}")
+            embeds.append(embed)
+        c = DEFAULT_CONTROLS if len(embeds) > 1 else {"\N{CROSS MARK}": close_menu}
+        await menu(ctx, embeds, c)
 
     @commands.Cog.listener()
     async def on_member_join(self, member):

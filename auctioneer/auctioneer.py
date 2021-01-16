@@ -97,7 +97,7 @@ class Auctioneer(commands.Cog):
 	async def _startup(self):
 		"""Opens the DB connection and creates auction waiting tasks after a cog restart."""
 		try:
-			self.db = await asyncpg.create_pool(DATABASE_URL, min_size=5, max_size=10, command_timeout=5, init=self.init)
+			self.db = await asyncpg.create_pool(DATABASE_URL, min_size=1, max_size=3, command_timeout=5, init=self.init)
 		except ConnectionError:
 			self.allow_interaction = False
 			return

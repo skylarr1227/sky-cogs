@@ -533,6 +533,8 @@ class Auctioneer(commands.Cog):
 				time = str(d.seconds // 60) + 'm'
 			elif d.seconds:
 				time = str(d.seconds) + 's'
+            else:
+                time = '?'
 			
 			data.append([auction_id, poke_data['shiny'].strip(), poke_data['pokname'], str(poke_data['iv_percent']) + '%', bid_type, bidder, time])
 		
@@ -548,6 +550,8 @@ class Auctioneer(commands.Cog):
 				data.sort(key=lambda d: str(d[5]))
 			elif order == 'time':
 				def convert(val):
+                    if val == '?':
+                        return 0
 					num = int(val[:-1])
 					unit = val[-1]
 					num *= {'s': 1, 'm': 60, 'h': 3600, 'd': 86400}.get(unit)

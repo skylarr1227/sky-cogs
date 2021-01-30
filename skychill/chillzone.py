@@ -37,6 +37,76 @@ class skychill(commands.Cog):
         }
 
         self.config.register_guild(**default_guild)
+        self.config.register_member(
+            stripped_roles = [],
+        )
+
+    async def _strip_roles(self, ctx, user):
+        """
+        Removes all roles from a user.
+        
+        Managed roles cannot and will not be removed.
+        """
+        new_roles = [r for r in user.roles if r.managed]
+        old_roles = list(set(roles) - set(new_roles))
+        rlist = ", ".join([r.mention for r in user.roles if r.id != ctx.guild.id])
+        e = discord.Embed(title="User has had their roles stripped!", description=(
+                    f"User's Name: {user}\n"
+                    f"User's ID: {user.id}\nStripped by {ctx.author.name}#{ctx.author.discriminator}\n\n"
+                    f"Users roles: {rlist}\n\n"
+                    f"[Context]({ctx.message.jump_url})"
+                ), color=0xFF0000, timestamp=datetime.utcnow())
+        e.set_thumbnail(url=user.avatar_url)
+        await self.bot.get_channel(782253601208401921).send(embed=e)
+        await user.edit(
+            roles=new_roles, reason=f"Removing all roles, {ctx.message.author} is stripping user"
+        )
+        old_role_ids = [x.id for x in old_roles]
+        await self.config.member(user).stripped_roles.set(old_role_ids)
+        return old_roles
+    
+    async def _restore_roles(self, ctx, user):
+        """Restore the saved roles of a user."""
+        roles = await self.config.member(user).stripped_roles()
+        to_add = []
+        for rid in roles:
+            role = user.guild.get_role(rid)
+            if role in user.roles:
+                continue
+            to_add.append(role)
+        if to_add:
+            await user.add_roles(
+                *to_add, reason=f"Restoring roles from strip"
+            )
+
+    @checks.mod_or_permissions(administrator=True)
+    @commands.command()
+    async def strip(self, ctx, user: discord.Member):
+        """Strip a user of their roles."""
+        try:
+            removed_roles = await self._strip_roles(ctx, user)
+        except discord.Forbidden:
+            await ctx.send(
+                "I need permission to manage roles or the role hierarchy might not allow me to do this. I need a role higher than the person you're trying to strip."
+            )
+            return
+        if not removed_roles:
+            await ctx.send("There were no roles for me to remove.")
+            return
+        await ctx.send(f"**{len(removed_roles)}** roles were removed from {user}. You can restore them with {ctx.prefix}unstrip.")
+
+    @checks.mod_or_permissions(administrator=True)
+    @commands.command()
+    async def unstrip(self, ctx, user: discord.Member):
+        """Give a user back their stripped roles."""
+        try:
+            await self._strip_roles(ctx, user)
+        except discord.Forbidden:
+            await ctx.send(
+                "I need permission to manage roles or the role hierarchy might not allow me to do this. I need a role higher than the person you're trying to unstrip."
+            )
+            return
+        await ctx.send("Roles restored.")
 
     @checks.mod_or_permissions(administrator=True)
     @commands.command()
@@ -58,32 +128,16 @@ class skychill(commands.Cog):
 
         if not chillzone_role_obj:
             return await ctx.send("No chillzone role set.")
-
-        new_roles = [r for r in user.roles if r.managed]
         try:
-            rlist = ", ".join([r.mention for r in user.roles if r.id != ctx.guild.id])
-
-            e = discord.Embed(title="User has been sent to Chillzone!", description=(
-                        f"User's Name: {user}\n"
-                        f"User's ID: {user.id}\nSent to the chillzone by {ctx.author.name}#{ctx.author.discriminator}\n\n"
-                        f"Users roles: {rlist}\n\n"
-                        f"[Context]({ctx.message.jump_url})"
-                    ), color=0xFF0000, timestamp=datetime.utcnow())
-            e.set_thumbnail(url=user.avatar_url)
-
-            await ctx.bot.get_channel(782253601208401921).send(embed=e)
-            await user.edit(
-                roles=new_roles, reason=f"Removing all roles, {ctx.message.author} is banishing user"
+            await self._strip_roles(ctx, user)
+            await user.add_roles(
+                chillzone_role_obj, reason=f"Adding chillzone role, {ctx.message.author} is stripping user"
             )
         except discord.Forbidden:
-            return await ctx.send(
+            await ctx.send(
                 "I need permission to manage roles or the role hierarchy might not allow me to do this. I need a role higher than the person you're trying to banish."
             )
-
-        await user.add_roles(
-            chillzone_role_obj, reason=f"Adding chillzone role, {ctx.message.author} is banishing user"
-        )
-
+            return
         if blacklist:
             blacklist_msg = ", blacklisted from the bot,"
         else:
@@ -259,7 +313,12 @@ class skychill(commands.Cog):
             async with self.bot._config.blacklist() as blacklist_list:
                 if user.id in blacklist_list:
                     blacklist_list.remove(user.id)
-
+        try:
+            await self._restore_roles(ctx, user)
+        except discord.Forbidden:
+            return await ctx.send(
+                "I need permissions to manage roles or the role hierarchy might not allow me to do this."
+            )
         role_check = False
         for role in user.roles:
             if not chillzone_role_obj:
@@ -271,11 +330,13 @@ class skychill(commands.Cog):
                         chillzone_role_obj,
                         reason=f"Removing chillzone role, verified by {ctx.message.author}.",
                     )
+                    """
                     if not user_role_obj:
                         return await ctx.send(
                             "chillzone role removed, but no member role is set so I can't award one."
                         )
                     await user.add_roles(user_role_obj, reason="Adding member role.")
+                    """
                 except discord.Forbidden:
                     return await ctx.send(
                         "I need permissions to manage roles or the role hierarchy might not allow me to do this."
@@ -288,7 +349,7 @@ class skychill(commands.Cog):
             blacklist_msg = " and the bot blacklist"
         else:
             blacklist_msg = ""
-        msg = f"{user} has been removed from the chillzone{blacklist_msg} and now has the initial user role."
+        msg = f"{user} has been removed from the chillzone{blacklist_msg} and now has ther roles back."
         await ctx.send(msg)
 
         if dm_toggle:

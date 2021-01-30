@@ -48,7 +48,7 @@ class skychill(commands.Cog):
         Managed roles cannot and will not be removed.
         """
         new_roles = [r for r in user.roles if r.managed]
-        old_roles = list(set(roles) - set(new_roles))
+        old_roles = list(set(user.roles) - set(new_roles))
         rlist = ", ".join([r.mention for r in user.roles if r.id != ctx.guild.id])
         e = discord.Embed(title="User has had their roles stripped!", description=(
                     f"User's Name: {user}\n"

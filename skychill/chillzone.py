@@ -48,7 +48,7 @@ class skychill(commands.Cog):
         Managed roles cannot and will not be removed.
         """
         new_roles = [r for r in user.roles if r.managed]
-        old_roles = list(set(user.roles) - set(new_roles))
+        old_roles = list(set(user.roles[1:]) - set(new_roles))
         rlist = ", ".join([r.mention for r in user.roles if r.id != ctx.guild.id])
         e = discord.Embed(title="User has had their roles stripped!", description=(
                     f"User's Name: {user}\n"
@@ -93,14 +93,14 @@ class skychill(commands.Cog):
         if not removed_roles:
             await ctx.send("There were no roles for me to remove.")
             return
-        await ctx.send(f"**{len(removed_roles)}** roles were removed from {user}. You can restore them with {ctx.prefix}unstrip.")
+        await ctx.send(f"**{len(removed_roles)}** roles were removed from {user}. You can restore them with `{ctx.prefix}unstrip`.")
 
     @checks.mod_or_permissions(administrator=True)
     @commands.command()
     async def unstrip(self, ctx, user: discord.Member):
         """Give a user back their stripped roles."""
         try:
-            await self._strip_roles(ctx, user)
+            await self._restore_roles(ctx, user)
         except discord.Forbidden:
             await ctx.send(
                 "I need permission to manage roles or the role hierarchy might not allow me to do this. I need a role higher than the person you're trying to unstrip."

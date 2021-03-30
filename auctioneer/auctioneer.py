@@ -30,6 +30,7 @@ class Auctioneer(commands.Cog):
 		self.safe_num = None
 		self.tasks = []
 		self.allow_interaction = True
+        self.lock = asyncio.Lock()
 		task = asyncio.create_task(self._startup())
 		task.add_done_callback(self._error_callback)
 		self.tasks.append(task)
@@ -120,52 +121,56 @@ class Auctioneer(commands.Cog):
 			await ctx.send('This cog is currently disabled because I cannot access the database.')
 			return
 		auction_id = str(auction_id)
-		try:
-			auction = await self.config.auctions.get_raw(auction_id)
-		except KeyError:
-			await ctx.send('An auction with that id does not exist!')
-			return
-		if auction['status'] != 'active':
-			await ctx.send('That auction is no longer active!')
-			return
-		if auction['author'] == ctx.author.id:
-			await ctx.send('You cannot bid on your own auction!')
-			return
-		if amount < auction['bid_min']:
-			await ctx.send('That bid is lower than the minimum bid!')
-			return
-		bids = auction['bids']
-		if bids and bids[-1][1] >= amount:
-			await ctx.send('Your bid is lower than the current highest bid!')
-			return
-		#user wants to raise their own bid
-		if bids and bids[-1][0] == ctx.author.id:
-			delta = amount - bids[-1][1]
-			if not await self._check_balance(ctx.author.id, delta, auction['bid_type']):
-				await ctx.send(f'You do not have enough {auction["bid_type"]}!')
+		async with self.lock:
+			try:
+				auction = await self.config.auctions.get_raw(auction_id)
+			except KeyError:
+				await ctx.send('An auction with that id does not exist!')
 				return
-			await self._remove_credits(ctx.author.id, delta, auction['bid_type'])
-		#user bidding normally
-		else:
-			if bids and amount - bids[-1][1] < auction['interval']:
-				await ctx.send('Your bid is lower than the minimum interval!')
+			if auction['status'] != 'active':
+				await ctx.send('That auction is no longer active!')
 				return
-			if not await self._check_balance(ctx.author.id, amount, auction['bid_type']):
-				await ctx.send(f'You do not have enough {auction["bid_type"]}!')
+			if auction['author'] == ctx.author.id:
+				await ctx.send('You cannot bid on your own auction!')
 				return
-			if bids:
-				await self._add_credits(bids[-1][0], bids[-1][1], auction['bid_type'])
-				user = self.bot.get_user(bids[-1][0])
-				if user:
-					try:
-						await user.send(f'You have been outbid by {ctx.author} in auction #{auction_id}!')
-					except discord.errors.HTTPException:
-						pass
-			await self._remove_credits(ctx.author.id, amount, auction['bid_type'])
-		bids.append([ctx.author.id, amount])
-		await self.config.auctions.set_raw(auction_id, 'bids', value=bids)
-		if auction['buyout'] and amount >= auction['buyout']:
-			await self.config.auctions.set_raw(auction_id, 'end', value=datetime.datetime.utcnow().timestamp())
+			if amount < auction['bid_min']:
+				await ctx.send('That bid is lower than the minimum bid!')
+				return
+			bids = auction['bids']
+			if bids and bids[-1][1] >= amount:
+				await ctx.send('Your bid is lower than the current highest bid!')
+				return
+			#user wants to raise their own bid
+			if bids and bids[-1][0] == ctx.author.id:
+				delta = amount - bids[-1][1]
+				if not await self._check_balance(ctx.author.id, delta, auction['bid_type']):
+					await ctx.send(f'You do not have enough {auction["bid_type"]}!')
+					return
+				await self._remove_credits(ctx.author.id, delta, auction['bid_type'])
+			#user bidding normally
+			else:
+				if bids and amount - bids[-1][1] < auction['interval']:
+					await ctx.send('Your bid is lower than the minimum interval!')
+					return
+				if not await self._check_balance(ctx.author.id, amount, auction['bid_type']):
+					await ctx.send(f'You do not have enough {auction["bid_type"]}!')
+					return
+				if bids:
+					await self._add_credits(bids[-1][0], bids[-1][1], auction['bid_type'])
+					user = self.bot.get_user(bids[-1][0])
+					if user:
+						try:
+							await user.send(f'You have been outbid by {ctx.author} in auction #{auction_id}!')
+						except discord.errors.HTTPException:
+							pass
+				await self._remove_credits(ctx.author.id, amount, auction['bid_type'])
+			bids.append([ctx.author.id, amount])
+			await self.config.auctions.set_raw(auction_id, 'bids', value=bids)
+			ended = auction['buyout'] and amount >= auction['buyout']
+			if ended:
+				await self.config.auctions.set_raw(auction_id, 'end', value=datetime.datetime.utcnow().timestamp())
+		#This one HAS to be outside of the lock, since _end_auction acquires the lock, so this if is repeated.
+		if ended:
 			await self._end_auction(auction_id)
 		else:
 			await self._update_auction(auction_id)
@@ -328,24 +333,25 @@ class Auctioneer(commands.Cog):
 			await ctx.send('This cog is currently disabled because I cannot access the database.')
 			return
 		auction_id = str(auction_id)
-		try:
-			auction = await self.config.auctions.get_raw(auction_id)
-		except KeyError:
-			await ctx.send('An auction with that id does not exist!')
-			return
-		if auction['status'] != 'active':
-			await ctx.send('That auction is no longer active!')
-			return
-		if auction['author'] != ctx.author.id:
-			await ctx.send('You cannot cancel auctions you do not own!')
-			return
-		bids = auction['bids']
-		if bids:
-			await ctx.send('There are bids on that auction! Use `,a endearly` to end an auction early.')
-			return
-		await self._add_pokemon(ctx.author.id, auction['poke'])
-		await self.config.auctions.set_raw(auction_id, 'status', value='canceled')
-		await self.config.auctions.set_raw(auction_id, 'end', value=datetime.datetime.utcnow().timestamp())
+		async with self.lock:
+			try:
+				auction = await self.config.auctions.get_raw(auction_id)
+			except KeyError:
+				await ctx.send('An auction with that id does not exist!')
+				return
+			if auction['status'] != 'active':
+				await ctx.send('That auction is no longer active!')
+				return
+			if auction['author'] != ctx.author.id:
+				await ctx.send('You cannot cancel auctions you do not own!')
+				return
+			bids = auction['bids']
+			if bids:
+				await ctx.send('There are bids on that auction! Use `,a endearly` to end an auction early.')
+				return
+			await self._add_pokemon(ctx.author.id, auction['poke'])
+			await self.config.auctions.set_raw(auction_id, 'status', value='canceled')
+			await self.config.auctions.set_raw(auction_id, 'end', value=datetime.datetime.utcnow().timestamp())
 		await self._update_auction(auction_id)
 		cat = self.bot.get_channel(INACTIVE_CAT_ID)
 		channel = self.bot.get_channel(auction['channel'])
@@ -376,27 +382,28 @@ class Auctioneer(commands.Cog):
 			await ctx.send('This cog is currently disabled because I cannot access the database.')
 			return
 		auction_id = str(auction_id)
-		try:
-			auction = await self.config.auctions.get_raw(auction_id)
-		except KeyError:
-			await ctx.send('An auction with that id does not exist!')
-			return
-		if auction['status'] != 'active':
-			await ctx.send('That auction is no longer active!')
-			return
-		if auction['author'] != ctx.author.id:
-			await ctx.send('You cannot edit auctions you do not own!')
-			return
-		if buyout < 1:
-			await ctx.send('Value specified should not be below 1.')
-			return
-		if buyout <= auction['bid_min']:
-			await ctx.send('Value specified should be greater than the minimum bid.')
-			return
-		if auction['bids'] and buyout <= auction['bids'][-1][1]:
-			await ctx.send('Value specified should be greater than the current highest bid.')
-			return
-		await self.config.auctions.set_raw(auction_id, 'buyout', value=buyout)
+		async with self.lock:
+			try:
+				auction = await self.config.auctions.get_raw(auction_id)
+			except KeyError:
+				await ctx.send('An auction with that id does not exist!')
+				return
+			if auction['status'] != 'active':
+				await ctx.send('That auction is no longer active!')
+				return
+			if auction['author'] != ctx.author.id:
+				await ctx.send('You cannot edit auctions you do not own!')
+				return
+			if buyout < 1:
+				await ctx.send('Value specified should not be below 1.')
+				return
+			if buyout <= auction['bid_min']:
+				await ctx.send('Value specified should be greater than the minimum bid.')
+				return
+			if auction['bids'] and buyout <= auction['bids'][-1][1]:
+				await ctx.send('Value specified should be greater than the current highest bid.')
+				return
+			await self.config.auctions.set_raw(auction_id, 'buyout', value=buyout)
 		await self._update_auction(auction_id)
 		await ctx.send('Buyout set.')
 		await self._log_interaction(f'Auction Edited\nAuction: {auction_id}\nUser: {ctx.author}\nBuyout: {buyout}')
@@ -408,21 +415,22 @@ class Auctioneer(commands.Cog):
 			await ctx.send('This cog is currently disabled because I cannot access the database.')
 			return
 		auction_id = str(auction_id)
-		try:
-			auction = await self.config.auctions.get_raw(auction_id)
-		except KeyError:
-			await ctx.send('An auction with that id does not exist!')
-			return
-		if auction['status'] != 'active':
-			await ctx.send('That auction is no longer active!')
-			return
-		if auction['author'] != ctx.author.id:
-			await ctx.send('You cannot edit auctions you do not own!')
-			return
-		if interval < 1:
-			await ctx.send('Value specified should not be below 1.')
-			return
-		await self.config.auctions.set_raw(auction_id, 'interval', value=interval)
+		async with self.lock:
+			try:
+				auction = await self.config.auctions.get_raw(auction_id)
+			except KeyError:
+				await ctx.send('An auction with that id does not exist!')
+				return
+			if auction['status'] != 'active':
+				await ctx.send('That auction is no longer active!')
+				return
+			if auction['author'] != ctx.author.id:
+				await ctx.send('You cannot edit auctions you do not own!')
+				return
+			if interval < 1:
+				await ctx.send('Value specified should not be below 1.')
+				return
+			await self.config.auctions.set_raw(auction_id, 'interval', value=interval)
 		await self._update_auction(auction_id)
 		await ctx.send('Interval set.')
 		await self._log_interaction(f'Auction Edited\nAuction: {auction_id}\nUser: {ctx.author}\nInterval: {interval}')
@@ -438,24 +446,25 @@ class Auctioneer(commands.Cog):
 			await ctx.send('This cog is currently disabled because I cannot access the database.')
 			return
 		auction_id = str(auction_id)
-		try:
-			auction = await self.config.auctions.get_raw(auction_id)
-		except KeyError:
-			await ctx.send('An auction with that id does not exist!')
-			return
-		if auction['status'] != 'active':
-			await ctx.send('That auction is no longer active!')
-			return
-		if auction['author'] != ctx.author.id:
-			await ctx.send('You cannot edit auctions you do not own!')
-			return
-		if auction['bids']:
-			await ctx.send('There are already bids on that auction!')
-			return
-		if minbid < 1:
-			await ctx.send('Value specified should not be below 1.')
-			return
-		await self.config.auctions.set_raw(auction_id, 'bid_min', value=minbid)
+		async with self.lock:
+			try:
+				auction = await self.config.auctions.get_raw(auction_id)
+			except KeyError:
+				await ctx.send('An auction with that id does not exist!')
+				return
+			if auction['status'] != 'active':
+				await ctx.send('That auction is no longer active!')
+				return
+			if auction['author'] != ctx.author.id:
+				await ctx.send('You cannot edit auctions you do not own!')
+				return
+			if auction['bids']:
+				await ctx.send('There are already bids on that auction!')
+				return
+			if minbid < 1:
+				await ctx.send('Value specified should not be below 1.')
+				return
+			await self.config.auctions.set_raw(auction_id, 'bid_min', value=minbid)
 		await self._update_auction(auction_id)
 		await ctx.send('Minimum bid set.')
 		await self._log_interaction(f'Auction Edited\nAuction: {auction_id}\nUser: {ctx.author}\nMinimum Bid: {minbid}')
@@ -471,22 +480,23 @@ class Auctioneer(commands.Cog):
 			await ctx.send('This cog is currently disabled because I cannot access the database.')
 			return
 		auction_id = str(auction_id)
-		try:
-			auction = await self.config.auctions.get_raw(auction_id)
-		except KeyError:
-			await ctx.send('An auction with that id does not exist!')
-			return
-		if auction['status'] != 'active':
-			await ctx.send('That auction is no longer active!')
-			return
-		if auction['author'] != ctx.author.id:
-			await ctx.send('You cannot end auctions you do not own!')
-			return
-		bids = auction['bids']
-		if not bids:
-			await ctx.send('There are no bids on that auction! Use `,a cancel` to cancel an auction.')
-			return
-		await self.config.auctions.set_raw(auction_id, 'end', value=datetime.datetime.utcnow().timestamp())
+		async with self.lock:
+			try:
+				auction = await self.config.auctions.get_raw(auction_id)
+			except KeyError:
+				await ctx.send('An auction with that id does not exist!')
+				return
+			if auction['status'] != 'active':
+				await ctx.send('That auction is no longer active!')
+				return
+			if auction['author'] != ctx.author.id:
+				await ctx.send('You cannot end auctions you do not own!')
+				return
+			bids = auction['bids']
+			if not bids:
+				await ctx.send('There are no bids on that auction! Use `,a cancel` to cancel an auction.')
+				return
+			await self.config.auctions.set_raw(auction_id, 'end', value=datetime.datetime.utcnow().timestamp())
 		await self._end_auction(auction_id)
 		await ctx.send('Your auction has been ended.')
 
@@ -618,26 +628,25 @@ class Auctioneer(commands.Cog):
 		"""Ends a given auction."""
 		if not self.allow_interaction or not await self._test_db():
 			return
-		auction = await self.config.auctions.get_raw(num)
-		if not auction['status'] == 'active':
-			return
-		await self.config.auctions.set_raw(num, 'status', value='ended')
-		
-		#Sleep and reaquire auction, prevents ghost bids.
-		await asyncio.sleep(5)
-		auction = await self.config.auctions.get_raw(num)
-		
+		async with self.lock:
+			auction = await self.config.auctions.get_raw(num)
+			if not auction['status'] == 'active':
+				return
+			await self.config.auctions.set_raw(num, 'status', value='ended')
+			
+			auction = await self.config.auctions.get_raw(num)
+			
 		cat = self.bot.get_channel(INACTIVE_CAT_ID)
 		channel = self.bot.get_channel(auction['channel'])
 		if cat and channel:
 			if len(cat.channels) >= 50:
 				try:
 					await cat.channels[0].delete()
-				except discord.errors.HTTPException:
+				except discord.HTTPException:
 					pass
 			try:
 				await channel.edit(category=cat)
-			except discord.errors.HTTPException:
+			except discord.HTTPException:
 				pass
 		await self._update_auction(num)
 		bids = auction['bids']

@@ -30,7 +30,7 @@ class Auctioneer(commands.Cog):
 		self.safe_num = None
 		self.tasks = []
 		self.allow_interaction = True
-        self.lock = asyncio.Lock()
+		self.lock = asyncio.Lock()
 		task = asyncio.create_task(self._startup())
 		task.add_done_callback(self._error_callback)
 		self.tasks.append(task)

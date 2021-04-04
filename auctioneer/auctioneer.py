@@ -588,7 +588,7 @@ class Auctioneer(commands.Cog):
 		except KeyError:
 			await ctx.send('An auction with that id does not exist!')
 			return
-		embed = _build_embed(auction_id, auction)
+		embed = await self._build_embed(auction_id, auction)
 		await ctx.send(embed=embed)
 
 	async def _build_embed(self, num, auction):

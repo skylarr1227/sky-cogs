@@ -576,6 +576,21 @@ class Auctioneer(commands.Cog):
 		box_paged = (f'```\n{x}```' for x in paged)
 		await ctx.send_interactive(box_paged)
 
+	@auctioneer.command()
+	async def info(self, ctx, auction_id: int):
+		"""Get the current info for an auction."""
+		if not self.allow_interaction or not await self._test_db():
+			await ctx.send('This cog is currently disabled because I cannot access the database.')
+			return
+		auction_id = str(auction_id)
+		try:
+			auction = await self.config.auctions.get_raw(auction_id)
+		except KeyError:
+			await ctx.send('An auction with that id does not exist!')
+			return
+		embed = _build_embed(auction_id, auction)
+		await ctx.send(embed=embed)
+
 	async def _build_embed(self, num, auction):
 		"""Creates an embed that represents a given auction."""
 		colors = {'active': discord.Color.green(), 'ended': discord.Color.red(), 'canceled': discord.Color.dark_red()}
@@ -613,9 +628,9 @@ class Auctioneer(commands.Cog):
 			return
 		try:
 			message = await channel.fetch_message(auction['message'])
+			await message.edit(embed=embed)
 		except discord.errors.HTTPException:
 			return
-		await message.edit(embed=embed)
 	
 	async def _await_auction(self, num):
 		"""Waits for the amount of time a given auction has remaining."""

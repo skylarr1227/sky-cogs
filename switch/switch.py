@@ -4,7 +4,7 @@ from redbot.core import Config
 
 
 class switch(commands.Cog):
-	"""Create auctions for Mewbot pokemon."""
+  """Switch Friend code utility"""
   def __init__(self, bot):
     self.config = Config.get_conf(self, identifier=790722073248661525)
     self.config.register_user(

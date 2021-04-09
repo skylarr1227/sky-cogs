@@ -1,0 +1,10 @@
+{
+    "author" : ["Flame"],
+    "install_msg" : "",
+    "name" : "Switch Utility",
+    "short" : "Helpful utility to save and get users Switch friend codes",
+    "requirements" : [],
+    "description" : "Nintendo Switch friend code utility",
+    "tags" : ["utility"],
+    "min_python_version": [3, 8, 1]
+}

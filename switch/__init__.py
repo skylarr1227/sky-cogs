@@ -1,3 +1,7 @@
 from .switch import *
 
-bot.add_cog(switch(bot))
+def setup(bot):
+  bot.add_cog(switch(bot))
+
+
+

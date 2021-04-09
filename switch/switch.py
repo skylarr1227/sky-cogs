@@ -14,7 +14,7 @@ async def setswitch(self, ctx, code: str):
   """Save your Nintendo Swich friend code for quick retrival."""
   await self.config.user(ctx.author).switch_code.set(code)
   embed = discord.Embed(title= "Successfull", description=f"Your Nintendo Switch invite code has been registered.\nCode:`{code}`", color=0xEE8700)
-	await ctx.send(embed=embed)
+  await ctx.send(embed=embed)
 
 @commands.command()
 async def getswitch(self, ctx, member: discord.Member):
@@ -24,4 +24,4 @@ async def getswitch(self, ctx, member: discord.Member):
     await ctx.send("This user does not have their switch invite code registered.")
     return
   embed = discord.Embed(title= f"Users Invite Code:", description=f"`{code}`", color=0xEE8700)
-	await ctx.send(embed=embed)
+  await ctx.send(embed=embed)

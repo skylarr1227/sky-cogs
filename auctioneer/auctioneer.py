@@ -164,6 +164,10 @@ class Auctioneer(commands.Cog):
 						except discord.errors.HTTPException:
 							pass
 				await self._remove_credits(ctx.author.id, amount, auction['bid_type'])
+				#set time left to 1 minute IF a bid is done within 1 minute of finishing
+				snipe_increase = (datetime.datetime.utcnow() + datetime.timedelta(minutes=1)).timestamp()
+				if auction['end'] < snipe_increase:
+					await self.config.auctions.set_raw(auction_id, 'end', value=snipe_increase)
 			bids.append([ctx.author.id, amount])
 			await self.config.auctions.set_raw(auction_id, 'bids', value=bids)
 			ended = auction['buyout'] and amount >= auction['buyout']
@@ -636,7 +640,11 @@ class Auctioneer(commands.Cog):
 		"""Waits for the amount of time a given auction has remaining."""
 		end = await self.config.auctions.get_raw(num, 'end')
 		time = end - datetime.datetime.utcnow().timestamp()
-		await asyncio.sleep(time)
+		while time > 0:
+			await asyncio.sleep(time)
+			async with self.lock:
+				end = await self.config.auctions.get_raw(num, 'end')
+			time = end - datetime.datetime.utcnow().timestamp()
 		await self._end_auction(num)
 	
 	async def _end_auction(self, num):

@@ -194,6 +194,11 @@ class Auctioneer(commands.Cog):
 			await self._update_auction(auction_id)
 		await ctx.send('Your bid has been submitted.')
 		await self._log_interaction(f'Bid\nAuction: {auction_id}\nUser: {ctx.author}\nAmount: {amount}')
+		if auction['hidden']:
+			try:
+				await ctx.message.delete()
+			except discord.errors.HTTPException:
+				pass
 	
 	@auctioneer.command()
 	async def create(self, ctx, poke: int):

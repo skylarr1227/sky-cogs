@@ -257,7 +257,7 @@ class Auctioneer(commands.Cog):
 			resp = await self.bot.wait_for('message', timeout=60, check=lambda m: m.author == ctx.author and m.channel == ctx.channel)
 			if resp.content.lower()[0] == 'y':
 				hidden = True
-			elif resp.content.lower()[1] == 'n':
+			elif resp.content.lower()[0] == 'n':
 				hidden = False
 			else:
 				await ctx.send('Value specified should be "yes" or "no".')

@@ -294,7 +294,7 @@ class Auctioneer(commands.Cog):
 			return
 		
 		if hidden:
-			self.bot.get_channel(HIDDEN_CAT_ID)
+			category = self.bot.get_channel(HIDDEN_CAT_ID)
 		else:
 			category = self.bot.get_channel(ACTIVE_CAT_ID)
 		if not category:

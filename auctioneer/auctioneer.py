@@ -12,6 +12,7 @@ from tabulate import tabulate
 
 ACTIVE_CAT_ID = 731973669898682379
 INACTIVE_CAT_ID = 732740398535147590
+HIDDEN_CAT_ID = 838120770076278864
 LOG_CHANNEL = 740017242401407026
 DATABASE_URL = os.environ["DATABASE_URL"]
 
@@ -47,6 +48,7 @@ class Auctioneer(commands.Cog):
 				"channel": 731974207218647121,
 				"message": 731974207717638214,
 				"status": "active",
+				"hidden": False,
 				"end": 1594603316.7081,
 				"poke": 2342,
 				"poke_data": {
@@ -117,6 +119,7 @@ class Auctioneer(commands.Cog):
 	@auctioneer.command()
 	async def bid(self, ctx, auction_id: int, amount: int):
 		"""Bid on a running auction."""
+		ended = False
 		if not self.allow_interaction or not await self._test_db():
 			await ctx.send('This cog is currently disabled because I cannot access the database.')
 			return
@@ -137,40 +140,51 @@ class Auctioneer(commands.Cog):
 				await ctx.send('That bid is lower than the minimum bid!')
 				return
 			bids = auction['bids']
-			if bids and bids[-1][1] >= amount:
-				await ctx.send('Your bid is lower than the current highest bid!')
-				return
-			#user wants to raise their own bid
-			if bids and bids[-1][0] == ctx.author.id:
-				delta = amount - bids[-1][1]
-				if not await self._check_balance(ctx.author.id, delta, auction['bid_type']):
-					await ctx.send(f'You do not have enough {auction["bid_type"]}!')
-					return
-				await self._remove_credits(ctx.author.id, delta, auction['bid_type'])
-			#user bidding normally
-			else:
-				if bids and amount - bids[-1][1] < auction['interval']:
-					await ctx.send('Your bid is lower than the minimum interval!')
-					return
+			if auction["hidden"]:
+				for bid in bids:
+					#already bid
+					if ctx.author.id == [bid[0]]:
+						await ctx.send("You have already bid on this auction! You only get 1 bid on hidden auctions.")
+						return
 				if not await self._check_balance(ctx.author.id, amount, auction['bid_type']):
 					await ctx.send(f'You do not have enough {auction["bid_type"]}!')
 					return
-				if bids:
-					await self._add_credits(bids[-1][0], bids[-1][1], auction['bid_type'])
-					user = self.bot.get_user(bids[-1][0])
-					if user:
-						try:
-							await user.send(f'You have been outbid by {ctx.author} in auction #{auction_id}!')
-						except discord.errors.HTTPException:
-							pass
 				await self._remove_credits(ctx.author.id, amount, auction['bid_type'])
-				#set time left to 1 minute IF a bid is done within 1 minute of finishing
-				snipe_increase = (datetime.datetime.utcnow() + datetime.timedelta(minutes=1)).timestamp()
-				if auction['end'] < snipe_increase:
-					await self.config.auctions.set_raw(auction_id, 'end', value=snipe_increase)
+			else:
+				if bids and bids[-1][1] >= amount:
+					await ctx.send('Your bid is lower than the current highest bid!')
+					return
+				#user wants to raise their own bid
+				if bids and bids[-1][0] == ctx.author.id:
+					delta = amount - bids[-1][1]
+					if not await self._check_balance(ctx.author.id, delta, auction['bid_type']):
+						await ctx.send(f'You do not have enough {auction["bid_type"]}!')
+						return
+					await self._remove_credits(ctx.author.id, delta, auction['bid_type'])
+				#user bidding normally
+				else:
+					if bids and amount - bids[-1][1] < auction['interval']:
+						await ctx.send('Your bid is lower than the minimum interval!')
+						return
+					if not await self._check_balance(ctx.author.id, amount, auction['bid_type']):
+						await ctx.send(f'You do not have enough {auction["bid_type"]}!')
+						return
+					if bids:
+						await self._add_credits(bids[-1][0], bids[-1][1], auction['bid_type'])
+						user = self.bot.get_user(bids[-1][0])
+						if user:
+							try:
+								await user.send(f'You have been outbid by {ctx.author} in auction #{auction_id}!')
+							except discord.errors.HTTPException:
+								pass
+					await self._remove_credits(ctx.author.id, amount, auction['bid_type'])
+					#set time left to 1 minute IF a bid is done within 1 minute of finishing
+					snipe_increase = (datetime.datetime.utcnow() + datetime.timedelta(minutes=1)).timestamp()
+					if auction['end'] < snipe_increase:
+						await self.config.auctions.set_raw(auction_id, 'end', value=snipe_increase)
+					ended = auction['buyout'] and amount >= auction['buyout']
 			bids.append([ctx.author.id, amount])
 			await self.config.auctions.set_raw(auction_id, 'bids', value=bids)
-			ended = auction['buyout'] and amount >= auction['buyout']
 			if ended:
 				await self.config.auctions.set_raw(auction_id, 'end', value=datetime.datetime.utcnow().timestamp())
 		#This one HAS to be outside of the lock, since _end_auction acquires the lock, so this if is repeated.
@@ -193,13 +207,6 @@ class Auctioneer(commands.Cog):
 		poke = await self._find_pokemon(ctx.author.id, poke)
 		if poke is None:
 			await ctx.send('You do not have that Pokemon, that Pokemon is currently selected, or that pokemon is enlisted in the market.')
-			return
-		category = self.bot.get_channel(ACTIVE_CAT_ID)
-		if not category:
-			await ctx.send('I could not find the category I am supposed to send auctions to.')
-			return
-		if len(category.channels) >= 50:
-			await ctx.send('There are currently too many auctions to create a new one. Try again later.')
 			return
 		
 		try:
@@ -241,37 +248,61 @@ class Auctioneer(commands.Cog):
 				await ctx.send('Value specified should not be above 168.')
 				return
 			#Q4
-			await ctx.send('What should be the minimum interval between bids?')
+			await ctx.send('Should bids be hidden, only revealed at the very end?')
 			resp = await self.bot.wait_for('message', timeout=60, check=lambda m: m.author == ctx.author and m.channel == ctx.channel)
-			try:
-				interval = int(resp.content)
-			except ValueError:
-				await ctx.send('Value specified was not a number.')
+			if resp.content.lower()[0] == 'y':
+				hidden = True
+			elif resp.content.lower()[1] == 'n':
+				hidden = False
+			else:
+				await ctx.send('Value specified should be "yes" or "no".')
 				return
-			if interval < 1:
-				await ctx.send('Value specified should not be below 1.')
-				return
-			#Q5
-			await ctx.send('What should be the buyout amount? If you do not want a buyout, say `none`.')
-			resp = await self.bot.wait_for('message', timeout=60, check=lambda m: m.author == ctx.author and m.channel == ctx.channel)
-			if resp.content.lower() == 'none':
+			if hidden:
+				interval = None
 				buyout = None
 			else:
+				#Q5
+				await ctx.send('What should be the minimum interval between bids?')
+				resp = await self.bot.wait_for('message', timeout=60, check=lambda m: m.author == ctx.author and m.channel == ctx.channel)
 				try:
-					buyout = int(resp.content)
+					interval = int(resp.content)
 				except ValueError:
-					await ctx.send('Value specified was not a number or `none`.')
+					await ctx.send('Value specified was not a number.')
 					return
-				if buyout < 1:
+				if interval < 1:
 					await ctx.send('Value specified should not be below 1.')
 					return
-				if buyout <= bid_min:
-					await ctx.send('Value specified should be greater than the minimum bid.')
-					return
+				#Q6
+				await ctx.send('What should be the buyout amount? If you do not want a buyout, say `none`.')
+				resp = await self.bot.wait_for('message', timeout=60, check=lambda m: m.author == ctx.author and m.channel == ctx.channel)
+				if resp.content.lower() == 'none':
+					buyout = None
+				else:
+					try:
+						buyout = int(resp.content)
+					except ValueError:
+						await ctx.send('Value specified was not a number or `none`.')
+						return
+					if buyout < 1:
+						await ctx.send('Value specified should not be below 1.')
+						return
+					if buyout <= bid_min:
+						await ctx.send('Value specified should be greater than the minimum bid.')
+						return
 		except asyncio.TimeoutError:
 			await ctx.send('You took too long to respond.')
 			return
 		
+		if hidden:
+			self.bot.get_channel(HIDDEN_CAT_ID)
+		else:
+			category = self.bot.get_channel(ACTIVE_CAT_ID)
+		if not category:
+			await ctx.send('I could not find the category I am supposed to send auctions to.')
+			return
+		if len(category.channels) >= 50:
+			await ctx.send('There are currently too many auctions to create a new one. Try again later.')
+			return
 		if not self.safe_num:
 			self.safe_num = await self.config.current_num()
 		self.safe_num += 1
@@ -291,6 +322,7 @@ class Auctioneer(commands.Cog):
 			f'**Happiness**: {poke_data["happiness"]}\n'
 			f'IV %: {poke_data["iv_percent"]}'
 		)
+		
 		channel_name = f'{num} {poke_data["shiny"]}{poke_data["pokname"]} {round(poke_data["iv_percent"])}'
 		auction = {
 			'author': ctx.author.id,
@@ -303,6 +335,7 @@ class Auctioneer(commands.Cog):
 			'channel': 0, #set AFTER sending message
 			'message': 0, #^
 			'status': 'active',
+			'hidden': hidden,
 			'end': end,
 			'poke': poke,
 			'poke_data': poke_data
@@ -349,9 +382,12 @@ class Auctioneer(commands.Cog):
 			if auction['author'] != ctx.author.id:
 				await ctx.send('You cannot cancel auctions you do not own!')
 				return
+			if auction['hidden']:
+				await ctx.send('You cannot cancel a hidden auction, since you don\'t know if there are any bids yet! Use `,a endearly` to end the auction early.')
+				return
 			bids = auction['bids']
 			if bids:
-				await ctx.send('There are bids on that auction! Use `,a endearly` to end an auction early.')
+				await ctx.send('There are bids on that auction! Use `,a endearly` to end the auction early.')
 				return
 			await self._add_pokemon(ctx.author.id, auction['poke'])
 			await self.config.auctions.set_raw(auction_id, 'status', value='canceled')
@@ -398,6 +434,9 @@ class Auctioneer(commands.Cog):
 			if auction['author'] != ctx.author.id:
 				await ctx.send('You cannot edit auctions you do not own!')
 				return
+			if auction['hidden']:
+				await ctx.send('You cannot set a buyout on hidden auctions!')
+				return
 			if buyout < 1:
 				await ctx.send('Value specified should not be below 1.')
 				return
@@ -431,6 +470,9 @@ class Auctioneer(commands.Cog):
 			if auction['author'] != ctx.author.id:
 				await ctx.send('You cannot edit auctions you do not own!')
 				return
+			if auction['hidden']:
+				await ctx.send('You cannot set an interval on hidden auctions!')
+				return
 			if interval < 1:
 				await ctx.send('Value specified should not be below 1.')
 				return
@@ -461,6 +503,9 @@ class Auctioneer(commands.Cog):
 				return
 			if auction['author'] != ctx.author.id:
 				await ctx.send('You cannot edit auctions you do not own!')
+				return
+			if auction['hidden']:
+				await ctx.send('You cannot edit the minimum bid on hidden auctions, since you don\'t know if there are any bids yet!')
 				return
 			if auction['bids']:
 				await ctx.send('There are already bids on that auction!')
@@ -496,8 +541,7 @@ class Auctioneer(commands.Cog):
 			if auction['author'] != ctx.author.id:
 				await ctx.send('You cannot end auctions you do not own!')
 				return
-			bids = auction['bids']
-			if not bids:
+			if not auction['bids'] and not auction['hidden']:
 				await ctx.send('There are no bids on that auction! Use `,a cancel` to cancel an auction.')
 				return
 			await self.config.auctions.set_raw(auction_id, 'end', value=datetime.datetime.utcnow().timestamp())
@@ -531,7 +575,7 @@ class Auctioneer(commands.Cog):
 			elif auctions[auction_id]['bid_type'] == 'redeem':
 				bid_type = 'r'
 			
-			if auctions[auction_id]['bids']:
+			if auctions[auction_id]['bids'] and not auctions[auction_id]['hidden']:
 				bidder = auctions[auction_id]['bids'][-1][0]
 				bidder = self.bot.get_user(bidder) or bidder
 			else:
@@ -610,7 +654,9 @@ class Auctioneer(commands.Cog):
 			emoji = self.bot.get_emoji(731709469414785047) or 'Mewcoins'
 		else:
 			emoji = 'Redeem'
-		if auction['bids']:
+		if auction['hidden'] and auction['status'] == 'active':
+			embed.add_field(name='**Top bid**', value=f'Bids are hidden!\nMinimum bid is {auction["bid_min"]} {emoji}')
+		elif auction['bids']:
 			bid_member = self.bot.get_user(auction['bids'][-1][0]) or auction['bids'][-1][0]
 			bid_value = auction['bids'][-1][1]
 			embed.add_field(name='**Top bid**', value=f'{bid_value} {emoji} by {bid_member}')
@@ -682,12 +728,27 @@ class Auctioneer(commands.Cog):
 				await channel.send(f'Auction #{num} by {author.mention} has ended.\nThere were no bids.')
 			await self._log_interaction(f'Auction Ended\nAuction: {num}\nUser: {author}\nWinner: None')
 			return
-		amount = bids[-1][1]
+		if auction['hidden']:
+			winner, amount = bids[0]
+			for bid in bids:
+				# In the event of a tie, the FIRST bidder wins
+				if bid[1] > amount:
+					winner, amount = bid
+			# Cleanup losers
+			for bid in bids:
+				if bid[0] != winner:
+					await self._add_credits(bid[0], bid[1], auction['bid_type'])
+					user = self.bot.get_user(bid[0])
+					if user:
+						try:
+							await user.send(f'You lost hidden auction #{num}! Your credits have been returned.')
+						except discord.errors.HTTPException:
+							pass
+		else:
+			winner, amount = bids[-1]
 		await self._add_credits(auction['author'], amount, auction['bid_type'])
-		await self._add_pokemon(bids[-1][0], auction['poke'])
-		winner = self.bot.get_user(bids[-1][0])
-		if not winner:
-			winner = bids[-1][0]
+		await self._add_pokemon(winner, auction['poke'])
+		winner = self.bot.get_user(winner) or winner
 		if auction['bid_type'] == 'mewcoins':
 			emoji = self.bot.get_emoji(731709469414785047) or 'Mewcoins'
 		else:

@@ -689,7 +689,8 @@ class Auctioneer(commands.Cog):
 	
 	async def _await_auction(self, num):
 		"""Waits for the amount of time a given auction has remaining."""
-		end = await self.config.auctions.get_raw(num, 'end')
+		async with self.lock:
+			end = await self.config.auctions.get_raw(num, 'end')
 		time = end - datetime.datetime.utcnow().timestamp()
 		while time > 0:
 			await asyncio.sleep(time)

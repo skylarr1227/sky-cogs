@@ -182,7 +182,7 @@ class Auctioneer(commands.Cog):
 					snipe_increase = (datetime.datetime.utcnow() + datetime.timedelta(minutes=1)).timestamp()
 					if auction['end'] < snipe_increase:
 						await self.config.auctions.set_raw(auction_id, 'end', value=snipe_increase)
-					ended = auction['buyout'] and amount >= auction['buyout']
+				ended = auction['buyout'] and amount >= auction['buyout']
 			bids.append([ctx.author.id, amount])
 			await self.config.auctions.set_raw(auction_id, 'bids', value=bids)
 			if ended:

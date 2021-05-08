@@ -143,7 +143,7 @@ class Auctioneer(commands.Cog):
 			if auction["hidden"]:
 				for bid in bids:
 					#already bid
-					if ctx.author.id == [bid[0]]:
+					if ctx.author.id == bid[0]:
 						await ctx.send("You have already bid on this auction! You only get 1 bid on hidden auctions.")
 						return
 				if not await self._check_balance(ctx.author.id, amount, auction['bid_type']):

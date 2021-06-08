@@ -669,6 +669,8 @@ class Warnings(commands.Cog):
                 await ctx.send(_("You have no warnings!"))
             else:
                 for key in user_warnings.keys():
+                    if user_warnings[key]["points"] == 0:
+                        continue
                     mod_id = user_warnings[key]["mod"]
                     if mod_id == 0xDE1:
                         mod = _("Deleted Moderator")

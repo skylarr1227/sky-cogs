@@ -686,6 +686,9 @@ class Warnings(commands.Cog):
                         user=mod,
                         description=user_warnings[key]["description"],
                     )
+                if not msg:
+                    await ctx.send(_("You have no warnings!"))
+                    return
                 await ctx.send_interactive(
                     pagify(msg, shorten_by=58),
                     box_lang=_("Warnings for {user}").format(user=user),

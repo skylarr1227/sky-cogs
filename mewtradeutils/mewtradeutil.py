@@ -12,7 +12,7 @@ class Mewtradeutil(commands.Cog):
 		self.bot = bot
 		
 	@commands.command()
-	async def trade(ctx, msg_id: int):
+	async def trade(self, ctx, msg_id: int):
 		"""Trade Utility for Mewbot"""
 		m = await ctx.channel.fetch_message(msg_id)
 		lines = m.embeds[0].description.split('\n')

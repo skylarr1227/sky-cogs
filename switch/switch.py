@@ -25,5 +25,5 @@ class switch(commands.Cog):
     if code is None:
       await ctx.send("This user does not have their switch invite code registered.")
       return
-    embed = discord.Embed(title= f"Users Invite Code:", description=f"`{code}`", color=0xEE8700)
+    embed = discord.Embed(title= f"{member}'s Invite Code:", description=f"`{code}`", color=0xEE8700)
     await ctx.send(embed=embed)

@@ -628,23 +628,26 @@ class Warnings(commands.Cog):
                     else:
                         bot = ctx.bot
                         mod = bot.get_user(mod_id) or _("Unknown Moderator ({})").format(mod_id)
+                    timestamp = discord.Object(int(key)).created_at.isoformat(sep=" ", timespec="seconds")
                     if user_warnings[key]["points"] == 0:
                         notes += _(
-                            "{reason_name} added by {user} for "
+                            "{reason_name} added by {user} at {timestamp} for "
                             "{description}\n"
                         ).format(
                             reason_name=key,
                             user=mod,
+                            timestamp=timestamp,
                             description=user_warnings[key]["description"],
                         )
                     else:
                         msg += _(
-                            "{num_points} point warning {reason_name} issued by {user} for "
+                            "{num_points} point warning {reason_name} issued by {user} at {timestamp} for "
                             "{description}\n"
                         ).format(
                             num_points=user_warnings[key]["points"],
                             reason_name=key,
                             user=mod,
+                            timestamp=timestamp,
                             description=user_warnings[key]["description"],
                         )
                 msg = msg + "\n\nMod notes\n" + notes

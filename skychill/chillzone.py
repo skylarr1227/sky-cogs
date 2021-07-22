@@ -461,7 +461,24 @@ class skychill(commands.Cog):
     async def inrole(self, ctx, role: discord.Role):
         """List the users of a certain role."""
         members = [str(x) for x in role.members]
-        desc = "\n".join(members)
+        desc = "\n".join(members) 
+        pages = list(pagify(desc, page_length=300))
+        embeds = []
+        for idx, page in enumerate(pages, 1):
+            embed = discord.Embed(
+                title=f"Members of {role} - {len(members)}",
+                description=page 
+            )
+            embed.set_footer(text=f"Page {idx} / {len(pages)}")
+            embeds.append(embed)
+        c = DEFAULT_CONTROLS if len(embeds) > 1 else {"\N{CROSS MARK}": close_menu}
+        await menu(ctx, embeds, c)
+	
+	@commands.command()
+    async def inroleid(self, ctx, role: discord.Role):
+        """List the users of a certain role."""
+        members = [str(x) for x in role.members.id] 
+        desc = "\n".join(members) 
         pages = list(pagify(desc, page_length=300))
         embeds = []
         for idx, page in enumerate(pages, 1):

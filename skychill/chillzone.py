@@ -474,7 +474,7 @@ class skychill(commands.Cog):
         c = DEFAULT_CONTROLS if len(embeds) > 1 else {"\N{CROSS MARK}": close_menu}
         await menu(ctx, embeds, c)
 	
-	@commands.command()
+    @commands.command()
     async def inroleid(self, ctx, role: discord.Role):
         """List the users of a certain role."""
         members = [str(x) for x in role.members.id] 

@@ -457,7 +457,7 @@ class skychill(commands.Cog):
         embed = discord.Embed(colour=ctx.guild.me.top_role.colour, description=msg)
         return await ctx.send(embed=embed)
 
-	@commands.command()
+    @commands.command()
     async def inrole(self, ctx, role: discord.Role):
         """List the users of a certain role."""
         members = [str(x) for x in role.members]
@@ -473,7 +473,8 @@ class skychill(commands.Cog):
             embeds.append(embed)
         c = DEFAULT_CONTROLS if len(embeds) > 1 else {"\N{CROSS MARK}": close_menu}
         await menu(ctx, embeds, c)
-	
+
+
     @commands.command()
     async def inroleid(self, ctx, role: discord.Role):
         """List the users of a certain role."""

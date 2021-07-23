@@ -478,7 +478,7 @@ class skychill(commands.Cog):
     @commands.command()
     async def inroleid(self, ctx, role: discord.Role):
         """List the users of a certain role."""
-        members = [str(x) for x in role.members.id] 
+        members = [str(x.id) for x in role.members]
         desc = "\n".join(members) 
         pages = list(pagify(desc, page_length=300))
         embeds = []

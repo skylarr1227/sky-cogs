@@ -308,11 +308,12 @@ class Auctioneer(commands.Cog):
 		if len(category.channels) >= 50:
 			await ctx.send('There are currently too many auctions to create a new one. Try again later.')
 			return
-		if not self.safe_num:
-			self.safe_num = await self.config.current_num()
-		self.safe_num += 1
-		await self.config.current_num.set(self.safe_num)
-		num = str(self.safe_num)
+		async with self.lock:
+			if not self.safe_num:
+				self.safe_num = await self.config.current_num()
+			self.safe_num += 1
+			await self.config.current_num.set(self.safe_num)
+			num = str(self.safe_num)
 		end = (datetime.datetime.utcnow() + datetime.timedelta(hours=hours)).timestamp()
 		poke_data = await self._get_pokemon_data(poke)
 		pokemon_info = (

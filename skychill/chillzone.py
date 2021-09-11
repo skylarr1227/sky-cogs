@@ -71,7 +71,7 @@ class skychill(commands.Cog):
         to_add = []
         for rid in roles:
             role = user.guild.get_role(rid)
-            if role in user.roles:
+            if role in user.roles or not role:
                 continue
             to_add.append(role)
         if to_add:

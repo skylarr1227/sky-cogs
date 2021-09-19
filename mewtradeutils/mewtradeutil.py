@@ -26,6 +26,7 @@ class Mewtradeutil(commands.Cog):
         result = " ".join([str(x) for x in result])
         embed = discord.Embed(title = "ID's requested", description=result, color=0xEE8700)
         await ctx.send(embed=embed)
+        await ctx.send(result)
 
 
 

@@ -658,7 +658,7 @@ class Auctioneer(commands.Cog):
 	@auctioneer.command()
 	async def blacklist(self, ctx, user_id: int):
 		"""Blacklist a user from using the cog."""
-		if ctx.guild_id != SERVER_ID:
+		if ctx.guild.id != SERVER_ID:
 			await ctx.send("Only usable in the auctions server.")
 			return
 		if user_id in self.bot.owner_ids:
@@ -678,7 +678,7 @@ class Auctioneer(commands.Cog):
 	@auctioneer.command()
 	async def unblacklist(self, ctx, user_id: int):
 		"""Unblacklist a user from using the cog."""
-		if ctx.guild_id != SERVER_ID:
+		if ctx.guild.id != SERVER_ID:
 			await ctx.send("Only usable in the auctions server.")
 			return
 		if user_id == ctx.author.id:

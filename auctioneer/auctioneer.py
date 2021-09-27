@@ -10,6 +10,7 @@ import os
 import ujson
 from tabulate import tabulate
 
+SERVER_ID = 857745448717516830
 ACTIVE_CAT_ID = 857745450684514391
 INACTIVE_CAT_ID = 857745451356127259
 HIDDEN_CAT_ID = 857745450684514384
@@ -657,6 +658,9 @@ class Auctioneer(commands.Cog):
 	@auctioneer.command()
 	async def blacklist(self, ctx, user_id: int):
 		"""Blacklist a user from using the cog."""
+		if ctx.guild_id != SERVER_ID:
+			await ctx.send("Only usable in the auctions server.")
+			return
 		if user_id in self.bot.owner_ids:
 			await ctx.send("Nice try.")
 			return
@@ -674,6 +678,9 @@ class Auctioneer(commands.Cog):
 	@auctioneer.command()
 	async def unblacklist(self, ctx, user_id: int):
 		"""Unblacklist a user from using the cog."""
+		if ctx.guild_id != SERVER_ID:
+			await ctx.send("Only usable in the auctions server.")
+			return
 		if user_id == ctx.author.id:
 			await ctx.send("No saving yourself...")
 			return

@@ -667,7 +667,7 @@ class Auctioneer(commands.Cog):
 		if user_id == ctx.author.id:
 			await ctx.send("No seppuku...")
 			return
-		async with self.bot.config.blacklisted() as bl:
+		async with self.config.blacklisted() as bl:
 			if u_id in bl:
 				await ctx.send("That user is already blacklisted.")
 				return
@@ -684,7 +684,7 @@ class Auctioneer(commands.Cog):
 		if user_id == ctx.author.id:
 			await ctx.send("No saving yourself...")
 			return
-		async with self.bot.config.blacklisted() as bl:
+		async with self.config.blacklisted() as bl:
 			if u_id not in bl:
 				await ctx.send("That user is not blacklisted.")
 				return

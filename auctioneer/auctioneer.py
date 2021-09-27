@@ -25,6 +25,7 @@ class Auctioneer(commands.Cog):
 		self.config.register_global(
 			auctions = {},
 			current_num = 0,
+			blacklisted = [],
 		)
 		self.db = None
 		self.log = logging.getLogger('red.flamebountycogs.auctioneer')
@@ -87,7 +88,14 @@ class Auctioneer(commands.Cog):
 		except Exception as e:
 			msg = 'Error in Auctioneer.\n'
 			self.log.exception(msg)
-	
+
+	async def cog_check(self, ctx):
+		"""Prevent blacklisted users from using the cog."""
+		blacklisted = await self.config.blacklisted()
+		if ctx.author.id in blacklisted:
+			return False
+		return True
+
 	async def init(self, con):
 		"""Required for the DB."""
 		await con.set_type_codec(
@@ -96,7 +104,7 @@ class Auctioneer(commands.Cog):
 			decoder=ujson.loads,
 			schema='pg_catalog'
 		)
-	
+
 	async def _startup(self):
 		"""Opens the DB connection and creates auction waiting tasks after a cog restart."""
 		try:
@@ -645,6 +653,37 @@ class Auctioneer(commands.Cog):
 		embed = await self._build_embed(auction_id, auction)
 		await ctx.send(embed=embed)
 
+	@commands.admin()
+	@auctioneer.command()
+	async def blacklist(self, ctx, user_id: int):
+		"""Blacklist a user from using the cog."""
+		if user_id in self.bot.owner_ids:
+			await ctx.send("Nice try.")
+			return
+		if user_id == ctx.author.id:
+			await ctx.send("No seppuku...")
+			return
+		async with self.bot.config.blacklisted() as bl:
+			if u_id in bl:
+				await ctx.send("That user is already blacklisted.")
+				return
+			bl.append(user_id)
+		await ctx.send(f"Blacklisted `{user_id}`.")
+
+	@commands.admin()
+	@auctioneer.command()
+	async def unblacklist(self, ctx, user_id: int):
+		"""Unblacklist a user from using the cog."""
+		if user_id == ctx.author.id:
+			await ctx.send("No saving yourself...")
+			return
+		async with self.bot.config.blacklisted() as bl:
+			if u_id not in bl:
+				await ctx.send("That user is not blacklisted.")
+				return
+			bl.remove(user_id)
+		await ctx.send(f"Unblacklisted `{user_id}`.")
+
 	async def _build_embed(self, num, auction):
 		"""Creates an embed that represents a given auction."""
 		colors = {'active': discord.Color.green(), 'ended': discord.Color.red(), 'canceled': discord.Color.dark_red()}
@@ -674,7 +713,7 @@ class Auctioneer(commands.Cog):
 			embed.add_field(name='**Buyout**', value=f'{auction["buyout"]} {emoji}')
 		embed.set_footer(text='Auction ends' if auction['status'] == 'active' else 'Auction ended')
 		return embed
-	
+
 	async def _update_auction(self, num):
 		"""Updates the auction message for a given auction."""
 		auction = await self.config.auctions.get_raw(num)

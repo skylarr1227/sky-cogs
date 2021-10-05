@@ -22,7 +22,7 @@ class Mew(commands.Cog):
         self.bot = bot
         self.active_requests = {}
         self.db = None
-        self.mongo = AsyncIOMotorClient(MONGO_URL).mongo_client.pokemon
+        self.mongo = AsyncIOMotorClient(MONGO_URL).pokemon
         asyncio.create_task(self._startup())
     
     async def init(self, con):

@@ -73,6 +73,7 @@ class Mew(commands.Cog):
         poke = "-".join(args).capitalize()
         async def callback():
             await self.create_poke(ctx.author.id, poke, shiny=shiny, radiant=radiant, boosted=boosted)
+            await ctx.author.send("Reward poke accepted by admin")
             await self.bot.http.send_message(882419606134874192, f"{ctx.author} used reward_poke {extras}{args}")
         await self.make_request(ctx, callback)
 

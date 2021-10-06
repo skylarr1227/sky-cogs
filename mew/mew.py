@@ -45,7 +45,7 @@ class Mew(commands.Cog):
 
     @check_gymauth()
     @commands.command()
-    async def reason(self, ctx, *, args):
+    async def greason(self, ctx, *, args):
         """Send a reason for using a command."""
         await self.bot.http.send_message(
             REQUESTS_CHANNEL,

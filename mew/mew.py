@@ -42,6 +42,16 @@ class Mew(commands.Cog):
             await self.bot.http.send_message(DEV_CHANNEL, "mew.py could not connect to postgres.")
             return
     
+
+    @check_gymauth()
+    @commands.command()
+    async def reason(self, ctx, *, args):
+        """Send a reason for using a command."""
+        await self.bot.http.send_message(
+            REQUESTS_CHANNEL,
+            f"GYM AUTH's REASON:{args}"
+        )
+
     @check_gymauth()
     @commands.command()
     async def reward_poke(self, ctx, *, args):
@@ -84,7 +94,11 @@ class Mew(commands.Cog):
         await ctx.send("Request made.")
         await self.bot.http.send_message(
             REQUESTS_CHANNEL,
-            f"{ctx.author} wants to use `{ctx.message.content}`.\nAccept this request with `{ctx.prefix}acceptrequest {ctx.message.id}`."
+            f"{ctx.author} wants to use `{ctx.message.content}`.\nAccept this request with"
+        )
+        await self.bot.http.send_message(
+            REQUESTS_CHANNEL, 
+            f"`{ctx.prefix}acceptrequest {ctx.message.id}`"
         )
     
     async def create_poke(

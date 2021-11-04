@@ -362,7 +362,16 @@ class Auctioneer(commands.Cog):
 		except discord.errors.HTTPException:
 			await ctx.send('I do not have permission to create text channels.')
 			return
-		message = await channel.send(embed=embed)
+		
+		all_ping = '<@&903296682152820746>'
+		if poke_data['shiny'] == '\N{SPARKLES} ':
+			shiny_ping = '<@&904915533131026483>'
+		elif poke_data['shiny'] == '\N{COLLISION SYMBOL} ':
+			shiny_ping = '<@&904915719471374386>'
+		else:
+			shiny_ping = '<@&904915641008549909>'
+		
+		message = await channel.send(all_ping + shiny_ping, embed=embed)
 		auction['channel'] = channel.id
 		auction['message'] = message.id
 		

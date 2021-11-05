@@ -370,8 +370,9 @@ class Auctioneer(commands.Cog):
 			shiny_ping = '<@&904915719471374386>'
 		else:
 			shiny_ping = '<@&904915641008549909>'
-		
-		message = await channel.send(all_ping + shiny_ping, embed=embed)
+		am = discord.AllowedMentions.none()
+		am.roles = True
+		message = await channel.send(all_ping + shiny_ping, embed=embed, allowed_mentions=am)
 		auction['channel'] = channel.id
 		auction['message'] = message.id
 		

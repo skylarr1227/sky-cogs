@@ -716,7 +716,7 @@ class Auctioneer(commands.Cog):
 			emoji = self.bot.get_emoji(731709469414785047) or 'Mewcoins'
 		else:
 			emoji = 'Redeem'
-		if auction['hidden'] and auction['status'] == 'active':
+		if auction['hidden']:
 			embed.add_field(name='**Top bid**', value=f'Bids are hidden!\nMinimum bid is {auction["bid_min"]} {emoji}')
 		elif auction['bids']:
 			bid_member = self.bot.get_user(auction['bids'][-1][0]) or auction['bids'][-1][0]

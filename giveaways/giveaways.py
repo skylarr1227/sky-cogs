@@ -13,12 +13,34 @@ DATABASE_URL = os.environ["DATABASE_URL"]
 
 class GiveawayView(discord.ui.View):
     """Simple view to add the button to enter a giveaway."""
-    def __init__(self):
-        super().__init__(timeout=0)
+    def __init__(self, cog):
+        super().__init__(timeout=None)
+        self.cog = cog
     
-    @discord.ui.button(label="Enter giveaway", style=discord.ButtonStyle.primary)
+    @discord.ui.button(label="Enter giveaway", style=discord.ButtonStyle.primary, custom_id="giveaway_button")
     async def callback(self, button, interaction):
-        pass
+        if not interaction.message or not interaction.user:
+            return
+        mid = str(interaction.message.id)
+        async with self.cog.lock:
+            try:
+                giveaway = await self.cog.config.giveaways.get_raw(mid)
+            except KeyError:
+                return
+            if giveaway['status'] != 'active':
+                await interaction.response.send_message('That giveaway is no longer active!', empirical=True)
+                return
+            if giveaway['author'] == interaction.user.id:
+                await interaction.response.send_message('You cannot enter your own giveaway!', empirical=True)
+                return
+            if interaction.user.id in giveaway['entries']:
+                await interaction.response.send_message('You are already entered in the giveaway!', empirical=True)
+                return
+            if giveaway['roles'] and not set(giveaway['roles']) & set([x.id for x in interaction.user.roles]):
+                await interaction.response.send_message('You do not have any of the roles required for this giveaway!', empirical=True)
+            giveaway['entries'].append(interaction.user.id)
+            await self.config.giveaways.set_raw(mid, 'entries', value=giveaway['entries'])
+        await interaction.response.send_message('You have been entered into the giveaway, good luck!', empirical=True)
 
 
 class Giveaways(commands.Cog):
@@ -35,6 +57,8 @@ class Giveaways(commands.Cog):
         self.tasks = []
         self.allow_interaction = True
         self.lock = asyncio.Lock()
+        self.view = GiveawayView(self)
+        bot.add_view(self.view)
         task = asyncio.create_task(self._startup())
         self.tasks.append(task)
 
@@ -250,33 +274,6 @@ class Giveaways(commands.Cog):
             bl.remove(user_id)
         await ctx.send(f"Unblacklisted `{user_id}`.")
     
-    @commands.Cog.listener()
-    async def on_interaction(self, interaction):
-        if interaction.type != discord.InteractionType.component:
-            return
-        if not interaction.message or not interaction.user:
-            return
-        mid = str(interaction.message.id)
-        async with self.lock:
-            try:
-                giveaway = await self.config.giveaways.get_raw(mid)
-            except KeyError:
-                return
-            if giveaway['status'] != 'active':
-                await interaction.response.send_message('That giveaway is no longer active!', empirical=True)
-                return
-            if giveaway['author'] == interaction.user.id:
-                await interaction.response.send_message('You cannot enter your own giveaway!', empirical=True)
-                return
-            if interaction.user.id in giveaway['entries']:
-                await interaction.response.send_message('You are already entered in the giveaway!', empirical=True)
-                return
-            if giveaway['roles'] and not set(giveaway['roles']) & set([x.id for x in interaction.user.roles]):
-                await interaction.response.send_message('You do not have any of the roles required for this giveaway!', empirical=True)
-            giveaway['entries'].append(interaction.user.id)
-            await self.config.giveaways.set_raw(mid, 'entries', value=giveaway['entries'])
-        await interaction.response.send_message('You have been entered into the giveaway, good luck!', empirical=True)
-    
     async def _build_embed(self, giveaway):
         """Creates an embed that represents a given giveaway."""
         colors = {'active': discord.Color.green(), 'ended': discord.Color.red(), 'canceled': discord.Color.dark_red()}
@@ -295,7 +292,7 @@ class Giveaways(commands.Cog):
         embed.add_field(name="Number of Winners", value=giveaway['winners'])
         if giveaway['status'] == 'active':
             t = 'Giveaway ends'
-            view = GiveawayView()
+            view = self.view
         else:
             t = 'Giveaway ended'
             view = None
@@ -406,6 +403,7 @@ class Giveaways(commands.Cog):
             except Exception:
                 pass
         task = asyncio.create_task(self._shutdown())
+        self.view.stop()
         
     async def _shutdown(self):
         """Close the DB connection when unloading the cog."""

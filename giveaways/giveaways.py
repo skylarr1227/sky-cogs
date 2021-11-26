@@ -287,12 +287,12 @@ class Giveaways(commands.Cog):
             timestamp=datetime.datetime.fromtimestamp(giveaway['end'])
         )
         if giveaway['pokes']:
-            embed.add_field(title="Pokes", value=len(giveaway['pokes']))
+            embed.add_field(name="Pokes", value=len(giveaway['pokes']))
         if giveaway['creds']:
-            embed.add_field(title="Credits", value=giveaway['creds'])
+            embed.add_field(name="Credits", value=giveaway['creds'])
         if giveaway['roles']:
-            embed.add_field(title="Required role", value=giveaway['formatted_roles'])
-        embed.add_field(title="Number of Winners", value=giveaway['winners'])
+            embed.add_field(name="Required role", value=giveaway['formatted_roles'])
+        embed.add_field(name="Number of Winners", value=giveaway['winners'])
         if giveaway['status'] == 'active':
             t = 'Giveaway ends'
             view = GiveawayView()

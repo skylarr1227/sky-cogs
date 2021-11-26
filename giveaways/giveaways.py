@@ -206,6 +206,9 @@ class Giveaways(commands.Cog):
             return
         
         end = (datetime.datetime.utcnow() + td).timestamp()
+        if roles:
+            roles = [x.id for x in roles]
+            formatted_roles = ", ".join([x.name for x in roles])
         
         giveaway = {
             'author': ctx.author.id,
@@ -215,8 +218,8 @@ class Giveaways(commands.Cog):
             'pokes': pokes,
             'creds': creds,
             'winners': winners,
-            'roles': [x.id for x in roles],
-            'formatted_roles': ", ".join([x.name for x in roles]),
+            'roles': roles,
+            'formatted_roles': formatted_roles,
             'entries': [],
         }
         embed, view = await self._build_embed(giveaway)

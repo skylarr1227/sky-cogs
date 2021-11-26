@@ -390,11 +390,12 @@ class Giveaways(commands.Cog):
             else:
                 name = str(winner)
             win_text.append(name)
-            if creds_per_person:
-                await pconn.execute("UPDATE users SET mewcoins = mewcoins + $1 WHERE u_id = $2", creds_per_person, winner)
-            if pokes_per_person:
-                for i in range(pokes_per_person):
-                    await pconn.execute("UPDATE users SET pokes = array_append(pokes, $1) WHERE u_id = $2", pokes[(idx * pokes_per_person) + i], winner)
+            async with self.db.acquire() as pconn:
+                if creds_per_person:
+                    await pconn.execute("UPDATE users SET mewcoins = mewcoins + $1 WHERE u_id = $2", creds_per_person, winner)
+                if pokes_per_person:
+                    for i in range(pokes_per_person):
+                        await pconn.execute("UPDATE users SET pokes = array_append(pokes, $1) WHERE u_id = $2", pokes[(idx * pokes_per_person) + i], winner)
                     
         win_text = ", ".join(win_text)
         

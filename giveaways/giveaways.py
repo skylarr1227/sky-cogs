@@ -4,6 +4,7 @@ from redbot.core import Config
 import asyncio
 import asyncpg
 import datetime
+import os
 import random
 import ujson
 
@@ -61,9 +62,9 @@ class Giveaways(commands.Cog):
             self.allow_interaction = False
             return
         giveaways = await self.config.giveaways()
-        for num, giveaway in giveaways.items():
+        for mid, giveaway in giveaways.items():
             if giveaway['status'] == 'active':
-                task = asyncio.create_task(self._await_giveaway(num))
+                task = asyncio.create_task(self._await_giveaway(mid))
                 self.tasks.append(task)
     
     @commands.group(aliases=["ga"])
@@ -206,15 +207,17 @@ class Giveaways(commands.Cog):
                 for poke in pokes:
                     await pconn.execute("UPDATE users SET pokes = array_remove(pokes, $1) WHERE u_id = $2", poke, ctx.author.id)
 
-        task = asyncio.create_task(self._await_giveaway(num))
+        task = asyncio.create_task(self._await_giveaway(str(message.id)))
         self.tasks.append(task)
-        await ctx.send(f'Giveaway created.')
+        await ctx.send('Giveaway created.')
     
     @giveaway.command()
     async def endearly(self, ctx):
+        ...
     
     @giveaway.command()
     async def cancel(self, ctx):
+        ...
     
     @commands.admin()
     @giveaway.command()
@@ -254,7 +257,7 @@ class Giveaways(commands.Cog):
         if not interaction.message or not interaction.user:
             return
         mid = str(interaction.message.id)
-        if async with self.lock:
+        async with self.lock:
             try:
                 giveaway = await self.config.giveaways.get_raw(mid)
             except KeyError:

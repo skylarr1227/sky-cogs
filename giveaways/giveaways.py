@@ -36,8 +36,9 @@ class GiveawayView(discord.ui.View):
             if interaction.user.id in giveaway['entries']:
                 await interaction.response.send_message('You are already entered in the giveaway!', ephemeral=True)
                 return
-            if giveaway['roles'] and not set(giveaway['roles']) & set([x.id for x in interaction.user.roles]):
+            if giveaway['roles'] and not (set(giveaway['roles']) & set([x.id for x in interaction.user.roles])):
                 await interaction.response.send_message('You do not have any of the roles required for this giveaway!', ephemeral=True)
+                return
             giveaway['entries'].append(interaction.user.id)
             await self.config.giveaways.set_raw(mid, 'entries', value=giveaway['entries'])
         await interaction.response.send_message('You have been entered into the giveaway, good luck!', ephemeral=True)

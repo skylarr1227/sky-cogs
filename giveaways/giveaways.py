@@ -103,6 +103,11 @@ class Giveaways(commands.Cog):
             return
         try:
             #Q1
+            await ctx.send("What should be the description of the giveaway?")
+            resp = await self.bot.wait_for('message', timeout=60, check=lambda m: m.author == ctx.author and m.channel == ctx.channel)
+            desc = resp.content[:1000]
+            
+            #Q2
             await ctx.send("What roles are allowed to join? Enter \"none\", or role mentions or IDs seperated by a space (no text names).")
             resp = await self.bot.wait_for('message', timeout=60, check=lambda m: m.author == ctx.author and m.channel == ctx.channel)
             if resp.content.lower() == "none":
@@ -122,7 +127,7 @@ class Giveaways(commands.Cog):
                         return
                     roles.append(processed_role)
             
-            #Q2
+            #Q3
             await ctx.send("What pokemon are being given away? Enter \"none\", or IDs seperated by a space as they appear in your /p (not the global IDs).")
             resp = await self.bot.wait_for('message', timeout=60, check=lambda m: m.author == ctx.author and m.channel == ctx.channel)
             if resp.content.lower() == "none":
@@ -143,7 +148,7 @@ class Giveaways(commands.Cog):
                         return
                     pokes.append(processed_poke)
             
-            #Q3
+            #Q4
             await ctx.send("How many credits are being given away? Enter \"none\", or a number.")
             resp = await self.bot.wait_for('message', timeout=60, check=lambda m: m.author == ctx.author and m.channel == ctx.channel)
             if resp.content.lower() == "none":
@@ -167,7 +172,7 @@ class Giveaways(commands.Cog):
                 await ctx.send("You have nothing to giveaway!")
                 return
             
-            #Q4
+            #Q5
             await ctx.send(
                 "How many winners should their be? If there is more than one winner, credits will be "
                 "evenly split between winners and pokemon will be split evenly between winners in the "
@@ -186,14 +191,14 @@ class Giveaways(commands.Cog):
                 await ctx.send("The number of pokemon is not a multiple of the number of winners.")
                 return
             
-            #Q5
+            #Q6
             await ctx.send("How long should the giveaway last for?")
             resp = await self.bot.wait_for('message', timeout=60, check=lambda m: m.author == ctx.author and m.channel == ctx.channel)
             td = commands.converter.parse_timedelta(resp.content)
             if not td:
                 await ctx.send(f"\"{resp.content}\" is not a valid amount of time.", allowed_mentions=discord.AllowedMentions.none())
             
-            #Q6
+            #Q7
             await ctx.send("What channel should the giveaway be posted in?")
             resp = await self.bot.wait_for('message', timeout=60, check=lambda m: m.author == ctx.author and m.channel == ctx.channel)
             try:
@@ -223,6 +228,7 @@ class Giveaways(commands.Cog):
             'winners': winners,
             'roles': role_ids,
             'formatted_roles': formatted_roles,
+            'desc': desc,
             'entries': [],
         }
         embed, view = await self._build_embed(giveaway)
@@ -287,7 +293,8 @@ class Giveaways(commands.Cog):
         embed = discord.Embed(
             title=f'Giveaway by {author.name}',
             color=colors[giveaway['status']],
-            timestamp=datetime.datetime.fromtimestamp(giveaway['end'])
+            description=giveaway['desc'],
+            timestamp=datetime.datetime.fromtimestamp(giveaway['end']),
         )
         if giveaway['pokes']:
             embed.add_field(name="Pokes", value=len(giveaway['pokes']))

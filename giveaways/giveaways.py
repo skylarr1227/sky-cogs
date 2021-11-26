@@ -192,7 +192,7 @@ class Giveaways(commands.Cog):
             'creds': creds,
             'winners': winners,
             'roles': [x.id for x in roles],
-            'formatted_roles': ", ".join(roles),
+            'formatted_roles': ", ".join([x.name for x in roles]),
             'entries': [],
         }
         embed, view = await self._build_embed(giveaway)

@@ -56,7 +56,7 @@ class skychill(commands.Cog):
                     f"Users roles: {rlist}\n\n"
                     f"[Context]({ctx.message.jump_url})"
                 ), color=0xFF0000, timestamp=datetime.utcnow())
-        e.set_thumbnail(url=user.avatar_url)
+        e.set_thumbnail(url=user.avatar.url)
         await self.bot.get_channel(782253601208401921).send(embed=e)
         await user.edit(
             roles=new_roles, reason=f"Removing all roles, {ctx.message.author} is stripping user"
@@ -498,7 +498,7 @@ class skychill(commands.Cog):
         toggle = await self.config.guild(member.guild).toggle()
         if not toggle:
             return
-        if member.avatar_url == member.default_avatar_url:
+        if member.avatar.url == member.default_avatar.url:
             default_avatar = True
         join_date = datetime.datetime.strptime(str(member.created_at), "%Y-%m-%d %H:%M:%S.%f")
         now = datetime.datetime.now(datetime.timezone.utc).replace(tzinfo=None)

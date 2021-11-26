@@ -206,8 +206,10 @@ class Giveaways(commands.Cog):
             return
         
         end = (datetime.datetime.utcnow() + td).timestamp()
+        formatted_roles = ""
+        role_ids = None
         if roles:
-            roles = [x.id for x in roles]
+            role_ids = [x.id for x in roles]
             formatted_roles = ", ".join([x.name for x in roles])
         
         giveaway = {
@@ -218,7 +220,7 @@ class Giveaways(commands.Cog):
             'pokes': pokes,
             'creds': creds,
             'winners': winners,
-            'roles': roles,
+            'roles': role_ids,
             'formatted_roles': formatted_roles,
             'entries': [],
         }

@@ -28,19 +28,19 @@ class GiveawayView(discord.ui.View):
             except KeyError:
                 return
             if giveaway['status'] != 'active':
-                await interaction.response.send_message('That giveaway is no longer active!', empirical=True)
+                await interaction.response.send_message('That giveaway is no longer active!', ephemeral=True)
                 return
             if giveaway['author'] == interaction.user.id:
-                await interaction.response.send_message('You cannot enter your own giveaway!', empirical=True)
+                await interaction.response.send_message('You cannot enter your own giveaway!', ephemeral=True)
                 return
             if interaction.user.id in giveaway['entries']:
-                await interaction.response.send_message('You are already entered in the giveaway!', empirical=True)
+                await interaction.response.send_message('You are already entered in the giveaway!', ephemeral=True)
                 return
             if giveaway['roles'] and not set(giveaway['roles']) & set([x.id for x in interaction.user.roles]):
-                await interaction.response.send_message('You do not have any of the roles required for this giveaway!', empirical=True)
+                await interaction.response.send_message('You do not have any of the roles required for this giveaway!', ephemeral=True)
             giveaway['entries'].append(interaction.user.id)
             await self.config.giveaways.set_raw(mid, 'entries', value=giveaway['entries'])
-        await interaction.response.send_message('You have been entered into the giveaway, good luck!', empirical=True)
+        await interaction.response.send_message('You have been entered into the giveaway, good luck!', ephemeral=True)
 
 
 class Giveaways(commands.Cog):
@@ -312,7 +312,7 @@ class Giveaways(commands.Cog):
         if not channel:
             return
         try:
-            message = await channel.fetch_message(giveaway['message'])
+            message = await channel.fetch_message(int(mid))
             await message.edit(embed=embed, view=view)
         except discord.errors.HTTPException:
             return

@@ -89,11 +89,11 @@ class Giveaways(commands.Cog):
                     try:
                         processed_role = int(processed_role)
                     except ValueError:
-                        await ctx.send(f"\"{role}\" is not a valid role mention or ID.", allowed_mentions=discord.AllowedMentions.none)
+                        await ctx.send(f"\"{role}\" is not a valid role mention or ID.", allowed_mentions=discord.AllowedMentions.none())
                         return
                     processed_role = ctx.guild.get_role(processed_role)
                     if not processed_role:
-                        await ctx.send(f"\"{role}\" is not a valid role mention or ID.", allowed_mentions=discord.AllowedMentions.none)
+                        await ctx.send(f"\"{role}\" is not a valid role mention or ID.", allowed_mentions=discord.AllowedMentions.none())
                         return
                     roles.append(processed_role)
             
@@ -109,12 +109,12 @@ class Giveaways(commands.Cog):
                     try:
                         processed_poke = int(processed_poke)
                     except ValueError:
-                        await ctx.send(f"\"{poke}\" is not a valid relative poke ID.", allowed_mentions=discord.AllowedMentions.none)
+                        await ctx.send(f"\"{poke}\" is not a valid relative poke ID.", allowed_mentions=discord.AllowedMentions.none())
                         return
                     async with self.db.acquire() as pconn:
                         processed_poke = await pconn.fetchval("SELECT pokes[$1] FROM users WHERE u_id = $2", processed_poke, ctx.author.id)
                     if not processed_poke:
-                        await ctx.send(f"\"{poke}\" is not a valid relative poke ID.", allowed_mentions=discord.AllowedMentions.none)
+                        await ctx.send(f"\"{poke}\" is not a valid relative poke ID.", allowed_mentions=discord.AllowedMentions.none())
                         return
                     pokes.append(processed_poke)
             
@@ -127,7 +127,7 @@ class Giveaways(commands.Cog):
                 try:
                     creds = int(resp.content)
                 except ValueError:
-                    await ctx.send(f"\"{resp.content}\" is not a valid amount of credits.", allowed_mentions=discord.AllowedMentions.none)
+                    await ctx.send(f"\"{resp.content}\" is not a valid amount of credits.", allowed_mentions=discord.AllowedMentions.none())
                     return
                 if creds < 0:
                     await ctx.send("You cannot giveaway a negative number of credits.")
@@ -152,7 +152,7 @@ class Giveaways(commands.Cog):
             try:
                 winners = int(resp.content)
             except ValueError:
-                await ctx.send(f"\"{resp.content}\" is not a valid amount of credits.", allowed_mentions=discord.AllowedMentions.none)
+                await ctx.send(f"\"{resp.content}\" is not a valid amount of credits.", allowed_mentions=discord.AllowedMentions.none())
                 return
             if winners <= 0:
                 await ctx.send("You cannot giveaway to less than one winner.")
@@ -166,7 +166,7 @@ class Giveaways(commands.Cog):
             resp = await self.bot.wait_for('message', timeout=60, check=lambda m: m.author == ctx.author and m.channel == ctx.channel)
             td = commands.converter.parse_timedelta(resp.content)
             if not td:
-                await ctx.send(f"\"{resp.content}\" is not a valid amount of time.", allowed_mentions=discord.AllowedMentions.none)
+                await ctx.send(f"\"{resp.content}\" is not a valid amount of time.", allowed_mentions=discord.AllowedMentions.none())
             
             #Q6
             await ctx.send("What channel should the giveaway be posted in?")
@@ -271,6 +271,8 @@ class Giveaways(commands.Cog):
             if interaction.user.id in giveaway['entries']:
                 await interaction.response.send_message('You are already entered in the giveaway!', empirical=True)
                 return
+            if giveaway['roles'] and not set(giveaway['roles']) & set([x.id for x in interaction.user.roles]):
+                await interaction.response.send_message('You do not have any of the roles required for this giveaway!', empirical=True)
             giveaway['entries'].append(interaction.user.id)
             await self.config.giveaways.set_raw(mid, 'entries', value=giveaway['entries'])
         await interaction.response.send_message('You have been entered into the giveaway, good luck!', empirical=True)

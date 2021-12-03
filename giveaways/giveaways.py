@@ -352,6 +352,7 @@ class Giveaways(commands.Cog):
         channel = self.bot.get_channel(giveaway['channel'])
         await self._update_giveaway(mid)
         entries = list(set(giveaway['entries']))
+        desc = giveaway['desc']
         creds = giveaway['creds']
         pokes = giveaway['pokes']
         winners = giveaway['winners']
@@ -367,7 +368,7 @@ class Giveaways(commands.Cog):
                     for poke in pokes:
                         await pconn.execute("UPDATE users SET pokes = array_append(pokes, $1) WHERE u_id = $2", poke, giveaway['author'])
             if channel:
-                await channel.send(f'{author}\'s giveaway has ended.\nThere were no entries.')
+                await channel.send(f'{author}\'s giveaway "{desc}" has ended.\nThere were no entries.')
             return
         
         pokes_per_person = 0
@@ -407,7 +408,7 @@ class Giveaways(commands.Cog):
         win_text = ", ".join(win_text)
         
         if channel:
-            await channel.send(f'{author}\'s giveaway has ended.\nThe winners are {win_text}.')
+            await channel.send(f'{author}\'s giveaway "{desc}" has ended.\nThe winners are {win_text}.')
 
     def cog_unload(self):
         """Closes giveaway tasks on cog unload."""

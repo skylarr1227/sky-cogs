@@ -349,7 +349,7 @@ class skychill(commands.Cog):
             blacklist_msg = " and the bot blacklist"
         else:
             blacklist_msg = ""
-        msg = f"{user} has been removed from the chillzone{blacklist_msg} and now has ther roles back."
+        msg = f"{user} has been removed from the chillzone{blacklist_msg} and now has their roles back."
         await ctx.send(msg)
 
         if dm_toggle:

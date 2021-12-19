@@ -24,6 +24,7 @@ class Mew(commands.Cog):
         self.db = None
         self.mongo = AsyncIOMotorClient(MONGO_URL).pokemon
         asyncio.create_task(self._startup())
+        self.stats.start()
     
     async def init(self, con):
         """Required for the DB."""
@@ -284,3 +285,23 @@ class Mew(commands.Cog):
                 pokeid,
             )
         return pokeid, gender, sum((hpiv, atkiv, defiv, spaiv, spdiv, speiv))
+
+
+    def __init__(self, bot):
+        self.bot = bot
+       
+
+    @tasks.loop(minutes=10)
+    async def stats(self):
+        async with self.db.acquire() as pconn:
+            amount = await pconn.fetchval("select mewcoins from users where u_id = 920827966928326686")
+        guild = self.bot.get_guild(519466243342991360)
+        if not guild:
+            return
+        channel = guild.get_channel(922226402059759686)
+        if not channel:
+            return
+        await channel.edit(name=f"Raffle pot: {amount}")
+
+    def cog_unload(self):
+        self.stats.cancel()

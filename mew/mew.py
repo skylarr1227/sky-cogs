@@ -103,192 +103,191 @@ class Mew(commands.Cog):
             f"`{ctx.prefix}acceptrequest {ctx.message.id}`"
         )
     
-    async def create_poke(
-        self,
-        user_id: int,
-        pokemon: str,
-        *,
-        boosted: bool = False,
-        radiant: bool = False,
-        shiny: bool = False,
-        gender: str = None,
-        level: int = 1
-    ):
-        """Creates a poke and gives it to user."""
-        form_info = await self.mongo.forms.find_one({"identifier": pokemon.lower()})
-        pokemon_info = await self.mongo.pfile.find_one({"id": form_info["pokemon_id"]})
-        try:
-            gender_rate = pokemon_info["gender_rate"]
-        except Exception:
-            return
+    #async def create_poke(
+    #    self,
+    #    user_id: int,
+    #    pokemon: str,
+    #    *,
+    #    boosted: bool = False,
+    #    radiant: bool = False,
+    #    shiny: bool = False,
+    #    gender: str = None,
+    #    level: int = 1
+    #):
+    #    """Creates a poke and gives it to user."""
+    #    form_info = await self.mongo.forms.find_one({"identifier": pokemon.lower()})
+    #    pokemon_info = await self.mongo.pfile.find_one({"id": form_info["pokemon_id"]})
+    #    try:
+    #        gender_rate = pokemon_info["gender_rate"]
+    #    except Exception:
+    #        return
+#
+    #    ab_ids = (
+    #        await self.mongo
+    #        .poke_abilities.find({"pokemon_id": form_info["pokemon_id"]})
+    #        .to_list(length=3)
+    #    )
+    #    ab_ids = [doc["ability_id"] for doc in ab_ids]
+#
+    #    natlist = [
+    #        "Lonely",
+    #        "Brave",
+    #        "Adamant",
+    #        "Naughty",
+    #        "Bold",
+    #        "Relaxed",
+    #        "Impish",
+    #        "Lax",
+    #        "Timid",
+    #        "Hasty",
+    #        "Jolly",
+    #        "Naive",
+    #        "Modest",
+    #        "Mild",
+    #        "Quiet",
+    #        "Rash",
+    #        "Calm",
+    #        "Gentle",
+    #        "Sassy",
+    #        "Careful",
+    #        "Bashful",
+    #        "Quirky",
+    #        "Serious",
+    #        "Docile",
+    #        "Hardy",
+    #    ]
+#
+    #    min_iv = 12 if boosted else 1
+    #    max_iv = 31 if boosted or random.randint(0, 1) else 29
+    #    hpiv = random.randint(min_iv, max_iv)
+    #    atkiv = random.randint(min_iv, max_iv)
+    #    defiv = random.randint(min_iv, max_iv)
+    #    spaiv = random.randint(min_iv, max_iv)
+    #    spdiv = random.randint(min_iv, max_iv)
+    #    speiv = random.randint(min_iv, max_iv)
+    #    nature = random.choice(natlist)
+    #    if not gender:
+    #        if "idoran" in pokemon.lower():
+    #            gender = pokemon[-2:]
+    #        elif pokemon.lower() == "volbeat":
+    #            gender = "-m"
+    #        elif pokemon.lower() == "illumise":
+    #            gender = "-f"
+    #        elif pokemon.lower() == "gallade":
+    #            gender = "-m"
+    #        elif pokemon.lower() == "nidoking":
+    #            gender = "-m"
+    #        elif pokemon.lower() == "nidoqueen":
+    #            gender = "-f"
+    #        else:
+    #            if gender_rate in (8, -1) and pokemon.capitalize() in (
+    #                "Blissey",
+    #                "Bounsweet",
+    #                "Chansey",
+    #                "Cresselia",
+    #                "Flabebe",
+    #                "Floette",
+    #                "Florges",
+    #                "Froslass",
+    #                "Happiny",
+    #                "Illumise",
+    #                "Jynx",
+    #                "Kangaskhan",
+    #                "Lilligant",
+    #                "Mandibuzz",
+    #                "Miltank",
+    #                "Nidoqueen",
+    #                "Nidoran-f",
+    #                "Nidorina",
+    #                "Petilil",
+    #                "Salazzle",
+    #                "Smoochum",
+    #                "Steenee",
+    #                "Tsareena",
+    #                "Vespiquen",
+    #                "Vullaby",
+    #                "Wormadam",
+    #                "Meowstic-f",
+    #            ):
+    #                gender = "-f"
+    #            elif gender_rate in (8, -1, 0) and not pokemon.capitalize() in (
+    #                "Blissey",
+    #                "Bounsweet",
+    #                "Chansey",
+    #                "Cresselia",
+    #                "Flabebe",
+    #                "Floette",
+    #                "Florges",
+    #                "Froslass",
+    #                "Happiny",
+    #                "Illumise",
+    #                "Jynx",
+    #                "Kangaskhan",
+    #                "Lilligant",
+    #                "Mandibuzz",
+    #                "Miltank",
+    #                "Nidoqueen",
+    #                "Nidoran-f",
+    #                "Nidorina",
+    #                "Petilil",
+    #                "Salazzle",
+    #                "Smoochum",
+    #                "Steenee",
+    #                "Tsareena",
+    #                "Vespiquen",
+    #                "Vullaby",
+    #                "Wormadam",
+    #                "Meowstic-f",
+    #            ):
+    #                gender = "-m"
+    #            else:
+    #                gender = "-f" if random.randint(1, 10) == 1 else "-m"
+    #    query2 = """
+    #            INSERT INTO pokes (pokname, hpiv, atkiv, defiv, spatkiv, spdefiv, speediv, hpev, atkev, defev, spatkev, spdefev, speedev, pokelevel, moves, hitem, exp, nature, expcap, poknick, shiny, price, market_enlist, fav, ability_index, gender, caught_by, radiant)
+#
+    #            VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20, $21, $22, $23, $24, $25, $26, $27, $28) RETURNING id
+    #            """
+    #    args = (
+    #        pokemon.capitalize(),
+    #        hpiv,
+    #        atkiv,
+    #        defiv,
+    #        spaiv,
+    #        spdiv,
+    #        speiv,
+    #        0,
+    #        0,
+    #        0,
+    #        0,
+    #        0,
+    #        0,
+    #        level,
+    #        ["tackle", "tackle", "tackle", "tackle"],
+    #        "None",
+    #        1,
+    #        nature,
+    #        level ** 2,
+    #        "None",
+    #        shiny,
+    #        0,
+    #        False,
+    #        False,
+    #        random.randrange(len(ab_ids)),
+    #        gender,
+    #        user_id,
+    #        radiant,
+    #    )
+    #    async with self.db.acquire() as pconn:
+    #        pokeid = await pconn.fetchval(query2, *args)
+    #        await pconn.execute(
+    #            "UPDATE users SET pokes = array_append(pokes, $2) WHERE u_id = $1",
+    #            user_id,
+    #            pokeid,
+    #        )
+    #    return pokeid, gender, sum((hpiv, atkiv, defiv, spaiv, spdiv, speiv))
+#
+#
 
-        ab_ids = (
-            await self.mongo
-            .poke_abilities.find({"pokemon_id": form_info["pokemon_id"]})
-            .to_list(length=3)
-        )
-        ab_ids = [doc["ability_id"] for doc in ab_ids]
-
-        natlist = [
-            "Lonely",
-            "Brave",
-            "Adamant",
-            "Naughty",
-            "Bold",
-            "Relaxed",
-            "Impish",
-            "Lax",
-            "Timid",
-            "Hasty",
-            "Jolly",
-            "Naive",
-            "Modest",
-            "Mild",
-            "Quiet",
-            "Rash",
-            "Calm",
-            "Gentle",
-            "Sassy",
-            "Careful",
-            "Bashful",
-            "Quirky",
-            "Serious",
-            "Docile",
-            "Hardy",
-        ]
-
-        min_iv = 12 if boosted else 1
-        max_iv = 31 if boosted or random.randint(0, 1) else 29
-        hpiv = random.randint(min_iv, max_iv)
-        atkiv = random.randint(min_iv, max_iv)
-        defiv = random.randint(min_iv, max_iv)
-        spaiv = random.randint(min_iv, max_iv)
-        spdiv = random.randint(min_iv, max_iv)
-        speiv = random.randint(min_iv, max_iv)
-        nature = random.choice(natlist)
-        if not gender:
-            if "idoran" in pokemon.lower():
-                gender = pokemon[-2:]
-            elif pokemon.lower() == "volbeat":
-                gender = "-m"
-            elif pokemon.lower() == "illumise":
-                gender = "-f"
-            elif pokemon.lower() == "gallade":
-                gender = "-m"
-            elif pokemon.lower() == "nidoking":
-                gender = "-m"
-            elif pokemon.lower() == "nidoqueen":
-                gender = "-f"
-            else:
-                if gender_rate in (8, -1) and pokemon.capitalize() in (
-                    "Blissey",
-                    "Bounsweet",
-                    "Chansey",
-                    "Cresselia",
-                    "Flabebe",
-                    "Floette",
-                    "Florges",
-                    "Froslass",
-                    "Happiny",
-                    "Illumise",
-                    "Jynx",
-                    "Kangaskhan",
-                    "Lilligant",
-                    "Mandibuzz",
-                    "Miltank",
-                    "Nidoqueen",
-                    "Nidoran-f",
-                    "Nidorina",
-                    "Petilil",
-                    "Salazzle",
-                    "Smoochum",
-                    "Steenee",
-                    "Tsareena",
-                    "Vespiquen",
-                    "Vullaby",
-                    "Wormadam",
-                    "Meowstic-f",
-                ):
-                    gender = "-f"
-                elif gender_rate in (8, -1, 0) and not pokemon.capitalize() in (
-                    "Blissey",
-                    "Bounsweet",
-                    "Chansey",
-                    "Cresselia",
-                    "Flabebe",
-                    "Floette",
-                    "Florges",
-                    "Froslass",
-                    "Happiny",
-                    "Illumise",
-                    "Jynx",
-                    "Kangaskhan",
-                    "Lilligant",
-                    "Mandibuzz",
-                    "Miltank",
-                    "Nidoqueen",
-                    "Nidoran-f",
-                    "Nidorina",
-                    "Petilil",
-                    "Salazzle",
-                    "Smoochum",
-                    "Steenee",
-                    "Tsareena",
-                    "Vespiquen",
-                    "Vullaby",
-                    "Wormadam",
-                    "Meowstic-f",
-                ):
-                    gender = "-m"
-                else:
-                    gender = "-f" if random.randint(1, 10) == 1 else "-m"
-        query2 = """
-                INSERT INTO pokes (pokname, hpiv, atkiv, defiv, spatkiv, spdefiv, speediv, hpev, atkev, defev, spatkev, spdefev, speedev, pokelevel, moves, hitem, exp, nature, expcap, poknick, shiny, price, market_enlist, fav, ability_index, gender, caught_by, radiant)
-
-                VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20, $21, $22, $23, $24, $25, $26, $27, $28) RETURNING id
-                """
-        args = (
-            pokemon.capitalize(),
-            hpiv,
-            atkiv,
-            defiv,
-            spaiv,
-            spdiv,
-            speiv,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            level,
-            ["tackle", "tackle", "tackle", "tackle"],
-            "None",
-            1,
-            nature,
-            level ** 2,
-            "None",
-            shiny,
-            0,
-            False,
-            False,
-            random.randrange(len(ab_ids)),
-            gender,
-            user_id,
-            radiant,
-        )
-        async with self.db.acquire() as pconn:
-            pokeid = await pconn.fetchval(query2, *args)
-            await pconn.execute(
-                "UPDATE users SET pokes = array_append(pokes, $2) WHERE u_id = $1",
-                user_id,
-                pokeid,
-            )
-        return pokeid, gender, sum((hpiv, atkiv, defiv, spaiv, spdiv, speiv))
-
-
-    def __init__(self, bot):
-        self.bot = bot
        
 
     @tasks.loop(minutes=10)

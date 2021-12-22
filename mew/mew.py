@@ -290,8 +290,9 @@ class Mew(commands.Cog):
 
        
 
-    @tasks.loop(minutes=10)
+    @tasks.loop(minutes=9)
     async def stats(self):
+        await asyncio.sleep(60)
         async with self.db.acquire() as pconn:
             amount = await pconn.fetchval("select mewcoins from users where u_id = 920827966928326686")
         guild = self.bot.get_guild(519466243342991360)

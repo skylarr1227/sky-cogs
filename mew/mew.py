@@ -300,7 +300,7 @@ class Mew(commands.Cog):
         channel = guild.get_channel(923019380122607677)
         if not channel:
             return
-        await channel.edit(name=f"Raffle pot: {amount}")
+        await channel.edit(name=f"Raffle pot {amount}")
 
     def cog_unload(self):
         self.stats.cancel()

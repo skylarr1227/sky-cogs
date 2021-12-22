@@ -14,7 +14,7 @@ from motor.motor_asyncio import AsyncIOMotorClient
 REQUESTS_CHANNEL = 894732056645484544
 DEV_CHANNEL = 728758254796275782
 DATABASE_URL = os.environ["DATABASE_URL"]
-MONGO_URL = os.environ["MONGO_URL"]
+#MONGO_URL = os.environ["MONGO_URL"]
 
 class Mew(commands.Cog):
     """Mew"""
@@ -22,7 +22,7 @@ class Mew(commands.Cog):
         self.bot = bot
         self.active_requests = {}
         self.db = None
-        self.mongo = AsyncIOMotorClient(MONGO_URL).pokemon
+ #       self.mongo = AsyncIOMotorClient(MONGO_URL).pokemon
         asyncio.create_task(self._startup())
         self.stats.start()
     
@@ -297,7 +297,7 @@ class Mew(commands.Cog):
         guild = self.bot.get_guild(519466243342991360)
         if not guild:
             return
-        channel = guild.get_channel(922226402059759686)
+        channel = guild.get_channel(923019380122607677)
         if not channel:
             return
         await channel.edit(name=f"Raffle pot: {amount}")

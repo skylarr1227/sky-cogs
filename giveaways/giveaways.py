@@ -255,6 +255,44 @@ class Giveaways(commands.Cog):
     async def cancel(self, ctx):
         ...
     
+    @giveaway.command()
+    async def reroll(self, ctx, giveawayid: int, amount: int=1):
+        """
+        Reroll the giveaway.
+        
+        This will not give out prizes automatically, it will only pick winners.
+        The "giveawayid" is the message ID of the embed with the giveaway information.
+        Use the parameter "amount" to determine how many users should be picked.
+        """
+        giveaway = await self.config.giveaways.get_raw(giveawayid)
+        channel = self.bot.get_channel(giveaway['channel'])
+        entries = list(set(giveaway['entries']))
+        desc = giveaway['desc']
+        winners = amount
+        author = self.bot.get_user(giveaway['author'])
+        if not author:
+            author = giveaway['author']
+        # Special case handling for when there are no winners
+        if not entries:
+            if channel:
+                await channel.send(f'{author}\'s giveaway "{desc}" has ended.\nThere were no entries.')
+            return
+        # Special case handling for when there are less entries than winners
+        if len(entries) < winners:
+            winners = len(entries)
+        winners = random.sample(entries, winners)
+        win_text = []
+        for idx, winner in enumerate(winners):
+            name = self.bot.get_user(winner)
+            if name:
+                name = name.mention
+            else:
+                name = str(winner)
+            win_text.append(name)      
+        win_text = ", ".join(win_text)
+        if channel:
+            await channel.send(f'{author}\'s giveaway "{desc}" has ended.\nThe winners are {win_text}.')
+    
     @commands.admin()
     @giveaway.command()
     async def blacklist(self, ctx, user_id: int):

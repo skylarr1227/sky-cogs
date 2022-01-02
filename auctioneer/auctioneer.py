@@ -220,7 +220,7 @@ class Auctioneer(commands.Cog):
 			return 
 		poke = await self._find_pokemon(ctx.author.id, poke)
 		if poke is None:
-			await ctx.send('You do not have that Pokemon, that Pokemon is currently selected, or that pokemon is enlisted in the market.')
+			await ctx.send('You do not have that Pokemon, that Pokemon is currently selected, or that pokemon is not tradable.')
 			return
 		
 		try:
@@ -868,10 +868,10 @@ class Auctioneer(commands.Cog):
 		"""
 		async with self.db.acquire() as pconn:
 			poke = await pconn.fetchval('SELECT pokes[$1] FROM users WHERE u_id = $2', user_poke, userid)
-			data = await pconn.fetchrow('SELECT pokname, market_enlist FROM pokes WHERE id = $1', poke)
+			data = await pconn.fetchrow('SELECT pokname, tradable FROM pokes WHERE id = $1', poke)
 			if data['pokname'] in (None, 'Egg'):
 				return None
-			if data['market_enlist']:
+			if not data['tradable']:
 				return None
 			selected = await pconn.fetchval('SELECT selected FROM users WHERE u_id = $1', userid)
 			if selected and selected == poke:

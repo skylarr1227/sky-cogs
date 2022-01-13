@@ -9,6 +9,9 @@ import os
 import random
 import ujson
 from motor.motor_asyncio import AsyncIOMotorClient
+from redbot.core.utils.chat_formatting import pagify
+import aiohttp
+from tabulate import tabulate
 
 
 REQUESTS_CHANNEL = 894732056645484544

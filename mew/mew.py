@@ -73,26 +73,26 @@ class Mew(commands.Cog):
     @check_helper()
     @commands.command()
     async def listshow(self, ctx):
-    token = os.environ["SKY_LIST_KEY"]
-    headers = {
-        "Authorization": f"Token {token}",
-        "Content-Type": "application/json"
-    }
-    url = 'https://dev.mewbot.art/api/database/rows/table/105/?user_field_names=true'
-    raw = []
-    async with aiohttp.ClientSession() as session:
-        for _ in range(25):
-            async with session.get(url, headers=headers) as r:
-                data = await r.json()
-                raw.extend(data["results"])
-                url = data["next"]
-                if url is None:
-                    break
-    data = [(item["id"], item["poke"], item["status"], item["complete"]) for item in raw]
-    text = tabulate(data, headers=("ID", "Poke", "Status", "Complete"))
-    paged = pagify(text)
-    box_paged = (f'{"`" * 3}\n{x}{"`" * 3}' for x in paged)
-    await ctx.send_interactive(box_paged)
+        token = os.environ["SKY_LIST_KEY"]
+        headers = {
+            "Authorization": f"Token {token}",
+            "Content-Type": "application/json"
+        }
+        url = 'https://dev.mewbot.art/api/database/rows/table/105/?user_field_names=true'
+        raw = []
+        async with aiohttp.ClientSession() as session:
+            for _ in range(25):
+                async with session.get(url, headers=headers) as r:
+                    data = await r.json()
+                    raw.extend(data["results"])
+                    url = data["next"]
+                    if url is None:
+                        break
+        data = [(item["id"], item["poke"], item["status"], item["complete"]) for item in raw]
+        text = tabulate(data, headers=("ID", "Poke", "Status", "Complete"))
+        paged = pagify(text)
+        box_paged = (f'{"`" * 3}\n{x}{"`" * 3}' for x in paged)
+        await ctx.send_interactive(box_paged)
 
     @check_gymauth()
     @commands.command()

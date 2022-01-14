@@ -90,7 +90,7 @@ class Mew(commands.Cog):
             
     @check_helper()
     @commands.command()
-    async def listadd(self, ctx, name: str, link: str, added: bool):
+    async def listadd(self, ctx, name: str, contrib: str, link: str, added: bool):
         token = os.environ["SKY_LIST_KEY"]
         headers = {
             "Authorization": f"Token {token}",
@@ -99,7 +99,8 @@ class Mew(commands.Cog):
         json = {
             "name": name,
             "link": link,
-            "added?": added,
+            "contribution": contrib,
+            "added?": added
         }
 
         async with aiohttp.ClientSession() as session:

@@ -62,7 +62,7 @@ class Mew(commands.Cog):
         for i in range(0, len(to_change), 2):
             key = to_change[i].lower()
             value = to_change[i + 1].lower()
-            if key not in ("name", "link", "added?"):
+            if key not in ("name", "link","contribution","added?"):
                 await ctx.send(f"Invalid key {key}.")
                 return
             if key == "added?":
@@ -134,10 +134,10 @@ class Mew(commands.Cog):
                     url = data["next"]
                     if url is None:
                         break
-        data = [(item["id"], item["name"], item["link"], item["added?"]) for item in raw]
-        text = tabulate(data, headers=("ID", "name", "link", "added?"))
+        data = [(item["id"], item["name"], item["contribution"], item["link"], item["added?"]) for item in raw]
+        text = tabulate(data, headers=("ID", "name","contribution", "link", "added?"))
         paged = pagify(text)
-        box_paged = (f'{"`" * 3}\n{x}{"`" * 3}' for x in paged)
+        box_paged = (f'{"`" * 4}\n{x}{"`" * 4}' for x in paged)
         await ctx.send_interactive(box_paged)
 
     @check_gymauth()

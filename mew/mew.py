@@ -49,8 +49,6 @@ class Mew(commands.Cog):
     @check_helper()
     @commands.command()
     async def listedit(self, ctx, row: int, *to_change):
-        row = 5
-        to_change = ("poke", "pikachu", "complete", "true")
         token = os.environ["SKY_LIST_KEY"]
         headers = {
             "Authorization": f"Token {token}",
@@ -64,10 +62,10 @@ class Mew(commands.Cog):
         for i in range(0, len(to_change), 2):
             key = to_change[i].lower()
             value = to_change[i + 1].lower()
-            if key not in ("poke", "status", "complete"):
+            if key not in ("name", "link", "added?"):
                 await ctx.send(f"Invalid key {key}.")
                 return
-            if key == "complete":
+            if key == "added?":
                 if value[0] in ("t", "y"):
                     value = True
                 elif value[0] in ("f", "n"):
@@ -92,16 +90,16 @@ class Mew(commands.Cog):
             
     @check_helper()
     @commands.command()
-    async def listadd(self, ctx, poke: str, status: str, complete: bool):
+    async def listadd(self, ctx, name: str, link: str, added: bool):
         token = os.environ["SKY_LIST_KEY"]
         headers = {
             "Authorization": f"Token {token}",
             "Content-Type": "application/json"
         }
         json = {
-            "poke": poke,
-            "status": status,
-            "complete": complete,
+            "name": name,
+            "link": link,
+            "added?": added,
         }
 
         async with aiohttp.ClientSession() as session:
@@ -135,8 +133,8 @@ class Mew(commands.Cog):
                     url = data["next"]
                     if url is None:
                         break
-        data = [(item["id"], item["poke"], item["status"], item["complete"]) for item in raw]
-        text = tabulate(data, headers=("ID", "Poke", "Status", "Complete"))
+        data = [(item["id"], item["name"], item["link"], item["added?"]) for item in raw]
+        text = tabulate(data, headers=("ID", "name", "link", "added?"))
         paged = pagify(text)
         box_paged = (f'{"`" * 3}\n{x}{"`" * 3}' for x in paged)
         await ctx.send_interactive(box_paged)

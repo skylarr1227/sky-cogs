@@ -45,6 +45,50 @@ class Mew(commands.Cog):
         except ConnectionError:
             await self.bot.http.send_message(DEV_CHANNEL, "mew.py could not connect to postgres.")
             return
+
+    @check_helper()
+    @commands.command()
+    async def listedit(self, ctx, row: int, *to_change):
+        row = 5
+        to_change = ("poke", "pikachu", "complete", "true")
+        token = os.environ["SKY_LIST_KEY"]
+        headers = {
+            "Authorization": f"Token {token}",
+            "Content-Type": "application/json"
+        }
+        json = {}
+
+        if len(to_change) % 2:
+            await ctx.send("Key-value pairs do not match up!")
+            return
+        for i in range(0, len(to_change), 2):
+            key = to_change[i].lower()
+            value = to_change[i + 1].lower()
+            if key not in ("poke", "status", "complete"):
+                await ctx.send(f"Invalid key {key}.")
+                return
+            if key == "complete":
+                if value[0] in ("t", "y"):
+                    value = True
+                elif value[0] in ("f", "n"):
+                    value = False
+                else:
+                    await ctx.send(f"Value for {key} must be a boolean.")
+                    return
+            json[key] = value
+
+        async with aiohttp.ClientSession() as session:
+            async with session.patch(
+                f'https://dev.mewbot.art/api/database/rows/table/105/{row}/?user_field_names=true',
+                headers=headers,
+                json=json
+            ) as r:
+                status = r.ok
+                result = await r.text()
+            if not status:
+                await ctx.send(f"Something went wrong trying to edit that row.\n{result}"[:2000])
+            else:
+                await ctx.send("Row edited.")
             
     @check_helper()
     @commands.command()

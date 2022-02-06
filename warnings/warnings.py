@@ -473,6 +473,7 @@ class Warnings(commands.Cog):
                         await warn_channel.send(
                             _("{user} has been warned by {warner}.").format(user=member.mention, warner=ctx.author.mention),
                             embed=em,
+                            allowed_mentions=discord.AllowedMentions.none(),
                         )
 
             if not dm_failed:
@@ -566,6 +567,7 @@ class Warnings(commands.Cog):
                         await warn_channel.send(
                             _("A note has been added to {user} by {warner}.").format(user=member.mention, warner=ctx.author.mention),
                             embed=em,
+                            allowed_mentions=discord.AllowedMentions.none(),
                         )
 
             if warn_channel:

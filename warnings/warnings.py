@@ -461,7 +461,7 @@ class Warnings(commands.Cog):
 
         toggle_channel = guild_settings["toggle_channel"]
         if toggle_channel:
-            title = f"Warning from {ctx.author.mention}"
+            title = f"Warning from {ctx.author}"
             em = discord.Embed(
                 title=title, description=reason_type["description"], color=await ctx.embed_colour()
             )
@@ -471,7 +471,7 @@ class Warnings(commands.Cog):
                 if warn_channel.permissions_for(guild.me).send_messages:
                     with contextlib.suppress(discord.HTTPException):
                         await warn_channel.send(
-                            _("{user} has been warned.").format(user=member.mention),
+                            _("{user} has been warned by {warner}.").format(user=member.mention, warner=ctx.author.mention),
                             embed=em,
                         )
 
@@ -554,7 +554,7 @@ class Warnings(commands.Cog):
 
         toggle_channel = guild_settings["toggle_channel"]
         if toggle_channel:
-            title = _("Mod note from {user}").format(user=ctx.author.mention)
+            title = _("Mod note from {user}").format(user=ctx.author)
             em = discord.Embed(
                 title=title, description=reason_type["description"], color=await ctx.embed_colour()
             )
@@ -564,7 +564,7 @@ class Warnings(commands.Cog):
                 if warn_channel.permissions_for(guild.me).send_messages:
                     with contextlib.suppress(discord.HTTPException):
                         await warn_channel.send(
-                            _("A note has been added to {user}.").format(user=member.mention),
+                            _("A note has been added to {user} by {warner}.").format(user=member.mention, warner=ctx.author.mention),
                             embed=em,
                         )
 

@@ -461,10 +461,7 @@ class Warnings(commands.Cog):
 
         toggle_channel = guild_settings["toggle_channel"]
         if toggle_channel:
-            if showmod:
-                title = _("Warning from {user}").format(user=ctx.author)
-            else:
-                title = _("Warning")
+            title = f"Warning from {ctx.author.mention}"
             em = discord.Embed(
                 title=title, description=reason_type["description"], color=await ctx.embed_colour()
             )
@@ -557,7 +554,7 @@ class Warnings(commands.Cog):
 
         toggle_channel = guild_settings["toggle_channel"]
         if toggle_channel:
-            title = _("Mod note from {user}").format(user=ctx.author)
+            title = _("Mod note from {user}").format(user=ctx.author.mention)
             em = discord.Embed(
                 title=title, description=reason_type["description"], color=await ctx.embed_colour()
             )

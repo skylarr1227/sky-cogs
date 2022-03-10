@@ -2,7 +2,11 @@ import discord
 from redbot.core import commands
 from discord.ext import tasks
 from .checks import *
+from glitch_this import ImageGlitcher
+from PIL import Image
+from io import BytesIO
 
+import requests
 import asyncio
 import asyncpg
 import os
@@ -199,6 +203,23 @@ class Mew(commands.Cog):
             f"`{ctx.prefix}acceptrequest {ctx.message.id}`"
         )
     
+
+
+    @check_admin()
+    @commands.command()
+    async def glitch(self, ctx, pokeid, number: int):
+        """Accept a request to run a command."""
+        glitcher = ImageGlitcher()
+        img = f'/home/dylee/clustered/shared/duel/sprites/{pokeid}-.png'
+        for i in range(0,number):
+            glitch_img = glitcher.glitch_image(img, 2, color_offset=True)
+            glitch_img.save(f'/home/dylee/glitch{i}.png')
+            await ctx.send(file=discord.File(f'/home/dylee/glitch{i}.png'))
+
+
+
+
+
     #async def create_poke(
     #    self,
     #    user_id: int,

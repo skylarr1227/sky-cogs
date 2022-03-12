@@ -423,4 +423,4 @@ class Mew(commands.Cog):
     #    await channel.edit(name=f"Raffle pot {amount}")
 
     def cog_unload(self):
-        #self.stats.cancel()
+        self.stats.cancel()

@@ -23,7 +23,7 @@ DEV_CHANNEL = 728758254796275782
 DATABASE_URL = os.environ["DATABASE_URL"]
 #MONGO_URL = os.environ["MONGO_URL"]
 
-load_dotenv("./env/mongo.env")
+load_dotenv("/home/dylee/clustered/env/mongo.env")
 
 class Mew(commands.Cog):
     """Mew"""

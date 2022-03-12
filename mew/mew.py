@@ -5,7 +5,7 @@ from .checks import *
 from glitch_this import ImageGlitcher
 from PIL import Image
 from io import BytesIO
-
+from dotenv import load_dotenv
 import requests
 import asyncio
 import asyncpg
@@ -23,13 +23,15 @@ DEV_CHANNEL = 728758254796275782
 DATABASE_URL = os.environ["DATABASE_URL"]
 #MONGO_URL = os.environ["MONGO_URL"]
 
+load_dotenv("./env/mongo.env")
+
 class Mew(commands.Cog):
     """Mew"""
     def __init__(self, bot):
         self.bot = bot
         self.active_requests = {}
         self.db = None
- #       self.mongo = AsyncIOMotorClient(MONGO_URL).pokemon
+        self.mongo = AsyncIOMotorClient(os.environ["MONGO_URL"]).pokemon
         asyncio.create_task(self._startup())
         self.stats.start()
     
@@ -407,18 +409,18 @@ class Mew(commands.Cog):
 
        
 
-    @tasks.loop(minutes=9)
-    async def stats(self):
-        await asyncio.sleep(60)
-        async with self.db.acquire() as pconn:
-            amount = await pconn.fetchval("select mewcoins from users where u_id = 920827966928326686")
-        guild = self.bot.get_guild(519466243342991360)
-        if not guild:
-            return
-        channel = guild.get_channel(923019380122607677)
-        if not channel:
-            return
-        await channel.edit(name=f"Raffle pot {amount}")
+   # @tasks.loop(minutes=9)
+    #async def stats(self):
+     #   await asyncio.sleep(60)
+      #  async with self.db.acquire() as pconn:
+       #     amount = await pconn.fetchval("select mewcoins from users where u_id = 920827966928326686")
+        #guild = self.bot.get_guild(519466243342991360)
+   #     if not guild:
+    #        return
+    #    channel = guild.get_channel(923019380122607677)
+    #    if not channel:
+    #        return
+    #    await channel.edit(name=f"Raffle pot {amount}")
 
     def cog_unload(self):
         self.stats.cancel()

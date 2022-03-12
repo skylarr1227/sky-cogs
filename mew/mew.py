@@ -32,8 +32,8 @@ class Mew(commands.Cog):
         self.active_requests = {}
         self.db = None
         self.mongo = AsyncIOMotorClient(os.environ["MONGO_URL"]).pokemon
-        asyncio.create_task(self._startup())
-        self.stats.start()
+        #asyncio.create_task(self._startup())
+        #self.stats.start()
     
     async def init(self, con):
         """Required for the DB."""

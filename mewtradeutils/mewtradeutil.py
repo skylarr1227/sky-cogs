@@ -18,9 +18,9 @@ class Mewtradeutil(commands.Cog):
         lines = m.embeds[0].description.split('\n')
         result = []  #  <---here?
         for line in lines:
-            start = line.find('**__No.__** - ')
-            sub = line[start + 14:]
-            end = sub.find('|')
+            start = line.find('┃<:num:971523683808083968>`')
+            sub = line[start + 1:]
+            end = sub.find('`┃')
             final = sub[:end - 1]
             result.append(int(final))
         result = " ".join([str(x) for x in result])

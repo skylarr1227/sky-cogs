@@ -19,9 +19,9 @@ class Mewtradeutil(commands.Cog):
         result = []  #  <---here?
         for line in lines:
             start = line.find('┃<:num:971523683808083968>`')
-            sub = line[start + 28:]
+            sub = line[start + 27:]
             end = sub.find('`┃')
-            final = sub[:end - 1]
+            final = sub[:end]
             result.append(int(final))
         result = " ".join([str(x) for x in result])
         embed = discord.Embed(title = "ID's requested", description=result, color=0xEE8700)

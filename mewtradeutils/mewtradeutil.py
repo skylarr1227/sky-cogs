@@ -19,7 +19,7 @@ class Mewtradeutil(commands.Cog):
         result = []  #  <---here?
         for line in lines:
             start = line.find('┃<:num:971523683808083968>`')
-            sub = line[start + 1:]
+            sub = line[start + 28:]
             end = sub.find('`┃')
             final = sub[:end - 1]
             result.append(int(final))

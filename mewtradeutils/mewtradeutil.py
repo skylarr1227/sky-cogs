@@ -18,17 +18,15 @@ class Mewtradeutil(commands.Cog):
         lines = m.embeds[0].description.split('\n')
         result = []  #  <---here?
         for line in lines:
-            start = line.find('┃<:num:971523683808083968>`')
-            sub = line[start + 27:]
-            end = sub.find('`┃')
+            start = line.find('<:num:971523683808083968>`')
+            sub = line[start + 26:]
+            end = sub.find('`')
             final = sub[:end]
             result.append(int(final))
         result = " ".join([str(x) for x in result])
         embed = discord.Embed(title = "ID's requested", description=result, color=0xEE8700)
         await ctx.send(embed=embed)
         await ctx.send(result)
-
-
 
 def setup(bot):
     bot.add_cog(Mewtradeutil(Bot))

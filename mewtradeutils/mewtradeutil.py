@@ -4,8 +4,6 @@ from redbot.core import Config
 from redbot.core.utils.chat_formatting import pagify
 
 
-
-
 class Mewtradeutil(commands.Cog):
     """Trade Utility for mewbot"""
     def __init__(self, bot):
@@ -18,8 +16,9 @@ class Mewtradeutil(commands.Cog):
         lines = m.embeds[0].description.split('\n')
         result = []  #  <---here?
         for line in lines:
-            start = line.find('<:num:971523683808083968>**`')
-            sub = line[start + 26:]
+            form = '<:num:971523683808083968>**`'
+            start = line.find(form)
+            sub = line[start + len(form):]
             end = sub.find('`**')
             final = sub[:end]
             result.append(int(final))

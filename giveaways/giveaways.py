@@ -1,6 +1,7 @@
 import discord
 from redbot.core import commands
 from redbot.core import Config
+from redbot.core.utils.chat_formatting import pagify
 import asyncio
 import asyncpg
 import datetime
@@ -447,9 +448,12 @@ class Giveaways(commands.Cog):
                         await pconn.execute("UPDATE users SET pokes = array_append(pokes, $1) WHERE u_id = $2", pokes[(idx * pokes_per_person) + i], winner)
                     
         win_text = ", ".join(win_text)
+        win_text = f'{author}\'s giveaway "{desc}" has ended.\nThe winners are {win_text}.'
+        win_pages = pagify(win_text)
         
         if channel:
-            await channel.send(f'{author}\'s giveaway "{desc}" has ended.\nThe winners are {win_text}.')
+            for page in win_pages:
+                await channel.send(page)
 
     def cog_unload(self):
         """Closes giveaway tasks on cog unload."""

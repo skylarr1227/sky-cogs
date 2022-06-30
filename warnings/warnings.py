@@ -637,10 +637,9 @@ class Warnings(commands.Cog):
                     timestamp = discord.Object(int(key)).created_at.isoformat(sep=" ", timespec="seconds")
                     if user_warnings[key]["points"] == 0:
                         notes += _(
-                            "{expired}{reason_name} added by {user} at {timestamp} for "
+                            "\N{BULLET}{reason_name} added by {user} at {timestamp}\n"
                             "{description}\n"
                         ).format(
-                            expired=expired,
                             reason_name=key,
                             user=mod,
                             timestamp=timestamp,
@@ -648,9 +647,10 @@ class Warnings(commands.Cog):
                         )
                     else:
                         msg += _(
-                            "{num_points} point warning {reason_name} issued by {user} at {timestamp} for "
+                            "\N{BULLET}{expired}{num_points} point warning {reason_name} issued by {user} at {timestamp}\n"
                             "{description}\n"
                         ).format(
+                            expired=expired,
                             num_points=user_warnings[key]["points"],
                             reason_name=key,
                             user=mod,
@@ -692,7 +692,7 @@ class Warnings(commands.Cog):
                     else:
                         expired = "[EXPIRED] "
                     msg += _(
-                        "{expired}{num_points} point warning {reason_name} issued by {user} for "
+                        "\N{BULLET}{expired}{num_points} point warning {reason_name} issued by {user}\n"
                         "{description}\n"
                     ).format(
                         expired=expired,

@@ -1,6 +1,6 @@
 import asyncio
 import contextlib
-from datetime import timezone
+from datetime import timezone, datetime, timedelta
 from collections import namedtuple
 from copy import copy
 from typing import Union, Optional, Literal
@@ -416,7 +416,11 @@ class Warnings(commands.Cog):
         if reason_type is None:
             return
         member_settings = self.config.member(member)
-        current_point_count = await member_settings.total_points()
+        current_point_count = 0
+        current_warnings = await member_settings.warnings()
+        for wid, data in current_warnings.items():
+            if discord.Object(int(wid)).created_at + timedelta(days=30 * 6) > datetime.now():
+                current_point_count += data["points"]
         warning_to_add = {
             str(ctx.message.id): {
                 "points": reason_type["points"],
@@ -541,7 +545,6 @@ class Warnings(commands.Cog):
         reason_type = {"description": reason, "points": 0}
 
         member_settings = self.config.member(member)
-        current_point_count = await member_settings.total_points()
         warning_to_add = {
             str(ctx.message.id): {
                 "points": reason_type["points"],
@@ -627,12 +630,17 @@ class Warnings(commands.Cog):
                     else:
                         bot = ctx.bot
                         mod = bot.get_user(mod_id) or _("Unknown Moderator ({})").format(mod_id)
+                    if discord.Object(int(key)).created_at + timedelta(days=30 * 6) > datetime.now():
+                        expired = ""
+                    else:
+                        expired = "[EXPIRED] "
                     timestamp = discord.Object(int(key)).created_at.isoformat(sep=" ", timespec="seconds")
                     if user_warnings[key]["points"] == 0:
                         notes += _(
-                            "{reason_name} added by {user} at {timestamp} for "
+                            "{expired}{reason_name} added by {user} at {timestamp} for "
                             "{description}\n"
                         ).format(
+                            expired=expired,
                             reason_name=key,
                             user=mod,
                             timestamp=timestamp,
@@ -679,10 +687,15 @@ class Warnings(commands.Cog):
                     else:
                         bot = ctx.bot
                         mod = bot.get_user(mod_id) or _("Unknown Moderator ({})").format(mod_id)
+                    if discord.Object(int(key)).created_at + timedelta(days=30 * 6) > datetime.now():
+                        expired = ""
+                    else:
+                        expired = "[EXPIRED] "
                     msg += _(
-                        "{num_points} point warning {reason_name} issued by {user} for "
+                        "{expired}{num_points} point warning {reason_name} issued by {user} for "
                         "{description}\n"
                     ).format(
+                        expired=expired,
                         num_points=user_warnings[key]["points"],
                         reason_name=key,
                         user=mod,

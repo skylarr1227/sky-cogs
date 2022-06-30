@@ -419,7 +419,7 @@ class Warnings(commands.Cog):
         current_point_count = 0
         current_warnings = await member_settings.warnings()
         for wid, data in current_warnings.items():
-            if discord.Object(int(wid)).created_at + timedelta(days=30 * 6) > datetime.now():
+            if discord.Object(int(wid)).created_at + timedelta(days=30 * 6) > datetime.now(timezone.utc):
                 current_point_count += data["points"]
         warning_to_add = {
             str(ctx.message.id): {
@@ -630,7 +630,7 @@ class Warnings(commands.Cog):
                     else:
                         bot = ctx.bot
                         mod = bot.get_user(mod_id) or _("Unknown Moderator ({})").format(mod_id)
-                    if discord.Object(int(key)).created_at + timedelta(days=30 * 6) > datetime.now():
+                    if discord.Object(int(key)).created_at + timedelta(days=30 * 6) > datetime.now(timezone.utc):
                         expired = ""
                     else:
                         expired = "[EXPIRED] "
@@ -687,7 +687,7 @@ class Warnings(commands.Cog):
                     else:
                         bot = ctx.bot
                         mod = bot.get_user(mod_id) or _("Unknown Moderator ({})").format(mod_id)
-                    if discord.Object(int(key)).created_at + timedelta(days=30 * 6) > datetime.now():
+                    if discord.Object(int(key)).created_at + timedelta(days=30 * 6) > datetime.now(timezone.utc):
                         expired = ""
                     else:
                         expired = "[EXPIRED] "

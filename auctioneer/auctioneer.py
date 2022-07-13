@@ -134,6 +134,9 @@ class Auctioneer(commands.Cog):
 			return
 		auction_id = str(auction_id)
 		async with self.lock:
+			if await self._check_tradeban(ctx.author.id):
+				await ctx.send('You are not allowed to trade.')
+				return
 			try:
 				auction = await self.config.auctions.get_raw(auction_id)
 			except KeyError:
@@ -214,6 +217,9 @@ class Auctioneer(commands.Cog):
 		"""Create a new auction for a mewbot pokemon."""
 		if not self.allow_interaction or not await self._test_db():
 			await ctx.send('This cog is currently disabled because I cannot access the database.')
+			return
+		if await self._check_tradeban(ctx.author.id):
+			await ctx.send('You are not allowed to trade.')
 			return
 		if poke == 1:
 			await ctx.send('You can not use your first Pokemon in the auction!')
@@ -926,6 +932,12 @@ class Auctioneer(commands.Cog):
 			else:
 				raise ValueError(f'Invalid bid_type "{bid_type}".')
 			return money >= amount
+	
+	async def _check_tradeban(self, userid: int):
+		"""Returns a bool indicating whether or not "userid" is banned from trading pokemon."""
+		async with self.db.acquire() as pconn:
+			banned = await pconn.fetchval('SELECT tradelock FROM users WHERE u_id = $1', userid)
+		return banned
 		
 	async def _add_credits(self, userid: int, amount: int, bid_type: str):
 		"""Adds "amount" credits to the balance of "userid" of "bid_type" type."""

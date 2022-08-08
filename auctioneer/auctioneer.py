@@ -960,4 +960,4 @@ class Auctioneer(commands.Cog):
 			else:
 				raise ValueError(f'Invalid bid_type "{bid_type}".')
 async def setup(bot):
-    await ctx.bot.add_cog(Auctioneer(bot))
+    await self.bot.add_cog(Auctioneer(bot))

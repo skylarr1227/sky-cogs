@@ -18,6 +18,7 @@ LOG_CHANNEL = 857745449356230711
 DATABASE_URL = os.environ["DATABASE_URL"]
 
 
+
 class Auctioneer(commands.Cog):
 	"""Create auctions for Mewbot pokemon."""
 	def __init__(self, bot):
@@ -958,3 +959,5 @@ class Auctioneer(commands.Cog):
 				await pconn.execute('UPDATE users SET redeems = redeems - $1 WHERE u_id = $2', amount, userid)
 			else:
 				raise ValueError(f'Invalid bid_type "{bid_type}".')
+async def setup(bot):
+    await bot.add_cog(Auctioneer(bot))

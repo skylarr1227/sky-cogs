@@ -1,4 +1,4 @@
-fromfrom .auctioneer import Auctioneer
-setfromotsetfromot
-setfromotsetfromotsetfromsetfromototsetfromsetfromotot):
-	bot.add_cog(Auctioneer(bot))
+from .auctioneer import Auctioneer
+
+async def setup(bot):
+	await bot.add_cog(Auctioneer(bot))

@@ -57,7 +57,7 @@ class skychill(commands.Cog):
                     f"[Context]({ctx.message.jump_url})"
                 ), color=0xFF0000, timestamp=datetime.utcnow())
         e.set_thumbnail(url=user.default_avatar.url)
-        await self.bot.get_channel(782253601208401921).send(embed=e)
+        await self.bot.get_channel(857745449356230707).send(embed=e)
         await user.edit(
             roles=new_roles, reason=f"Removing all roles, {ctx.message.author} is stripping user"
         )

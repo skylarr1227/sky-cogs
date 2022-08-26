@@ -1,3 +1,9 @@
+# Original cog here: https://github.com/TrustyJAID/Trusty-cogs
+
+
+
+
+
 # How to use ReTrigger
 
 ReTrigger is a highly versatile cog that allows server moderators and administrators to automatically perform many tasks based on regular expressions (regex) in chat. https://regex101.com/ Is suggested to test out any regular expression patterns you want before adding to the bot. Some commonly used tools include:

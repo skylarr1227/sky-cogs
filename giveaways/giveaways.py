@@ -28,7 +28,7 @@ class GiveawayView(discord.ui.View):
                 giveaway = await self.cog.config.giveaways.get_raw(mid)
             except KeyError:
                 return
-            if 580604817802657812 in [r.id for r in interaction.user.roles]:
+            if 1004327107591151667 in [r.id for r in interaction.user.roles]:
                 await interaction.response.send_message('You are not permitted to enter giveaways.', ephemeral=True)
                 return
             if giveaway['status'] != 'active':

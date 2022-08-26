@@ -5,6 +5,7 @@ from multiprocessing.pool import Pool
 from pathlib import Path
 from typing import Dict, Optional, Union
 
+from discord import app_commands
 import discord
 from discord.ext import tasks
 from redbot.core import Config, checks, commands, modlog

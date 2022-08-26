@@ -19,7 +19,7 @@ class GiveawayView(discord.ui.View):
         self.cog = cog
     
     @discord.ui.button(label="Enter giveaway", style=discord.ButtonStyle.primary, custom_id="giveaway_button")
-    async def callback(self, button, interaction):
+    async def callback(self, interaction,  button,):
         if not interaction.message or not interaction.user:
             return
         mid = str(interaction.message.id)

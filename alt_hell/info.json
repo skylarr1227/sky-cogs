@@ -1,0 +1,19 @@
+{
+    "author": [
+        "aikaterna-modified slightly by sky"
+    ],
+    "description": "Slightly changed version of Dungeon cog to run along side it",
+    "install_msg": "Slightly changed version of Dungeon cog to run along side it",
+    "min_python_version": [3, 6, 0],
+    "permissions": [
+        "ban_members",
+        "manage_channels",
+        "manage_roles"
+    ],
+    "short": "Slightly changed version of Dungeon cog to run along side it",
+    "tags": [
+        "Alt hell",
+        "Alt_Hell"
+    ],
+    "type": "COG"
+}

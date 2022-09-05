@@ -43,7 +43,7 @@ class Auctioneer(commands.Cog):
 			"1": {
 				"author": 145519400223506432,
 				"pokemon_info": "...",
-				"bid_type": "credits",
+				"bid_type": "mewcoins",
 				"bid_min": 1000,
 				"bids": [[631840748924436490, 100], [620229667294674955, 200]],
 				"interval": 1,

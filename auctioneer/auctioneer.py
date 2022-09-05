@@ -604,6 +604,8 @@ class Auctioneer(commands.Cog):
 			
 			if auctions[auction_id]['bid_type'] == 'credits':
 				bid_type = 'c'
+			elif auctions[auction_id]['bid_type'] == 'mewcoins':
+				bid_type = 'c'
 			elif auctions[auction_id]['bid_type'] == 'redeem':
 				bid_type = 'r'
 			

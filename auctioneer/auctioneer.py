@@ -20,7 +20,7 @@ DATABASE_URL = os.environ["DATABASE_URL"]
 
 
 class Auctioneer(commands.Cog):
-	"""Create auctions for Mewbot pokemon."""
+	"""Create auctions for Dittobot pokemon."""
 	def __init__(self, bot):
 		self.bot = bot
 		self.config = Config.get_conf(self, identifier=145519400223506432)
@@ -43,7 +43,7 @@ class Auctioneer(commands.Cog):
 			"1": {
 				"author": 145519400223506432,
 				"pokemon_info": "...",
-				"bid_type": "mewcoins",
+				"bid_type": "credits",
 				"bid_min": 1000,
 				"bids": [[631840748924436490, 100], [620229667294674955, 200]],
 				"interval": 1,
@@ -123,7 +123,7 @@ class Auctioneer(commands.Cog):
 	
 	@commands.group(aliases=['auction', 'auc', 'a'])
 	async def auctioneer(self, ctx):
-		"""Create auctions for Mewbot pokemon."""
+		"""Create auctions for DittoBOT pokemon."""
 		pass
 	
 	@auctioneer.command()
@@ -215,7 +215,7 @@ class Auctioneer(commands.Cog):
 	
 	@auctioneer.command()
 	async def create(self, ctx, poke: int):
-		"""Create a new auction for a mewbot pokemon."""
+		"""Create a new auction for a DittoBOT pokemon."""
 		if not self.allow_interaction or not await self._test_db():
 			await ctx.send('This cog is currently disabled because I cannot access the database.')
 			return
@@ -232,17 +232,17 @@ class Auctioneer(commands.Cog):
 		
 		try:
 			#Q1
-			#await ctx.send('Do you want to auction your pokemon for `mewcoins` or `redeem`?')
+			#await ctx.send('Do you want to auction your pokemon for `Dittocoins` or `redeem`?')
 			#resp = await self.bot.wait_for('message', timeout=60, check=lambda m: m.author == ctx.author and m.channel == ctx.channel)
 			#resp = resp.content.lower()
-			#if resp in ('mewcoins', 'redeem'):
+			#if resp in ('Dittocoins', 'redeem'):
 			#	bid_type = resp
 			#else:
 			#	await ctx.send('Type specified was not valid.')
 			#	return
 			
 			# ^ removed while redeems are not tradeable
-			bid_type = 'mewcoins'
+			bid_type = 'credits'
 			#Q2
 			await ctx.send('What should be the minimum bid?')
 			resp = await self.bot.wait_for('message', timeout=60, check=lambda m: m.author == ctx.author and m.channel == ctx.channel)
@@ -333,14 +333,14 @@ class Auctioneer(commands.Cog):
 		end = (datetime.datetime.utcnow() + datetime.timedelta(hours=hours)).timestamp()
 		poke_data = await self._get_pokemon_data(poke)
 		pokemon_info = (
-			f'Level {poke_data["pokelevel"]} {poke_data["shiny"]} {poke_data["pokname"]} "{poke_data["poknick"]}" {poke_data["gender"]}\n'
+			f'<:lvl:1012773630649827451> {poke_data["pokelevel"]} {poke_data["shiny"]} {poke_data["pokname"]} "{poke_data["poknick"]}" {poke_data["gender"]}\n'
 			f'**Nature**: {poke_data["nature"]}\n'
-			f'**HP**: {poke_data["hpiv"]} **IVs** | {poke_data["hpev"]} **EVs**\n'
-			f'**Attack**: {poke_data["atkiv"]} **IVs** | {poke_data["atkev"]} **EVs**\n'
-			f'**Defense**: {poke_data["defiv"]} **IVs** | {poke_data["defev"]} **EVs**\n'
-			f'**Sp. Atk**: {poke_data["spatkiv"]} **IVs** | {poke_data["spatkev"]} **EVs**\n'
-			f'**Sp. Def**: {poke_data["spdefiv"]} **IVs** | {poke_data["spdefev"]} **EVs**\n'
-			f'**Speed**: {poke_data["speediv"]} **IVs** | {poke_data["speedev"]} **EVs**\n'
+			f'**HP**: {poke_data["hpiv"]} <:iv:1012771006278021141> | {poke_data["hpev"]} <:evs:1013182984632926299>\n'
+			f'**Attack**: {poke_data["atkiv"]} <:iv:1012771006278021141> | {poke_data["atkev"]} <:evs:1013182984632926299>\n'
+			f'**Defense**: {poke_data["defiv"]} <:iv:1012771006278021141> | {poke_data["defev"]} <:evs:1013182984632926299>\n'
+			f'**Sp. Atk**: {poke_data["spatkiv"]} <:iv:1012771006278021141> | {poke_data["spatkev"]} <:evs:1013182984632926299>\n'
+			f'**Sp. Def**: {poke_data["spdefiv"]} <:iv:1012771006278021141> | {poke_data["spdefev"]} <:evs:1013182984632926299>\n'
+			f'**Speed**: {poke_data["speediv"]} <:iv:1012771006278021141> | {poke_data["speedev"]} <:evs:1013182984632926299>\n'
 			f'**Happiness**: {poke_data["happiness"]}\n'
 			f'IV %: {poke_data["iv_percent"]}'
 		)
@@ -602,7 +602,7 @@ class Auctioneer(commands.Cog):
 				continue
 			poke_data = auctions[auction_id]['poke_data']
 			
-			if auctions[auction_id]['bid_type'] == 'mewcoins':
+			if auctions[auction_id]['bid_type'] == 'credits':
 				bid_type = 'c'
 			elif auctions[auction_id]['bid_type'] == 'redeem':
 				bid_type = 'r'
@@ -719,7 +719,7 @@ class Auctioneer(commands.Cog):
 		)
 		author = self.bot.get_user(auction['author']) or auction['author']
 		embed.add_field(name='**Author**', value=f'{author}')
-		if auction['bid_type'] == 'mewcoins':
+		if auction['bid_type'] == 'credits':
 			emoji = self.bot.get_emoji(731709469414785047) or 'Mewcoins'
 		else:
 			emoji = 'Redeem'
@@ -819,8 +819,8 @@ class Auctioneer(commands.Cog):
 		await self._add_credits(auction['author'], amount, auction['bid_type'])
 		await self._add_pokemon(winner, auction['poke'])
 		winner = self.bot.get_user(winner) or winner
-		if auction['bid_type'] == 'mewcoins':
-			emoji = self.bot.get_emoji(731709469414785047) or 'Mewcoins'
+		if auction['bid_type'] == 'credits': 
+			emoji = self.bot.get_emoji(1010679749212901407) or '<:dittocoin:1010679749212901407>'
 		else:
 			emoji = 'Redeem'
 		if channel:
@@ -926,7 +926,7 @@ class Auctioneer(commands.Cog):
 		async with self.db.acquire() as pconn:
 			#Yes, I know I'm testing for equality then hardcoding instead of just using the string. However, since this is technically
 			#string user input, I'd rather be slightly inefficient than risk a db breach.
-			if bid_type == 'mewcoins':
+			if bid_type == 'credits':
 				money = await pconn.fetchval('SELECT mewcoins FROM users WHERE u_id = $1', userid)
 			elif bid_type == 'redeem':
 				money = await pconn.fetchval('SELECT redeems FROM users WHERE u_id = $1', userid)
@@ -943,7 +943,7 @@ class Auctioneer(commands.Cog):
 	async def _add_credits(self, userid: int, amount: int, bid_type: str):
 		"""Adds "amount" credits to the balance of "userid" of "bid_type" type."""
 		async with self.db.acquire() as pconn:
-			if bid_type == 'mewcoins':
+			if bid_type == 'credits':
 				await pconn.execute('UPDATE users SET mewcoins = mewcoins + $1 WHERE u_id = $2', amount, userid)
 			elif bid_type == 'redeem':
 				await pconn.execute('UPDATE users SET redeems = redeems + $1 WHERE u_id = $2', amount, userid)
@@ -953,7 +953,7 @@ class Auctioneer(commands.Cog):
 	async def _remove_credits(self, userid: int, amount: int, bid_type: str):
 		"""Removes "amount" credits from the balance of "userid" of "bid_type" type."""
 		async with self.db.acquire() as pconn:
-			if bid_type == 'mewcoins':
+			if bid_type == 'credits':
 				await pconn.execute('UPDATE users SET mewcoins = mewcoins - $1 WHERE u_id = $2', amount, userid)
 			elif bid_type == 'redeem':
 				await pconn.execute('UPDATE users SET redeems = redeems - $1 WHERE u_id = $2', amount, userid)

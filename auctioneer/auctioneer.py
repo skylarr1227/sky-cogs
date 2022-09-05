@@ -722,7 +722,9 @@ class Auctioneer(commands.Cog):
 		author = self.bot.get_user(auction['author']) or auction['author']
 		embed.add_field(name='**Author**', value=f'{author}')
 		if auction['bid_type'] == 'credits':
-			emoji = self.bot.get_emoji(731709469414785047) or 'Mewcoins'
+			emoji = self.bot.get_emoji(1010679749212901407) or 'Credits'
+		if auction['bid_type'] == 'mewcoins':
+			emoji = self.bot.get_emoji(1010679749212901407) or 'Credits'
 		else:
 			emoji = 'Redeem'
 		if auction['hidden']:
@@ -823,6 +825,8 @@ class Auctioneer(commands.Cog):
 		winner = self.bot.get_user(winner) or winner
 		if auction['bid_type'] == 'credits': 
 			emoji = self.bot.get_emoji(1010679749212901407) or '<:dittocoin:1010679749212901407>'
+		if auction['bid_type'] == 'mewcoins': 
+			emoji = self.bot.get_emoji(1010679749212901407) or '<:dittocoin:1010679749212901407>'	
 		else:
 			emoji = 'Redeem'
 		if channel:
@@ -930,6 +934,8 @@ class Auctioneer(commands.Cog):
 			#string user input, I'd rather be slightly inefficient than risk a db breach.
 			if bid_type == 'credits':
 				money = await pconn.fetchval('SELECT mewcoins FROM users WHERE u_id = $1', userid)
+			elif bid_type == 'mewcoins':
+				money = await pconn.fetchval('SELECT mewcoins FROM users WHERE u_id = $1', userid)
 			elif bid_type == 'redeem':
 				money = await pconn.fetchval('SELECT redeems FROM users WHERE u_id = $1', userid)
 			else:
@@ -947,6 +953,8 @@ class Auctioneer(commands.Cog):
 		async with self.db.acquire() as pconn:
 			if bid_type == 'credits':
 				await pconn.execute('UPDATE users SET mewcoins = mewcoins + $1 WHERE u_id = $2', amount, userid)
+			elif bid_type == 'mewcoins':
+				await pconn.execute('UPDATE users SET mewcoins = mewcoins - $1 WHERE u_id = $2', amount, userid)	
 			elif bid_type == 'redeem':
 				await pconn.execute('UPDATE users SET redeems = redeems + $1 WHERE u_id = $2', amount, userid)
 			else:
@@ -957,6 +965,8 @@ class Auctioneer(commands.Cog):
 		async with self.db.acquire() as pconn:
 			if bid_type == 'credits':
 				await pconn.execute('UPDATE users SET mewcoins = mewcoins - $1 WHERE u_id = $2', amount, userid)
+			elif bid_type == 'mewcoins':
+				await pconn.execute('UPDATE users SET mewcoins = mewcoins - $1 WHERE u_id = $2', amount, userid)	
 			elif bid_type == 'redeem':
 				await pconn.execute('UPDATE users SET redeems = redeems - $1 WHERE u_id = $2', amount, userid)
 			else:

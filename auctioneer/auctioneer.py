@@ -723,7 +723,7 @@ class Auctioneer(commands.Cog):
 		embed.add_field(name='**Author**', value=f'{author}')
 		if auction['bid_type'] == 'credits':
 			emoji = self.bot.get_emoji(1010679749212901407) or 'Credits'
-		if auction['bid_type'] == 'mewcoins':
+		elif auction['bid_type'] == 'mewcoins':
 			emoji = self.bot.get_emoji(1010679749212901407) or 'Credits'
 		else:
 			emoji = 'Redeem'
@@ -824,9 +824,9 @@ class Auctioneer(commands.Cog):
 		await self._add_pokemon(winner, auction['poke'])
 		winner = self.bot.get_user(winner) or winner
 		if auction['bid_type'] == 'credits': 
-			emoji = self.bot.get_emoji(1010679749212901407) or '<:dittocoin:1010679749212901407>'
+			emoji = self.bot.get_emoji(1010679749212901407) or 'DittoCoin'
 		if auction['bid_type'] == 'mewcoins': 
-			emoji = self.bot.get_emoji(1010679749212901407) or '<:dittocoin:1010679749212901407>'	
+			emoji = self.bot.get_emoji(1010679749212901407) or 'DittoCoin'
 		else:
 			emoji = 'Redeem'
 		if channel:
@@ -922,9 +922,9 @@ class Auctioneer(commands.Cog):
 			total_iv = pokemon['hpiv'] + pokemon['atkiv'] + pokemon['defiv'] + pokemon['spatkiv'] + pokemon['spdefiv'] + pokemon['speediv']
 			pokemon['iv_percent'] = round((total_iv / 186) * 100, 2)
 			if pokemon['gender'] == '-m':
-				pokemon['gender'] = self.bot.get_emoji(1011932024438800464) or '\N{MALE SIGN}'
+				pokemon['gender'] = '\N{MALE SIGN}'
 			else:
-				pokemon['gender'] = self.bot.get_emoji(1011935234067021834) or '\N{FEMALE SIGN}'
+				pokemon['gender'] = '\N{FEMALE SIGN}'
 			return pokemon
 	
 	async def _check_balance(self, userid: int, amount: int, bid_type: str):

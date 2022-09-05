@@ -922,9 +922,9 @@ class Auctioneer(commands.Cog):
 			total_iv = pokemon['hpiv'] + pokemon['atkiv'] + pokemon['defiv'] + pokemon['spatkiv'] + pokemon['spdefiv'] + pokemon['speediv']
 			pokemon['iv_percent'] = round((total_iv / 186) * 100, 2)
 			if pokemon['gender'] == '-m':
-				pokemon['gender'] = self.bot.get_emoji(732731801797132370) or '\N{MALE SIGN}'
+				pokemon['gender'] = self.bot.get_emoji(1011932024438800464) or '\N{MALE SIGN}'
 			else:
-				pokemon['gender'] = self.bot.get_emoji(732731778674065448) or '\N{FEMALE SIGN}'
+				pokemon['gender'] = self.bot.get_emoji(1011935234067021834) or '\N{FEMALE SIGN}'
 			return pokemon
 	
 	async def _check_balance(self, userid: int, amount: int, bid_type: str):
@@ -954,7 +954,7 @@ class Auctioneer(commands.Cog):
 			if bid_type == 'credits':
 				await pconn.execute('UPDATE users SET mewcoins = mewcoins + $1 WHERE u_id = $2', amount, userid)
 			elif bid_type == 'mewcoins':
-				await pconn.execute('UPDATE users SET mewcoins = mewcoins - $1 WHERE u_id = $2', amount, userid)	
+				await pconn.execute('UPDATE users SET mewcoins = mewcoins + $1 WHERE u_id = $2', amount, userid)	
 			elif bid_type == 'redeem':
 				await pconn.execute('UPDATE users SET redeems = redeems + $1 WHERE u_id = $2', amount, userid)
 			else:
